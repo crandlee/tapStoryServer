@@ -1,0 +1,18 @@
+{
+  "name": "RestifyDemo",
+  "dependencies": {
+    "restify": "~2.8.1",
+    "passport": "~0.2.0",
+    "passport-local": "~1.0.0",
+    "passport-http": "~0.2.2",
+    "mongoose": "~3.8.13"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-jshint": "*",
+    "karma": "~0.12.17",
+    "mocha": "~1.20.1",
+    "chai": "~1.9.1",
+    "mocha-better-spec-reporter": "0.0.2"
+  }
+}
