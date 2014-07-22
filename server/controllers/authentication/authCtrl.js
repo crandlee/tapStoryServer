@@ -14,6 +14,11 @@ module.exports.authenticateMethod = function() {
 
 module.exports.authorizeMethod = function(role) {
     return function(req, res, next) {
-
+        if (req.user && req.user.hasRole(role)) {
+            return next();
+        } else {
+            res.status(403);
+            res.end();
+        }
     }
 };

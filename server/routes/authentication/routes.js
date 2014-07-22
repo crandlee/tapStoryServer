@@ -10,14 +10,30 @@ module.exports = function(serverSvc) {
 
     //User
     serverSvc.addRoute('POST', '/user',
-        authCtrl.authenticateMethod(), userCtrl.saveUser({addOnly: true}));
+        authCtrl.authenticateMethod(),
+        userCtrl.saveUser({addOnly: true}));
 
-    serverSvc.addRoute('PUT', '/user', userCtrl.saveUser({addOnly: false}));
-    serverSvc.addRoute('GET', '/user/:userName', userCtrl.getUser);
-    serverSvc.addRoute('GET', '/users', userCtrl.getUsers);
-    serverSvc.addRoute('POST', '/user/:userName/role', userCtrl.addRole);
-    serverSvc.addRoute('DEL', '/user/:userName/role', userCtrl.removeRole);
-    serverSvc.addRoute('GET', '/user/:userName/roles', userCtrl.getRoles);
+    serverSvc.addRoute('PUT', '/user',
+        authCtrl.authenticateMethod(),
+        authCtrl.authorizeMethod('admin'),
+        userCtrl.saveUser({addOnly: false}));
+    serverSvc.addRoute('GET', '/user/:userName',
+        authCtrl.authenticateMethod(),
+        userCtrl.getUser);
+    serverSvc.addRoute('GET', '/users',
+        authCtrl.authenticateMethod(),
+        authCtrl.authorizeMethod('admin'),
+        userCtrl.getUsers);
+
+    serverSvc.addRoute('POST', '/user/:userName/role',
+        authCtrl.authenticateMethod(),
+        userCtrl.addRole);
+    serverSvc.addRoute('DEL', '/user/:userName/role',
+        authCtrl.authenticateMethod(),
+        userCtrl.removeRole);
+    serverSvc.addRoute('GET', '/user/:userName/roles',
+        authCtrl.authenticateMethod(),
+        userCtrl.getRoles);
 
 
 };
