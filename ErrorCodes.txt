@@ -1,0 +1,5 @@
+Server Error Codes:
+
+E1000 - Attempting to update an "add only" resource
+E1001 - No resources available
+E1002 - Attempting to create an "update only" resource

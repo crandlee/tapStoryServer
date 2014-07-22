@@ -1,4 +1,6 @@
 var fileSystemSvc = require('../services/utilities/fileSystemService');
+var recursive = require('recursive-readdir');
+var Q = require('q');
 
 module.exports.setFileSystemService = function(fss) {
     fileSystemSvc = fss;
@@ -32,7 +34,18 @@ function getSubDirectories (dir, done) {
         });
     }
 }
-
 module.exports.getSubDirectories = getSubDirectories;
 
 
+function getFilesRecursive(rootPath) {
+    var deferred = Q.defer();
+    recursive(rootPath, function(err, files) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            deferred.resolve(files);
+        }
+    });
+    return deferred.promise;
+}
+module.exports.getFilesRecursive = getFilesRecursive;

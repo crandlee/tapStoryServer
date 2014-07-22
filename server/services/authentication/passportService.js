@@ -1,20 +1,29 @@
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
+var userSvc = require('./userService');
 
 function initialize(serverSvc) {
 
     //Gets a user given a username and password
     passport.use(new BasicStrategy(
         function (username, password, done) {
-//            User.findOne({userName: username}).exec(function (err, user) {
-//                if (user && user.authenticate(password)) {
-//                    return done(null, user);
-//                } else {
-//                    return done(null, false);
-//                }
-//            });
-                console.log("Strategy: " + username);
-                return done(null, { firstName: 'Randy', lastName: 'Lee' });
+            userSvc.getSingle(username)
+                .then(function(user) {
+                    if (user) {
+                        user.authenticate(password)
+                            .then(function(isMatch) {
+                                return done(null, isMatch ? user : null);
+                            })
+                            .fail(function(err) {
+                                return done(err);
+                            });
+                    } else {
+                        return done(null, false);
+                    }
+                })
+                .fail(function(err) {
+                   return done(err);
+                });
 
         }
     ));
