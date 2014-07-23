@@ -1,5 +1,7 @@
 var restify = require('restify');
 var server = null;
+var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+var config = require('../config/config')[env];
 
 function beginListen(port, next) {
 
@@ -18,6 +20,8 @@ function addRoute(verb) {
     //Gets called with params verb, route, handler1, handler2, ...
     if (verb) verb = verb.toLowerCase();
     var args = Array.prototype.slice.call(arguments, 1);
+    //Apply the base path to the route
+    if (args[0]) args[0] = config.baseUri + args[0];
     var server = getServer();
     server[verb].apply(server, args);
 

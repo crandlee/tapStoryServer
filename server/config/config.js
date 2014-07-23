@@ -5,11 +5,13 @@ module.exports = {
     development: {
         rootPath: rootPath,
         db: 'mongodb://localhost/tapStory',
-        port: process.env.PORT || 3030
+        port: process.env['PORT'] || 3030,
+        baseUri: '/api'
     },
     production: {
         rootPath: rootPath,
         db: 'mongodb://localhost/tapStory',
-        port: process.env.PORT || 80
+        port: process.env['PORT'] || 80,
+        baseUri: '/api'
     }
 };

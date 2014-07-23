@@ -1,12 +1,5 @@
 var authSvc = require('../../services/authentication/passportService');
 
-function authenticate(req, res) {
-
-   res.json( { success: true });
-
-}
-
-module.exports.authenticate = authenticate;
 
 module.exports.authenticateMethod = function() {
     return authSvc.authenticateMethod();

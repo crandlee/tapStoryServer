@@ -1,17 +1,19 @@
 var mongoose = require('mongoose');
 var encryptionUtility = require('../../utilities/encryptionUtility');
 var authorizeSvc = require('../../services/authorization/authorizationService');
+var linkSvc = require('../../services/hypermedia/linkService');
+
 
 //User schema
 var userSchema = mongoose.Schema({
-    firstName: {type:String, required:'{PATH} is required!'},
-    lastName: {type:String, required:'{PATH} is required!'},
+    firstName: {type: String, required: '{PATH} is required!'},
+    lastName: {type: String, required: '{PATH} is required!'},
     userName: {
-        type:String,
-        required:'{PATH} is required!',
+        type: String,
+        required: '{PATH} is required!',
         unique: true
     },
-    userSecret: {type:String, required:'{PATH} is required!'},
+    userSecret: {type: String, required: '{PATH} is required!'},
     roles: [String]
 });
 
@@ -20,23 +22,36 @@ userSchema.methods = {
     authenticate: function (passwordToMatch) {
         return encryptionUtility.checkEqualToken(passwordToMatch, this.userSecret);
     },
-    hasRole: function(role) {
+    hasRole: function (role) {
         return (this.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
     },
-    viewModel: function(type) {
-        switch (type){
+    viewModel: function (type) {
+        var obj = {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            userName: this.userName,
+            roles: this.roles
+        };
+        switch (type) {
+            case 'users':
+                obj = linkSvc.attachLinksToObject(obj, [
+                    { uri: '/user/' + this.userName, rel: 'user'}
+                ]);
+                break;
+            case 'user':
+                obj = linkSvc.attachLinksToObject(obj, [
+                    { uri: '/../../users', rel: 'users', isRelative: true },
+                    { uri: '/roles', rel: 'roles', isRelative: true }
+                ]);
+                break;
             default:
-                return {
-                    id: this.id,
-                    firstName: this.firstName,
-                    lastName: this.lastName,
-                    userName: this.userName,
-                    roles: this.roles
-                }
         }
+        return obj;
 
     }
 };
+
 
 //Static Methods
 // --NONE--
@@ -53,11 +68,11 @@ function createDefaultUsers() {
     User.find({}).exec(function (err, collection) {
         if (collection.length === 0) {
             encryptionUtility.saltAndHash('admin1234')
-                .then(function(token) {
+                .then(function (token) {
                     User.create({ firstName: 'Starter', lastName: 'Admin', userName: 'admin@gmail.com', userSecret: token, roles: ['admin'] });
                 })
-                .fail(function() {
-                   console.log('Could not create default user.');
+                .fail(function () {
+                    console.log('Could not create default user.');
                 });
         }
     });

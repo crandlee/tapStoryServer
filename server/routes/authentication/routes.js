@@ -4,9 +4,6 @@ var passport = require('passport');
 
 module.exports = function(serverSvc) {
 
-    //Login
-    serverSvc.addRoute('GET', '/login',
-        authCtrl.authenticateMethod(), authCtrl.authenticate);
 
     //User
     serverSvc.addRoute('POST', '/user',
@@ -25,6 +22,7 @@ module.exports = function(serverSvc) {
         authCtrl.authorizeMethod('admin'),
         userCtrl.getUsers);
 
+    //Roles
     serverSvc.addRoute('POST', '/user/:userName/role',
         authCtrl.authenticateMethod(),
         userCtrl.addRole);

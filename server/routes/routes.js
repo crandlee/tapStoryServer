@@ -1,9 +1,11 @@
 var fileSystemUtility = require('../utilities/fileSystemUtility');
 var assert = require('assert');
+var coreCtrl = require('../controllers/coreCtrl');
+var authCtrl = require('../controllers/authentication/authCtrl');
 
 //Central Repository for more specific routes
 
-function initialize(serverService, fileSystemService) {
+function initialize(serverSvc, fileSystemSvc) {
 
     var dirRouteFileName = 'routes.js';
     console.log('Initializing routes');
@@ -11,15 +13,20 @@ function initialize(serverService, fileSystemService) {
         assert.ifError(err);
         directories.forEach(function(dir) {
             var fileName = dir + '/' + dirRouteFileName;
-            fileSystemService.getFileExistsAsync(fileName, function(exists) {
+            fileSystemSvc.getFileExistsAsync(fileName, function(exists) {
                if (exists) {
                     require(fileName.replace('./server/routes','./')
-                        .replace('.js', ''))(serverService);
+                        .replace('.js', ''))(serverSvc);
                }
             });
         });
 
     });
+
+    //Add core route
+    serverSvc.addRoute('GET', '/',
+        authCtrl.authenticateMethod(),
+        coreCtrl.core);
 
 
 }
