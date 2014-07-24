@@ -1,5 +1,5 @@
 {
-  "name": "tapStory Server",
+  "name": "tapStoryServer",
   "dependencies": {
     "restify": "~2.8.1",
     "passport": "~0.2.0",
@@ -21,6 +21,8 @@
     "mocha": "~1.20.1",
     "chai": "~1.9.1",
     "mocha-better-spec-reporter": "0.0.2",
-    "chai-as-promised": "~4.1.1"
+    "chai-as-promised": "~4.1.1",
+    "sinon": "~1.10.3",
+    "proxyquire": "~1.0.1"
   }
 }
