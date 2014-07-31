@@ -291,5 +291,5 @@ describe('services', function () {
         afterEach(function () {
             sandbox.restore();
         });
-    })
+    });
 });

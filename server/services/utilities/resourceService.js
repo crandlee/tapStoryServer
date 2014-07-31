@@ -13,7 +13,7 @@ function save(updateProperties, options) {
     var pid = promiseSvc.createPromise();
 
     //Allow model to be set externally for testing purposes
-    var model = (options && options.model) || getModelFromOptions(options);
+    var model = (options && options.model) || getModelFromOptions(options, pid);
 
     //Allow for some pre-validation and rejection via promise
     var preValidation = (options && options.preValidation) || null;
@@ -90,7 +90,7 @@ function getSingle(options) {
 
     var pid = promiseSvc.createPromise();
     //Allow model to be set externally for testing purposes
-    var model = (options && options.model) || getModelFromOptions(options);
+    var model = (options && options.model) || getModelFromOptions(options, pid);
 
     //Set query and select
     var query = (options && options.query) || null;
@@ -121,7 +121,7 @@ function getList(options) {
     var pid = promiseSvc.createPromise();
 
     //Allow model to be set externally for testing purposes
-    var model = (options && options.model) || getModelFromOptions(options);
+    var model = (options && options.model) || getModelFromOptions(options, pid);
 
     //Set query and select
     var query = (options && options.query) || null;
@@ -146,11 +146,11 @@ function getList(options) {
 
 }
 
-function getModelFromOptions(options) {
+function getModelFromOptions(options, promiseId) {
 
     var modelName = (options && options.modelName) || '';
     var model = mongoose.model(modelName);
-    if (!model) errSvc.errorFromPromise(pid, {}, 'No model set for the resource');
+    if (!model && promiseId) errSvc.errorFromPromise(promiseId, {}, 'No model set for the resource');
     return model;
 
 }

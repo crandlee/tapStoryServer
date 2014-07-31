@@ -15,7 +15,7 @@ function wrap(functionToWrap, options) {
         if (after && typeof after === 'function')
             after.apply(context || this, args);
         return resultReplace || result;
-    }
+    };
 }
 
 module.exports = {

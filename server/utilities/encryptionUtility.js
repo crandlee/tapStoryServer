@@ -17,7 +17,7 @@ function createSalt() {
 module.exports.createSalt = createSalt;
 
 function hashPwd(salt, pwd) {
-    var pid = promiseSvc.createPromise()
+    var pid = promiseSvc.createPromise();
     bcrypt.hash(pwd, salt, function(err, hash) {
        if (err) {
            promiseSvc.reject(new Error(err), pid);

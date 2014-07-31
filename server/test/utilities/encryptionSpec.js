@@ -40,7 +40,7 @@ describe('Utilities Tests', function () {
             it('returns a salted and hashed token', function (done) {
                 enc.saltAndHash(testSecret).should.be.fulfilled
                     .then(function(hash) {
-                        should.exist(hash)
+                        should.exist(hash);
                     }).should.notify(done);
 
             });
@@ -52,7 +52,7 @@ describe('Utilities Tests', function () {
                         enc.saltAndHash(testSecret).then(function (token2) {
                             should.exist(token2);
                             token1.should.not.equal(token2);
-                        }).should.notify(done)
+                        }).should.notify(done);
                     });
             });
         });
@@ -64,7 +64,7 @@ describe('Utilities Tests', function () {
                         enc.checkEqualToken(testSecret, token1).then(function (isMatch) {
                             should.exist(isMatch);
                             isMatch.should.equal(true);
-                        }).should.notify(done)
+                        }).should.notify(done);
                     });
 
             });
@@ -75,11 +75,11 @@ describe('Utilities Tests', function () {
                         enc.checkEqualToken('Some other secret', token1).then(function (isMatch) {
                             should.exist(isMatch);
                             isMatch.should.equal(false);
-                        }).should.notify(done)
+                        }).should.notify(done);
                     });
 
             });
-        })
+        });
 
     });
 });
