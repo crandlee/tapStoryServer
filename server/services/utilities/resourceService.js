@@ -148,7 +148,7 @@ function getList(options) {
 
 function getModelFromOptions(options) {
 
-    var modelName = (options && options.model) || '';
+    var modelName = (options && options.modelName) || '';
     var model = mongoose.model(modelName);
     if (!model) errSvc.errorFromPromise(pid, {}, 'No model set for the resource');
     return model;

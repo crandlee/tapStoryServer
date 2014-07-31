@@ -24,7 +24,7 @@ function save(updateProperties, options) {
     options.onNew = {
       roles: 'user'
     };
-    options.model = 'User';
+    options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
     options.mapPropertiesToResource = mapPropertiesToResource;
 
@@ -55,7 +55,7 @@ function getOptionsObject(fName) {
                     if (!options.role) errSvc.errorFromPromise(pid, {}, 'new role must be valid');
                     if (!options.userName) errSvc.errorFromPromise(pid, {}, 'user name must be valid');
                 };
-                options.model = 'User';
+                options.modelName = 'User';
                 options.singleSearch = { userName: options.userName };
 
                 options.mapPropertiesToResource = function(resource, updateProperties) {
@@ -88,7 +88,7 @@ function getOptionsObject(fName) {
                     if (!options.role) errSvc.errorFromPromise(pid, {}, 'role must be valid');
                     if (!options.userName) errSvc.errorFromPromise(pid, {}, 'user name must be valid');
                 };
-                options.model = 'User';
+                options.modelName = 'User';
                 options.singleSearch = { userName: options.userName };
 
                 options.mapPropertiesToResource = function(resource, updateProperties) {
@@ -142,7 +142,7 @@ function mapPropertiesToResource (resource, updateProperties) {
 function getList(query) {
 
     var options = {};
-    options.model = 'User';
+    options.modelName = 'User';
     options.query = query;
     return resourceSvc.getList(options);
 
@@ -150,7 +150,7 @@ function getList(query) {
 
 function getSingle(userName) {
     var options = {};
-    options.model = 'User';
+    options.modelName = 'User';
     options.query = {userName: userName};
     return resourceSvc.getSingle(options);
 }
