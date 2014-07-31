@@ -12,7 +12,7 @@ module.exports = {
     },
     production: {
         rootPath: rootPath,
-        db: 'mongodb://localhost/tapStory',
+        db: 'mongodb://process:d1#$g6W349ld@ds055709.mongolab.com:55709/tapstory',
         port: process.env.PORT || 80,
         baseUri: '/api'
     }
