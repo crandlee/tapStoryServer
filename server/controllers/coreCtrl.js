@@ -1,3 +1,5 @@
+"use strict";
+
 var linkSvc = require('../services/hypermedia/linkService');
 
 function core(req, res, next) {

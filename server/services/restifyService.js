@@ -1,3 +1,5 @@
+"use strict";
+
 var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -31,7 +33,7 @@ module.exports.addRoute = addRoute;
 function addMiddleware(middleware, name) {
 
     console.log('Initializing ' + name  + ' middleware');
-    this.Server().use(middleware);
+    getServer().use(middleware);
 
 }
 module.exports.addMiddleware = addMiddleware;

@@ -8,7 +8,7 @@ describe('Utilities Tests', function () {
         var enc = require('../../utilities/encryptionUtility');
         var testSalt = '$2a$10$PgbZyyejZthZd9r23j/iUO';
         var testSecret = 'secret123@';
-        this.timeout(500);
+        this.timeout(1000);
         describe('createSalt', function () {
             it('creates a valid salt', function (done) {
                 enc.createSalt().then(function (salt) {

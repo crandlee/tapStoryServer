@@ -1,141 +1,156 @@
-var errSvc = require('../error/errorService').initialize(null, "userService");
-var Q = require('q');
+"use strict";
+
+var errSvc = require('../error/errorService')(null, "resourceService");
 var mongoose = require('mongoose');
 var extend = require('extend');
+var promiseSvc = require('../promises/promiseService');
+
 
 function save(updateProperties, options) {
 
     var addOnly = (options && options.addOnly) || false;
     var updateOnly = (options && options.updateOnly) || false;
-    var deferred = Q.defer();
-    var model = getModelFromOptions(deferred, options);
+    var pid = promiseSvc.createPromise();
+
+    //Allow model to be set externally for testing purposes
+    var model = (options && options.model) || getModelFromOptions(options);
 
     //Allow for some pre-validation and rejection via promise
     var preValidation = (options && options.preValidation) || null;
     if (preValidation && typeof preValidation === 'function')
-        preValidation(updateProperties, options, deferred);
+        preValidation(updateProperties, options, pid);
 
 
     //Get the search criteria for a single resource
     var singleSearch = (options && options.singleSearch) || null;
     if (addOnly) singleSearch = singleSearch || { _id: 0 };
-    if (!singleSearch) errSvc.errorFromPromise(deferred, {}, 'No search criteria set for a single ' + model.modelName);
+    if (!singleSearch) errSvc.errorFromPromise(pid, {}, 'No search criteria set for a single ' + model.modelName);
 
     //Get the map function for properties to a resource
     var mapPropertiesToResource = (options && options.mapPropertiesToResource) || null;
     if (!mapPropertiesToResource || typeof mapPropertiesToResource !== 'function')
-        errSvc.errorFromPromise(deferred, {}, 'Missing map function for ' + model.modelName);
+        errSvc.errorFromPromise(pid, {}, 'Missing map function for ' + model.modelName);
 
     //Do not continue if any rejections have occurred
-    if (deferred.promise.isRejected()) return deferred.promise;
+    var promise = promiseSvc.getPromise(pid);
+    if (promise.isRejected()) return promise;
 
     //Update or Add
     model.findOne(singleSearch).exec(function (err, resource) {
-        if (err) errSvc.errorFromPromise(deferred, err, 'Could not get ' + model.modelName + ' for update');
+        if (err) errSvc.errorFromPromise(pid, err, 'Could not get ' + model.modelName + ' for update');
         if (resource) {
 
             if (addOnly)
-                errSvc.errorFromPromise(deferred,
+                errSvc.errorFromPromise(pid,
                     err, 'Can only create new ' + model.modelName + ' with this method', "E1000");
 
-            mapPropertiesToResource(resource, updateProperties, deferred)
+            mapPropertiesToResource(resource, updateProperties)
                 .then(function (resourceFinal) {
 
                     resourceFinal.save(function (err, resource) {
                         if (err) {
-                            errSvc.errorFromPromise(deferred, err, 'Could not save ' + model.modelName);
+                            errSvc.errorFromPromise(pid, err, 'Could not save ' + model.modelName);
                         } else {
-                            deferred.resolve(resource);
+                            promiseSvc.resolve(resource, pid);
                         }
                     });
                 })
                 .fail(function(err) {
-                    deferred.reject(err);
+                    promiseSvc.reject(err, pid);
                 });
 
         } else {
 
             if (updateOnly)
-                errSvc.errorFromPromise(deferred,
+                errSvc.errorFromPromise(pid,
                     err, 'Can only update ' + model.modelName + ' with this method', "E1002");
 
-            mapPropertiesToResource({}, updateProperties, deferred)
+            mapPropertiesToResource({}, updateProperties)
                 .then(function (resourceFinal) {
 
                     if (options.onNew) resourceFinal = extend(resourceFinal, options.onNew);
 
                     model.create(resourceFinal, function (err, resource) {
-                        if (err) errSvc.errorFromPromise(deferred, err, 'Could not create ' + model.modelName);
-                        if (resource && resource._id) deferred.resolve(resource);
+                        if (err) errSvc.errorFromPromise(pid, err, 'Could not create ' + model.modelName);
+                        if (resource && resource._id) promiseSvc.resolve(resource, pid);
                     });
                 })
                 .fail(function(err) {
-                    deferred.reject(err);
+                    promiseSvc.reject(err, pid);
                 });
 
         }
     });
 
-    return deferred.promise;
+    if (options && options.testMode) promiseSvc.clearPromise(pid);
+    return promise;
 }
 
 function getSingle(options) {
 
-    var deferred = Q.defer();
-    var model = getModelFromOptions(deferred, options);
-
+    var pid = promiseSvc.createPromise();
+    //Allow model to be set externally for testing purposes
+    var model = (options && options.model) || getModelFromOptions(options);
 
     //Set query and select
     var query = (options && options.query) || null;
-    if (!query) errSvc.errorFromPromise(deferred, {}, 'No query provided for resource ' + model.modelName);
+    if (!query) errSvc.errorFromPromise(pid, {}, 'No query provided for resource ' + model.modelName);
     var select = (options && options.select) || '';
 
+
     //Do not continue if any rejections have occurred
-    if (deferred.promise.isRejected()) return deferred.promise;
+    var promise = promiseSvc.getPromise(pid);
+    if (promise.isRejected()) return promise;
 
     model.findOne(query, select).exec(function (err, resource) {
-        if (err) errSvc.errorFromPromise(deferred, err, 'Could not get ' + model.modelName + ' from search');
+        if (err) errSvc.errorFromPromise(pid, err, 'Could not get ' + model.modelName + ' from search');
         if (resource) {
-            deferred.resolve(resource);
+            promiseSvc.resolve(resource, pid);
         } else {
-            errSvc.errorFromPromise(deferred, {}, 'Could not find ' + model.modelName, 'E1001');
+            errSvc.errorFromPromise(pid, {}, 'Could not find ' + model.modelName, 'E1001');
         }
     });
-    return deferred.promise;
+
+    if (options && options.testMode) promiseSvc.clearPromise(pid);
+    return promise;
 
 }
 
 function getList(options) {
 
-    var deferred = Q.defer();
-    var model = getModelFromOptions(deferred, options);
+    var pid = promiseSvc.createPromise();
 
+    //Allow model to be set externally for testing purposes
+    var model = (options && options.model) || getModelFromOptions(options);
 
     //Set query and select
     var query = (options && options.query) || null;
-    if (!query) errSvc.errorFromPromise(deferred, {}, 'No query provided for resource ' + model.modelName);
+    if (!query) errSvc.errorFromPromise(pid, {}, 'No query provided for resource ' + model.modelName);
     var select = (options && options.select) || '';
 
     //Do not continue if any rejections have occurred
-    if (deferred.promise.isRejected()) return deferred.promise;
+    var promise = promiseSvc.getPromise(pid);
+    if (promise.isRejected()) return promise;
 
     model.find(query, select).exec(function (err, resources) {
-        if (err) errSvc.errorFromPromise(deferred, err, 'Could not get list of ' + model.modelName + ' from search');
-        if (resources.length > 0) {
-            deferred.resolve(resources);
+        if (err) errSvc.errorFromPromise(pid, err, 'Could not get list of ' + model.modelName + ' from search');
+        if (resources && resources.length > 0) {
+            promiseSvc.resolve(resources, pid);
         } else {
-            errSvc.errorFromPromise(deferred, {}, 'Could not find any ' + model.modelName, 'E1001');
+            errSvc.errorFromPromise(pid, {}, 'Could not find any ' + model.modelName, 'E1001');
         }
     });
-    return deferred.promise;
+
+    if (options && options.testMode) promiseSvc.clearPromise(pid);
+    return promise;
 
 }
 
-function getModelFromOptions(deferred, options) {
+function getModelFromOptions(options) {
 
     var modelName = (options && options.model) || '';
     var model = mongoose.model(modelName);
-    if (!model) errSvc.errorFromPromise(deferred, {}, 'No model set for the resource');
+    if (!model) errSvc.errorFromPromise(pid, {}, 'No model set for the resource');
     return model;
 
 }
@@ -143,5 +158,14 @@ function getModelFromOptions(deferred, options) {
 module.exports = {
     save: save,
     getSingle: getSingle,
-    getList: getList
+    getList: getList,
+    _getModelFromOptions: getModelFromOptions,
+    _test: {
+        rejectPromise: function(err, pid) {
+            promiseSvc.reject(err, pid);
+        },
+        setErrorService: function(svc) {
+            errSvc = svc;
+        }
+    }
 };

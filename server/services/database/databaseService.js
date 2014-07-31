@@ -1,3 +1,5 @@
+"use strict";
+
 var mongoose = require('mongoose');
 var fileSystemUtility = require('../../utilities/fileSystemUtility');
 var _ = require('lodash');
@@ -15,7 +17,7 @@ function connectDb(config) {
 function loadModels() {
 
     fileSystemUtility.getFilesRecursive('./server/models')
-        .then(function(files) {
+        .done(function(files) {
             _.map(files, function(fileName) {
                 require('../../../' + fileName.replace('.js',''));
             });

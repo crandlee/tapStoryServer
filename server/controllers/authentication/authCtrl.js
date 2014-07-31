@@ -1,11 +1,13 @@
+"use strict";
+
 var authSvc = require('../../services/authentication/passportService');
 
 
-module.exports.authenticateMethod = function() {
+function authenticateMethod() {
     return authSvc.authenticateMethod();
-};
+}
 
-module.exports.authorizeMethod = function(role) {
+function authorizeMethod(role) {
     return function(req, res, next) {
         if (req.user && req.user.hasRole(role)) {
             return next();
@@ -13,5 +15,10 @@ module.exports.authorizeMethod = function(role) {
             res.status(403);
             res.end();
         }
-    }
+    };
+}
+
+module.exports = {
+    authenticateMethod: authenticateMethod,
+    authorizeMethod: authorizeMethod
 };

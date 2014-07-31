@@ -1,11 +1,13 @@
+"use strict";
+
 var mongoose = require('mongoose');
 var encryptionUtility = require('../../utilities/encryptionUtility');
 var authorizeSvc = require('../../services/authorization/authorizationService');
 var linkSvc = require('../../services/hypermedia/linkService');
 
 
-//User schema
-var userSchema = mongoose.Schema({
+//Schema setup
+var schema = mongoose.Schema({
     firstName: {type: String, required: '{PATH} is required!'},
     lastName: {type: String, required: '{PATH} is required!'},
     userName: {
@@ -18,7 +20,7 @@ var userSchema = mongoose.Schema({
 });
 
 //Instance methods
-userSchema.methods = {
+schema.methods = {
     authenticate: function (passwordToMatch) {
         return encryptionUtility.checkEqualToken(passwordToMatch, this.userSecret);
     },
@@ -60,7 +62,7 @@ userSchema.methods = {
 
 
 //Create model
-var User = mongoose.model('User', userSchema);
+var User = mongoose.model('User', schema);
 createDefaultUsers();
 
 //Initial data
@@ -78,4 +80,8 @@ function createDefaultUsers() {
     });
 
 }
+
+
+
+
 

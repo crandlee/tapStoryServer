@@ -1,3 +1,5 @@
+"use strict";
+
 var bunyan = require('bunyan');
 var extend = require('extend');
 var logger = null;
@@ -29,6 +31,7 @@ function initialize(options, source) {
     sourceModule = source;
     if (!options) options = getStandardOptions();
     logger = bunyan.createLogger(options);
+    /* jshint validthis: true */
     return this;
 
 }
@@ -78,7 +81,7 @@ function getStandardOptions() {
                 level: 'trace'
             }
         ]
-    }
+    };
 }
 
 

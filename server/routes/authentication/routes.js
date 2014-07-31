@@ -1,3 +1,5 @@
+"use strict";
+
 var authCtrl = require('../../controllers/authentication/authCtrl');
 var userCtrl = require('../../controllers/authentication/userCtrl');
 var passport = require('passport');

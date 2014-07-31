@@ -1,3 +1,5 @@
+"use strict";
+
 var fileSystemUtility = require('../utilities/fileSystemUtility');
 var assert = require('assert');
 var coreCtrl = require('../controllers/coreCtrl');

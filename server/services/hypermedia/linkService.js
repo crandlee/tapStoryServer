@@ -1,3 +1,5 @@
+"use strict";
+
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var links = [];
@@ -19,7 +21,6 @@ function addLink(uri, rel, isRelative, method) {
     isRelative = isRelative || false;
     method = method || 'GET';
     links.push(getLinkObject(uri, rel, isRelative, method));
-    return this;
 }
 
 function getLinkObject(uri, rel, isRelative, method) {
@@ -28,7 +29,7 @@ function getLinkObject(uri, rel, isRelative, method) {
         uri: (!isRelative ? config.baseUri : '') + uri,
         method: method,
         rel: rel
-    }
+    };
 }
 
 function getLinkCollectionKey() {

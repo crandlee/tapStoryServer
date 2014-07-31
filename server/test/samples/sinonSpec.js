@@ -101,7 +101,7 @@ describe('Sinon Samples', function () {
             //callCount(spy, num)
             //callOrder(spy1, spy2,...)
             //many others
-        })
+        });
     });
 
 

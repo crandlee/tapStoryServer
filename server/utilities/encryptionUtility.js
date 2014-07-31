@@ -1,31 +1,31 @@
 var bcrypt = require('bcrypt');
-var Q = require('q');
+var promiseSvc = require('../services/promises/promiseService');
 
 function createSalt() {
 
-    var deferred = Q.defer();
+    var pid = promiseSvc.createPromise();
 
     bcrypt.genSalt(11, function(err, salt) {
         if (err) {
-            deferred.reject(new Error(err))
+            promiseSvc.reject(new Error(err), pid);
         } else {
-            deferred.resolve(salt);
+            promiseSvc.resolve(salt, pid);
         }
     });
-    return deferred.promise;
+    return promiseSvc.getPromise(pid);
 }
 module.exports.createSalt = createSalt;
 
 function hashPwd(salt, pwd) {
-    var deferred = Q.defer();
+    var pid = promiseSvc.createPromise()
     bcrypt.hash(pwd, salt, function(err, hash) {
        if (err) {
-           deferred.reject(new Error(err));
+           promiseSvc.reject(new Error(err), pid);
        } else {
-           deferred.resolve(hash);
+           promiseSvc.resolve(hash, pid);
        }
     });
-    return deferred.promise;
+    return promiseSvc.getPromise(pid);
 }
 module.exports.hashPwd = hashPwd;
 
@@ -43,14 +43,14 @@ function saltAndHash(pwd) {
 module.exports.saltAndHash = saltAndHash;
 
 function checkEqualToken(candidate, existing) {
-    var deferred = Q.defer();
+    var pid = promiseSvc.createPromise();
     bcrypt.compare(candidate, existing, function(err, isMatch) {
        if (err) {
-           deferred.reject(new Error(err));
+           promiseSvc.reject(new Error(err), pid);
        } else {
-           deferred.resolve(isMatch);
+           promiseSvc.resolve(isMatch, pid);
        }
     });
-    return deferred.promise;
+    return promiseSvc.getPromise(pid);
 }
 module.exports.checkEqualToken = checkEqualToken;

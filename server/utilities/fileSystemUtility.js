@@ -1,6 +1,6 @@
 var fileSystemSvc = require('../services/utilities/fileSystemService');
 var recursive = require('recursive-readdir');
-var Q = require('q');
+var promiseSvc = require('../services/promises/promiseService');
 
 module.exports.setFileSystemService = function(fss) {
     fileSystemSvc = fss;
@@ -38,14 +38,14 @@ module.exports.getSubDirectories = getSubDirectories;
 
 
 function getFilesRecursive(rootPath) {
-    var deferred = Q.defer();
+    var pid = promiseSvc.createPromise();
     recursive(rootPath, function(err, files) {
         if (err) {
-            deferred.reject(err);
+            promiseSvc.reject(err, pid);
         } else {
-            deferred.resolve(files);
+            promiseSvc.resolve(files, pid);
         }
     });
-    return deferred.promise;
+    return promiseSvc.getPromise(pid);
 }
 module.exports.getFilesRecursive = getFilesRecursive;
