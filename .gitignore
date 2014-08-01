@@ -1,3 +1,5 @@
 node_modules/
 .idea/
 tapStoryServer.log
+server/uploads/*
+!server/uploads/empty
