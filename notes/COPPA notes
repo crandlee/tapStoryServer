@@ -1,0 +1,19 @@
+-- Ability for parents to peruse what their children have posted and
+   what they have access to and remove it / flag it if needed.  Possibly
+   through a web portal
+-- Email notification for parents/guardians when their children create
+   new material or gain access to new material (through sharing, etc.)
+-- Do some research on content checking of videos - audio scanning etc.
+-- Personal information of children could be transmitted through the videos.
+   Must make sure that proper parental consent is given for each child user.
+-- Significantly limit the amount of personal information entered by both
+   the parent and child.
+-- Keep readily available privacy policy online for easy perusal.
+-- Make sure that all data associated with a child is available to the
+   parent through an easy to get to portal.
+-- Any way or verifying parent identity?
+-- Non-electronic consent/removal of consent?
+-- Make sure any consent/removal is saved to the system with history
+   and timestamps.
+-- Possibly encrypt resources/files so that only those with valid "keys" can
+   view resources outside of the client environment.
