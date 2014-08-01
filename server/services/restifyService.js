@@ -4,6 +4,7 @@ var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = require('../config/config')[env];
+var bodyParser = require('../middleware/bodyParser');
 
 function beginListen(port, next) {
 
@@ -43,8 +44,10 @@ function getServer() {
     if (!server) {
         server = restify.createServer();
         server.use(restify.queryParser());
-        server.use(restify.bodyParser());
+        server.use(bodyParser);
+
     }
+
 
 
     return server;

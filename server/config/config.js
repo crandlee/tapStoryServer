@@ -8,12 +8,14 @@ module.exports = {
         rootPath: rootPath,
         db: 'mongodb://localhost/tapStory',
         port: process.env.PORT || 3030,
-        baseUri: '/api'
+        baseUri: '/api',
+        uploadPath: 'server/uploads/'
     },
     production: {
         rootPath: rootPath,
         db: 'mongodb://process:d1#$g6W349ld@ds055709.mongolab.com:55709/tapstory',
         port: process.env.PORT || 80,
-        baseUri: '/api'
+        baseUri: '/api',
+        uploadPath: 'server/uploads/'
     }
 };
