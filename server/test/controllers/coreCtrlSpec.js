@@ -1,3 +1,6 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
 
@@ -11,8 +14,8 @@ describe('controllers', function() {
        beforeEach(function() {
 
            sandbox = sinon.sandbox.create();
-           linkSvcStub = sandbox.stub(require('../../services/hypermedia/linkService'));
-           coreCtrl = proxyquire('../../controllers/coreCtrl', { linkSvc: linkSvcStub });
+           linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
+           coreCtrl = proxyquire(global.getRoutePathFromKey('ctrl-core'), { linkSvc: linkSvcStub });
            resStub  = sandbox.stub({
                send: function() {
 

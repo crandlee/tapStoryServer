@@ -1,6 +1,9 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
-var proxyquire = require('proxyquire');
 var should = require('chai').should();
+var proxyquire = require('proxyquire');
 
 describe('controllers', function() {
     describe('authCtrl.js', function() {
@@ -11,8 +14,8 @@ describe('controllers', function() {
         beforeEach(function() {
 
             sandbox = sinon.sandbox.create();
-            authSvcStub = sandbox.stub(require('../../../services/authentication/passportService'));
-            authCtrl = proxyquire('../../../controllers/authentication/authCtrl', { authSvc: authSvcStub });
+            authSvcStub = sandbox.stub(global.rootRequire('svc-passport'));
+            authCtrl = proxyquire(global.getRoutePathFromKey('ctrl-auth'), { authSvc: authSvcStub });
             resStub  = sandbox.stub({
                 status: function() {},
                 send: function() {},

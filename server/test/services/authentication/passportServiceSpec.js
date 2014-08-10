@@ -1,9 +1,11 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var should = require('chai').should();
 var proxyquire = require('proxyquire');
-var utils = require('../../utilities/testUtilities');
-var promiseSvc = require('../../../services/promises/promiseService');
-var functionUtil = require('../../../utilities/functionUtilities');
+var utils = global.rootRequire('util-test');
+var promiseSvc = global.rootRequire('svc-promise');
 
 describe('services', function () {
     describe('authentication', function () {
@@ -25,14 +27,14 @@ describe('services', function () {
 
                     }
                 });
-                userSvc = sandbox.stub(require('../../../services/authentication/userService'));
+                userSvc = sandbox.stub(global.rootRequire('svc-user'));
 
                 serverSvcStub = sandbox.stub({
                     addMiddleware: function() {
 
                     }
                 });
-                passportSvc = proxyquire('../../../services/authentication/passportService',
+                passportSvc = proxyquire(global.getRoutePathFromKey('svc-passport'),
                     { passport: passport, BasicStrategy: BasicStrategy, userSvc: userSvc });
 
             });

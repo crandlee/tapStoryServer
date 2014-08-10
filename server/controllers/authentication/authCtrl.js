@@ -1,6 +1,7 @@
 "use strict";
+require('require-enhanced')();
 
-var authSvc = require('../../services/authentication/passportService');
+var authSvc = global.rootRequire('svc-passport');
 
 
 function authenticateMethod() {

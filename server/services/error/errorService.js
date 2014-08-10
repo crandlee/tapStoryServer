@@ -1,8 +1,9 @@
 "use strict";
+require('require-enhanced')();
 
-var logSvc = require('../logging/logService');
+var logSvc = global.rootRequire('svc-logging');
 var extend = require('extend');
-var promiseSvc = require('../promises/promiseService');
+var promiseSvc = global.rootRequire('svc-promise');
 
 function throwError(err, msg, internalCode) {
 

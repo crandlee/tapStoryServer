@@ -1,10 +1,11 @@
 "use strict";
+require('require-enhanced')();
 
 var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = require('../config/config')[env];
-var bodyParser = require('../middleware/bodyParser');
+var config = global.rootRequire('cfg-config')[env];
+var bodyParser = global.rootRequire('middleware-bodyParser');
 
 function beginListen(port, next) {
 

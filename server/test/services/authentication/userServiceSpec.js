@@ -1,7 +1,10 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var should = require('chai').should();
 var proxyquire = require('proxyquire');
-var utils = require('../../utilities/testUtilities');
+var utils = global.rootRequire('util-test');
 
 describe('services', function () {
     describe('authentication', function () {
@@ -19,12 +22,12 @@ describe('services', function () {
             beforeEach(function() {
 
                 sandbox = sinon.sandbox.create();
-                errSvc = sandbox.stub(require('../../../services/error/errorService')(null, "userService"));
-                resourceSvc = sandbox.stub(require('../../../services/utilities/resourceService'));
-                encryptionSvc = sandbox.stub(require('../../../utilities/encryptionUtility'));
-                authorizeSvc = sandbox.stub(require('../../../services/authorization/authorizationService'));
-                promiseSvc = sandbox.stub(require('../../../services/promises/promiseService'));
-                userSvc = proxyquire('../../../services/authentication/userService',
+                errSvc = sandbox.stub(global.rootRequire('svc-error')(null, "userService"));
+                resourceSvc = sandbox.stub(global.rootRequire('svc-resource'));
+                encryptionSvc = sandbox.stub(global.rootRequire('util-encryption'));
+                authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
+                promiseSvc = sandbox.stub(global.rootRequire('svc-promise'));
+                userSvc = proxyquire(global.getRoutePathFromKey('svc-user'),
                     { resourceSvc: resourceSvc,
                         encryptionSvc: encryptionSvc, authorizeSvc: authorizeSvc, promiseSvc: promiseSvc });
 
@@ -40,7 +43,7 @@ describe('services', function () {
                     optionsStub.userName = userName;
                     should.exist(optionsStub.preValidation);
                     optionsStub.onNew.roles.should.equal('user');
-                    optionsStub.model.should.equal('User');
+                    optionsStub.modelName.should.equal('User');
                     optionsStub.singleSearch.userName.should.equal(userName);
                     should.exist(optionsStub.mapPropertiesToResource);
                 });
@@ -58,7 +61,7 @@ describe('services', function () {
 
                 it('calls getSingle on the resource service with the proper options', function() {
                    var userName = utils.getRandomString(10);
-                   var options = { model: 'User', query: { userName: userName } };
+                   var options = { modelName: 'User', query: { userName: userName } };
                    userSvc.getSingle(userName);
                    sinon.assert.calledWithExactly(resourceSvc.getSingle, options);
                 });
@@ -69,7 +72,7 @@ describe('services', function () {
 
                 it('calls getList on the resource service with the proper options', function() {
                     var query = utils.getRandomString(10);
-                    var options = { model: 'User', query: query };
+                    var options = { modelName: 'User', query: query };
                     userSvc.getList(query);
                     sinon.assert.calledWithExactly(resourceSvc.getList, options);
                 });
@@ -88,7 +91,7 @@ describe('services', function () {
                     options.updateOnly.should.equal(true);
                     options.role.should.equal(roleName);
                     should.exist(options.preValidation);
-                    options.model.should.equal('User');
+                    options.modelName.should.equal('User');
                     options.singleSearch.userName.should.equal(userName);
                     should.exist(options.mapPropertiesToResource);
 
@@ -116,7 +119,7 @@ describe('services', function () {
                     options.updateOnly.should.equal(true);
                     options.role.should.equal(roleName);
                     should.exist(options.preValidation);
-                    options.model.should.equal('User');
+                    options.modelName.should.equal('User');
                     options.singleSearch.userName.should.equal(userName);
                     should.exist(options.mapPropertiesToResource);
 

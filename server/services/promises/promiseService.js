@@ -1,8 +1,9 @@
 "use strict";
+require('require-enhanced')();
 
 var Q = require('q');
 var uuid = require('node-uuid');
-var functionUtils = require('../../utilities/functionUtilities');
+var functionUtils = global.rootRequire('util-function');
 var _ = require('lodash');
 var promiseObjects = [];
 var internalId = null;

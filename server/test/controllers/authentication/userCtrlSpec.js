@@ -1,10 +1,11 @@
 "use strict";
+require('require-enhanced')();
 
 var sinon = require('sinon');
-var proxyquire = require('proxyquire');
 var should = require('chai').should();
-var utils = require('../../utilities/testUtilities');
-var promiseSvc = require('../../../services/promises/promiseService');
+var utils = global.rootRequire('util-test');
+var promiseSvc = global.rootRequire('svc-promise');
+var proxyquire = require('proxyquire');
 
 describe('controllers', function() {
     describe('userCtrl.js', function() {
@@ -17,16 +18,16 @@ describe('controllers', function() {
         beforeEach(function() {
 
             sandbox = sinon.sandbox.create();
-            userSvcStub = sandbox.stub(require('../../../services/authentication/userService'));
+            userSvcStub = sandbox.stub(global.rootRequire('svc-user'));
             errSvcStub = {
                 errorFromPromise: function(pid, err) {
                     promiseSvc.reject(err, pid);
                 },
                 checkErrorCode: sandbox.stub()
             };
-            linkSvcStub = sandbox.stub(require('../../../services/hypermedia/linkService'));
+            linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
 
-            userCtrl = proxyquire('../../../controllers/authentication/userCtrl',
+            userCtrl = proxyquire(global.getRoutePathFromKey('ctrl-user'),
                 { userSvc: userSvcStub, linkSvc: linkSvcStub });
             resStub  = sandbox.stub({
                 status: function() {},

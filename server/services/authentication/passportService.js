@@ -1,8 +1,9 @@
 "use strict";
+require('require-enhanced')();
 
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
-var userSvc = require('./userService');
+var userSvc = global.rootRequire('svc-user');
 
 function userLookupForStrategy(username, password, done) {
     userSvc.getSingle(username)

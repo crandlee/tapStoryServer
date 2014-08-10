@@ -1,6 +1,9 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var should = require('chai').should();
-var proxyquire = require('proxyquire').noPreserveCache();
+var proxyquire = require('proxyquire');
 
 describe('Services Tests', function () {
     describe('promises', function () {
@@ -13,7 +16,7 @@ describe('Services Tests', function () {
             beforeEach(function() {
 
                 sandbox = sinon.sandbox.create();
-                promiseSvc = proxyquire('../../../services/promises/promiseService', {});
+                promiseSvc = proxyquire(global.getRoutePathFromKey('svc-promise'), {});
 
             });
 

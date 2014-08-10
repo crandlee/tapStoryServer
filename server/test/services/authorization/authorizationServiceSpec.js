@@ -1,7 +1,10 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var should = require('chai').should();
+var utils = global.rootRequire('util-test');
 var proxyquire = require('proxyquire');
-var utils = require('../../utilities/testUtilities');
 
 describe('services', function () {
     describe('authorization', function () {
@@ -12,7 +15,7 @@ describe('services', function () {
         beforeEach(function() {
 
             sandbox = sinon.sandbox.create();
-            authSvc = proxyquire('../../../services/authorization/authorizationService',
+            authSvc = proxyquire(global.getRoutePathFromKey('svc-auth'),
                 {  });
 
         });

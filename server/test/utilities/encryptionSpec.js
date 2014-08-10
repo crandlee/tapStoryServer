@@ -1,3 +1,6 @@
+"use strict";
+require('require-enhanced')();
+
 var chai = require('chai');
 var should = chai.should();
 var chaiAsPromised = require('chai-as-promised');
@@ -5,7 +8,7 @@ chai.use(chaiAsPromised);
 
 describe('Utilities Tests', function () {
     describe('encryption.js', function () {
-        var enc = require('../../utilities/encryptionUtility');
+        var enc = global.rootRequire('util-encryption');
         var testSalt = '$2a$10$PgbZyyejZthZd9r23j/iUO';
         var testSecret = 'secret123@';
         this.timeout(1000);

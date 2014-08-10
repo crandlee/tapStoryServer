@@ -1,9 +1,11 @@
+"use strict";
+require('require-enhanced')();
+
 var sinon = require('sinon');
 var should = require('chai').should();
+var utils = global.rootRequire('util-test');
+var promiseSvc = global.rootRequire('svc-promise');
 var proxyquire = require('proxyquire');
-var utils = require('../../utilities/testUtilities');
-var promiseSvc = require('../../../services/promises/promiseService');
-
 
 describe('services', function () {
     describe('utilities', function () {
@@ -25,7 +27,7 @@ describe('services', function () {
 
                 }
             });
-            resSvc = proxyquire('../../../services/utilities/resourceService',
+            resSvc = proxyquire(global.getRoutePathFromKey('svc-resource'),
                 { mongoose: mongooseStub });
             resSvc._test.setErrorService(errSvcStub);
 
@@ -39,7 +41,7 @@ describe('services', function () {
 
                     var modelName = utils.getRandomString(10);
                     var testRet = { testObject: utils.getRandomString(10) };
-                    var options = { model: modelName };
+                    var options = { modelName: modelName };
                     mongooseStub.model.returns(testRet);
                     var model = resSvc._getModelFromOptions(options);
                     sinon.assert.calledWithExactly(mongooseStub.model, modelName);

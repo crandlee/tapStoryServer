@@ -1,4 +1,5 @@
 "use strict";
+require('require-enhanced')();
 
 var _ = require('lodash');
 var roles = ['admin', 'user'];

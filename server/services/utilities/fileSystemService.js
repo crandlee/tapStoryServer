@@ -1,4 +1,5 @@
 "use strict";
+require('require-enhanced')();
 
 var fs = require('fs');
 

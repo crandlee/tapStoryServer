@@ -1,11 +1,12 @@
 "use strict";
+require('require-enhanced')();
 
-var errSvc = require('../error/errorService')(null, "userService");
-var resourceSvc = require('../utilities/resourceService');
-var encryptionSvc = require('../../utilities/encryptionUtility');
+var errSvc = global.rootRequire('svc-error')(null, "userService");
+var resourceSvc = global.rootRequire('svc-resource');
+var encryptionSvc = global.rootRequire('util-encryption');
 var _ = require('lodash');
-var authorizeSvc = require('../authorization/authorizationService');
-var promiseSvc = require('../promises/promiseService');
+var authorizeSvc = global.rootRequire('svc-auth');
+var promiseSvc = global.rootRequire('svc-promise');
 
 function _setErrorService(errorService){
     errSvc = errorService;

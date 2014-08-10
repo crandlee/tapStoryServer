@@ -1,6 +1,7 @@
 "use strict";
+require('require-enhanced')();
 
-var linkSvc = require('../services/hypermedia/linkService');
+var linkSvc = global.rootRequire('svc-link');
 
 function core(req, res, next) {
 

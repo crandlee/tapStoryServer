@@ -1,4 +1,5 @@
 "use strict";
+require('require-enhanced')();
 
 var bunyan = require('bunyan');
 var extend = require('extend');

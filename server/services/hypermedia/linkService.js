@@ -1,7 +1,8 @@
 "use strict";
+require('require-enhanced')();
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = require('../../config/config')[env];
+var config = global.rootRequire('cfg-config')[env];
 var links = [];
 
 function attachLinksToObject(obj, linkArr) {

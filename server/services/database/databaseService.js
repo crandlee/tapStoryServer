@@ -1,7 +1,8 @@
 "use strict";
+require('require-enhanced')();
 
 var mongoose = require('mongoose');
-var fileSystemUtility = require('../../utilities/fileSystemUtility');
+var fileSystemUtility = global.rootRequire('util-filesystem');
 var _ = require('lodash');
 
 function connectDb(config) {

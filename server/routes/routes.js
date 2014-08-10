@@ -1,9 +1,10 @@
 "use strict";
+require('require-enhanced')();
 
-var fileSystemUtility = require('../utilities/fileSystemUtility');
+var fileSystemUtility = global.rootRequire('util-filesystem');
 var assert = require('assert');
-var coreCtrl = require('../controllers/coreCtrl');
-var authCtrl = require('../controllers/authentication/authCtrl');
+var coreCtrl = global.rootRequire('ctrl-core');
+var authCtrl = global.rootRequire('ctrl-auth');
 
 //Central Repository for more specific routes
 

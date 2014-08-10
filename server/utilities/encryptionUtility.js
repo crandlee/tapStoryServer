@@ -1,5 +1,8 @@
+"use strict";
+require('require-enhanced')();
+
 var bcrypt = require('bcrypt');
-var promiseSvc = require('../services/promises/promiseService');
+var promiseSvc = global.rootRequire('svc-promise');
 
 function createSalt() {
 

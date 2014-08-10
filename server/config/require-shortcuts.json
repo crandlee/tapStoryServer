@@ -1,0 +1,25 @@
+[
+    { "k":"cfg-config", "v": "config/config" },
+    { "k":"ctrl-core", "v": "controllers/coreCtrl" },
+    { "k":"ctrl-auth", "v": "controllers/authentication/authCtrl" },
+    { "k":"ctrl-user", "v": "controllers/authentication/userCtrl" },
+    { "k":"middleware-bodyParser", "v": "middleware/bodyParser" },
+    { "k":"model-User", "v": "models/authentication/User" },
+    { "k":"svc-passport", "v": "services/authentication/passportService" },
+    { "k":"svc-user", "v": "services/authentication/userService" },
+    { "k":"svc-auth", "v": "services/authorization/authorizationService" },
+    { "k":"svc-cache", "v": "services/caching/cacheService" },
+    { "k":"svc-database", "v": "services/database/databaseService" },
+    { "k":"svc-error", "v": "services/error/errorService" },
+    { "k":"svc-link", "v": "services/hypermedia/linkService" },
+    { "k":"svc-logging", "v": "services/logging/logService" },
+    { "k":"svc-promise", "v": "services/promises/promiseService" },
+    { "k":"svc-filesystem", "v": "services/utilities/fileSystemService" },
+    { "k":"svc-resource", "v": "services/utilities/resourceService" },
+    { "k":"svc-restify", "v": "services/restifyService" },
+    { "k":"util-encryption", "v": "utilities/encryptionUtility" },
+    { "k":"util-filesystem", "v": "utilities/fileSystemUtility" },
+    { "k":"util-function", "v": "utilities/functionUtilities" },
+    { "k":"util-test", "v": "test/utilities/testUtilities"}
+
+]

@@ -1,7 +1,8 @@
 "use strict";
+require('require-enhanced')();
 
-var authCtrl = require('../../controllers/authentication/authCtrl');
-var userCtrl = require('../../controllers/authentication/userCtrl');
+var authCtrl = global.rootRequire('ctrl-auth');
+var userCtrl = global.rootRequire('ctrl-user');
 var passport = require('passport');
 
 module.exports = function(serverSvc) {

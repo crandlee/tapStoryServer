@@ -1,9 +1,11 @@
-var sinon = require('sinon');
-var proxyquire = require('proxyquire').noPreserveCache();
-var mongoose = require('mongoose');
-var utils = require('../../utilities/testUtilities');
-var should = require('chai').should();
+"use strict";
+require('require-enhanced')();
 
+var sinon = require('sinon');
+var mongoose = require('mongoose');
+var utils = global.rootRequire('util-test');
+var should = require('chai').should();
+var proxyquire = require('proxyquire');
 
 
 describe('models', function () {
@@ -14,10 +16,10 @@ describe('models', function () {
     before(function() {
 
         sandbox = sinon.sandbox.create();
-        encUtility = sandbox.stub(require('../../../utilities/encryptionUtility'));
-        authorizeSvc = sandbox.stub(require('../../../services/authorization/authorizationService'));
+        encUtility = sandbox.stub(global.rootRequire('util-encryption'));
+        authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
 
-        proxyquire('../../../models/authentication/User',
+        proxyquire(global.getRoutePathFromKey('model-User'),
         { encryptionUtility: encUtility, authorizeSvc: authorizeSvc });
 
         User = mongoose.model('User');

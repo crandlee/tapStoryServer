@@ -1,11 +1,14 @@
 'use strict';
 
+//Load the enhanced require functionality
+require('require-enhanced')();
+
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = require('./server/config/config')[env];
-var serverSvc = require('./server/services/restifyService');
-var fileSystemSvc = require('./server/services/utilities/fileSystemService');
-var authSvc = require('./server/services/authentication/passportService');
-var dbSvc = require('./server/services/database/databaseService');
+var config = global.rootRequire('cfg-config')[env];
+var serverSvc = global.rootRequire('svc-restify');
+var fileSystemSvc = global.rootRequire('svc-filesystem');
+var authSvc = global.rootRequire('svc-passport');
+var dbSvc = global.rootRequire('svc-database');
 var routes = require('./server/routes/routes');
 
 //Authentication Configuration

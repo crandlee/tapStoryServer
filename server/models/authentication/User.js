@@ -1,9 +1,10 @@
 "use strict";
+require('require-enhanced')();
 
 var mongoose = require('mongoose');
-var encryptionUtility = require('../../utilities/encryptionUtility');
-var authorizeSvc = require('../../services/authorization/authorizationService');
-var linkSvc = require('../../services/hypermedia/linkService');
+var encryptionUtility = global.rootRequire('util-encryption');
+var authorizeSvc = global.rootRequire('svc-auth');
+var linkSvc = global.rootRequire('svc-link');
 
 
 //Schema setup

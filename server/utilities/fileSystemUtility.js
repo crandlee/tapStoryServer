@@ -1,6 +1,9 @@
-var fileSystemSvc = require('../services/utilities/fileSystemService');
+"use strict";
+require('require-enhanced')();
+
+var fileSystemSvc = global.rootRequire('svc-filesystem');
 var recursive = require('recursive-readdir');
-var promiseSvc = require('../services/promises/promiseService');
+var promiseSvc = global.rootRequire('svc-promise');
 
 module.exports.setFileSystemService = function(fss) {
     fileSystemSvc = fss;

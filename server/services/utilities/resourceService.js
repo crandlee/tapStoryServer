@@ -1,9 +1,10 @@
 "use strict";
+require('require-enhanced')();
 
-var errSvc = require('../error/errorService')(null, "resourceService");
+var errSvc = global.rootRequire('svc-error')(null, "resourceService");
 var mongoose = require('mongoose');
 var extend = require('extend');
-var promiseSvc = require('../promises/promiseService');
+var promiseSvc = global.rootRequire('svc-promise');
 
 
 function save(updateProperties, options) {
