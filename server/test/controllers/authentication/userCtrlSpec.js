@@ -67,10 +67,10 @@ describe('controllers', function() {
             it('if no user passed in, returns a bad request message', function() {
 
                 fn = userCtrl.saveUser();
-                reqStub.body.user = null;
+                reqStub.body = null;
                 userSvcStub.save = promiseSvc.makeEmptyPromise(userSvcStub.save);
                 fn(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects "user"');
+                sinon.assert.calledWithExactly(resStub.send, 400, 'No request body');
 
             });
 
@@ -79,7 +79,7 @@ describe('controllers', function() {
                 fn = userCtrl.saveUser(optionsStub);
                 userSvcStub.save = promiseSvc.makeEmptyPromise(userSvcStub.save);
                 fn(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.save, reqStub.body.user, { addOnly: optionsStub.addOnly });
+                sinon.assert.calledWithExactly(userSvcStub.save, reqStub.body, { addOnly: optionsStub.addOnly });
 
             });
 

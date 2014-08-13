@@ -3,6 +3,7 @@
     { "k":"ctrl-core", "v": "controllers/coreCtrl" },
     { "k":"ctrl-auth", "v": "controllers/authentication/authCtrl" },
     { "k":"ctrl-user", "v": "controllers/authentication/userCtrl" },
+    { "k":"route-root", "v": "routes/routes" },
     { "k":"middleware-bodyParser", "v": "middleware/bodyParser" },
     { "k":"model-User", "v": "models/authentication/User" },
     { "k":"svc-passport", "v": "services/authentication/passportService" },

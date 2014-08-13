@@ -42,7 +42,7 @@ function getKey(key) {
 
 function updateFromArray(array, options){
 
-    //TODO: Needs Test
+    //TODO-Randy: Needs Test
 
     function addArray(array, options) {
 
@@ -86,7 +86,7 @@ function updateFromArray(array, options){
 
 function deleteKeysWithPrefix(prefix) {
 
-    //TODO: Needs Test
+    //TODO-Randy: Needs Test
 
     var pid = promiseSvc.createPromise();
     client.keys(prefix + '*', function(err, rows) {

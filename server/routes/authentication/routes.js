@@ -12,7 +12,10 @@ module.exports = function(serverSvc) {
     serverSvc.addRoute('POST', '/user',
         authCtrl.authenticateMethod(),
         userCtrl.saveUser({addOnly: true}));
-
+    serverSvc.addRoute('POST', '/users',
+        authCtrl.authenticateMethod(),
+        authCtrl.authorizeMethod('admin'),
+        userCtrl.saveUser({addOnly: true}));
     serverSvc.addRoute('PUT', '/user',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod('admin'),

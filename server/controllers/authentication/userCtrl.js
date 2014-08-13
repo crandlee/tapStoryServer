@@ -2,12 +2,12 @@
 require('require-enhanced')();
 
 var userSvc = global.rootRequire('svc-user');
-var errSvc = global.rootRequire('svc-error');
+var errSvc = global.rootRequire('svc-error')(null, "userController");
 var _ = require('lodash');
 var linkSvc = global.rootRequire('svc-link');
 var promiseSvc = global.rootRequire('svc-promise');
 
-function setErrorService (errorService) {
+function setErrorService(errorService) {
 
     errSvc = errorService;
 
@@ -18,19 +18,20 @@ function saveUser(options) {
 
     var addOnly = (options && options.addOnly) || false;
 
-
     return function (req, res, next) {
 
-        if (!req.body.user) res.send(400, 'Server expects "user"');
-
-        userSvc.save(req.body.user, {addOnly: addOnly})
-            .done(function (user) {
-                res.send((addOnly ? 201 : 200), user.viewModel('user'));
-                return next();
-            },function (err) {
-                res.send(errSvc.checkErrorCode(err, "E1000") ? 405 : 500, err);
-                return next();
-            });
+        if (!req.body || Object.getOwnPropertyNames(req.body).length === 0) {
+            res.send(400, 'No request body');
+        } else {
+            userSvc.save(req.body, {addOnly: addOnly})
+                .done(function (user) {
+                    res.send((addOnly ? 201 : 200), user.viewModel('user'));
+                    return next();
+                }, function (err) {
+                    res.send(errSvc.checkErrorCode(err, "E1000") ? 405 : 500, err);
+                    return next();
+                });
+        }
     };
 
 }
@@ -38,18 +39,21 @@ function saveUser(options) {
 
 function getUser(req, res, next) {
 
-    if (!req.params.userName) res.send(400, "Server expects user name to retrieve user");
+    if (!req.params.userName) {
+        res.send(400, "Server expects user name to retrieve user");
+    } else {
+        userSvc.getSingle(req.params.userName)
+            .done(function (user) {
+                res.send(200, user.viewModel('user'));
+                return next();
 
-    userSvc.getSingle(req.params.userName)
-        .done(function (user) {
-            res.send(200, user.viewModel('user'));
-            return next();
+            }, function (err) {
+                res.send(errSvc.checkErrorCode(err, "E1001") ? 404 : 500, err);
+                return next();
 
-        },function (err) {
-            res.send(errSvc.checkErrorCode(err, "E1001") ? 404 : 500, err);
-            return next();
+            });
 
-        });
+    }
 
 
 }
@@ -63,7 +67,7 @@ function getUsers(req, res, next) {
             }));
             return next();
 
-        },function (err) {
+        }, function (err) {
             res.send(errSvc.checkErrorCode(err, "E1001") ? 404 : 500, err);
             return next();
 
@@ -76,18 +80,20 @@ function addRole(req, res, next) {
     if (!req.params.userName) res.send(400, 'Server expects "userName" in query');
     if (!req.body.role) res.send(400, 'Server expects "role"');
 
-    userSvc.addRole(req.params.userName, req.body.role)
-        .done(function (user) {
-            res.send(201, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                { uri: '/../' + user.userName, rel: 'user', isRelative:true}
-            ]));
-            return next();
+    if (req.params.userName && req.body.role) {
+        userSvc.addRole(req.params.userName, req.body.role)
+            .done(function (user) {
+                res.send(201, linkSvc.attachLinksToObject({ roles: user.roles }, [
+                    { uri: '/../' + user.userName, rel: 'user', isRelative: true}
+                ]));
+                return next();
 
-        },function (err) {
-            res.send(errSvc.checkErrorCode(err, "E1002") ? 400 : 500, err);
-            return next();
+            }, function (err) {
+                res.send(errSvc.checkErrorCode(err, "E1002") ? 400 : 500, err);
+                return next();
 
-        });
+            });
+    }
 }
 
 function removeRole(req, res, next) {
@@ -95,18 +101,21 @@ function removeRole(req, res, next) {
     if (!req.params.userName) res.send(400, 'Server expects "userName" in query');
     if (!req.body.role) res.send(400, 'Server expects "role"');
 
-    userSvc.removeRole(req.params.userName, req.body.role)
-        .done(function (user) {
-            res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                { uri: '/../' + user.userName, rel: 'user', isRelative:true}
-            ]));
-            return next();
+    if (req.params.userName && req.body.role) {
 
-        },function (err) {
-            res.send(errSvc.checkErrorCode(err, "E1002") ? 400 : 500, err);
-            return next();
+        userSvc.removeRole(req.params.userName, req.body.role)
+            .done(function (user) {
+                res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
+                    { uri: '/../' + user.userName, rel: 'user', isRelative: true}
+                ]));
+                return next();
 
-        });
+            }, function (err) {
+                res.send(errSvc.checkErrorCode(err, "E1002") ? 400 : 500, err);
+                return next();
+
+            });
+    }
 }
 
 function getRoles(req, res, next) {
@@ -116,11 +125,11 @@ function getRoles(req, res, next) {
     userSvc.getSingle(req.params.userName)
         .done(function (user) {
             res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                { uri: '/../' + user.userName, rel: 'user', isRelative:true}
+                { uri: '/../' + user.userName, rel: 'user', isRelative: true}
             ]));
             return next();
 
-        },function (err) {
+        }, function (err) {
             res.send(errSvc.checkErrorCode(err, "E1001") ? 404 : 500, err);
             return next();
         });

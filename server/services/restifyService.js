@@ -5,7 +5,7 @@ var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = global.rootRequire('cfg-config')[env];
-var bodyParser = global.rootRequire('middleware-bodyParser');
+var fs = require('fs');
 
 function beginListen(port, next) {
 
@@ -45,11 +45,28 @@ function getServer() {
     if (!server) {
         server = restify.createServer();
         server.use(restify.queryParser());
-        server.use(bodyParser);
-
+        restify.CORS.ALLOW_HEADERS.push('authorization');
+        server.use(restify.CORS({
+            origins: config.allowedRemoteOrigins
+        }));
+        server.use(restify.bodyParser({
+            multipartFileHandler : function(part) {
+                part.on('data', function(data) {
+                    //TODO-Randy: Refactor this into another module
+                    var fileName = part.filename;
+                    if (fileName) {
+                        fs.writeFile('server/uploads/' + fileName, data, function(err) {
+                           if (err) console.log('File upload failed: ' + err);
+                        });
+                    }
+                });
+            }
+//            mapParams: true,
+//            mapFiles: true,
+//            uploadDir: 'server/uploads',
+//            keepExtensions: true
+        }));
     }
-
-
 
     return server;
 

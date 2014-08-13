@@ -9,7 +9,7 @@ var serverSvc = global.rootRequire('svc-restify');
 var fileSystemSvc = global.rootRequire('svc-filesystem');
 var authSvc = global.rootRequire('svc-passport');
 var dbSvc = global.rootRequire('svc-database');
-var routes = require('./server/routes/routes');
+var routes = global.rootRequire('route-root');
 
 //Authentication Configuration
 authSvc.initialize(serverSvc);
