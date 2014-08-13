@@ -27,7 +27,6 @@ function initialize(serverSvc, fileSystemSvc) {
     });
 
     //Add core routes
-
     serverSvc.addRoute('GET', '/',
         authCtrl.authenticateMethod(),
         coreCtrl.core);

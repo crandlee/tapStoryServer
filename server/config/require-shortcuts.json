@@ -1,5 +1,6 @@
 [
     { "k":"cfg-config", "v": "config/config" },
+    { "k":"cfg-cors", "v": "config/CORS" },
     { "k":"ctrl-core", "v": "controllers/coreCtrl" },
     { "k":"ctrl-auth", "v": "controllers/authentication/authCtrl" },
     { "k":"ctrl-user", "v": "controllers/authentication/userCtrl" },

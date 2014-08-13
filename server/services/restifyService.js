@@ -5,6 +5,7 @@ var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = global.rootRequire('cfg-config')[env];
+var cors = global.rootRequire('cfg-cors');
 var fs = require('fs');
 
 function beginListen(port, next) {
@@ -45,10 +46,15 @@ function getServer() {
     if (!server) {
         server = restify.createServer();
         server.use(restify.queryParser());
+
+        //CORS Configuration
         restify.CORS.ALLOW_HEADERS.push('authorization');
         server.use(restify.CORS({
             origins: config.allowedRemoteOrigins
         }));
+        server.on('MethodNotAllowed', cors.preflightHandler);
+
+        //MultipartForm / File upload handling
         server.use(restify.bodyParser({
             multipartFileHandler : function(part) {
                 part.on('data', function(data) {
@@ -61,10 +67,6 @@ function getServer() {
                     }
                 });
             }
-//            mapParams: true,
-//            mapFiles: true,
-//            uploadDir: 'server/uploads',
-//            keepExtensions: true
         }));
     }
 

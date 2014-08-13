@@ -3,14 +3,14 @@ require('require-enhanced')();
 
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = global.rootRequire('cfg-config')[env];
-var links = [];
+var links = {};
 
 function attachLinksToObject(obj, linkArr) {
     //linkArr in format [{uri,rel,isRelative, method},...]
     clearLinks();
     if (Array.isArray(linkArr)) {
         linkArr.forEach(function (elem) {
-            addLink(elem.uri, elem.rel, elem.isRelative, elem.method);
+            addLink(elem.uri, elem.rel, elem.isRelative, elem.method, elem.isSelf);
         });
     }
     obj[getLinkCollectionKey()] = getLinks();
@@ -18,27 +18,29 @@ function attachLinksToObject(obj, linkArr) {
     return obj;
 }
 
-function addLink(uri, rel, isRelative, method) {
+function addLink(uri, rel, isRelative, method, isSelf) {
     isRelative = isRelative || false;
+    isSelf = isSelf || false;
     method = method || 'GET';
-    links.push(getLinkObject(uri, rel, isRelative, method));
+
+    links[isSelf ? 'self' : rel] = (getLinkObject(uri, isRelative, method));
 }
 
-function getLinkObject(uri, rel, isRelative, method) {
+function getLinkObject(uri, isRelative, method) {
     isRelative = isRelative || false;
     return {
         uri: (!isRelative ? config.baseUri : '') + uri,
         method: method,
-        rel: rel
+        isRelative: isRelative
     };
 }
 
 function getLinkCollectionKey() {
-    return '_link';
+    return '_links';
 }
 
 function clearLinks() {
-    links = [];
+    links = {};
 }
 
 function getLinks() {

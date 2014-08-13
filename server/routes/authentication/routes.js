@@ -16,7 +16,11 @@ module.exports = function(serverSvc) {
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod('admin'),
         userCtrl.saveUser({addOnly: true}));
-    serverSvc.addRoute('PUT', '/user',
+    serverSvc.addRoute('PUT', '/users',
+        authCtrl.authenticateMethod(),
+        authCtrl.authorizeMethod('admin'),
+        userCtrl.saveUser({addOnly: false}));
+    serverSvc.addRoute('PUT', '/user/:userName',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod('admin'),
         userCtrl.saveUser({addOnly: false}));

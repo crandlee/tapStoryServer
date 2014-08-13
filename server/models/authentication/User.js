@@ -39,7 +39,7 @@ schema.methods = {
         switch (type) {
             case 'users':
                 obj = linkSvc.attachLinksToObject(obj, [
-                    { uri: '/user/' + this.userName, rel: 'user'}
+                    { uri: '/user/' + this.userName, rel: 'user', isSelf: true}
                 ]);
                 break;
             case 'user':
