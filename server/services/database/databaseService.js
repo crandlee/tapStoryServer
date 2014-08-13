@@ -33,7 +33,6 @@ function initialize(config) {
     console.log('Loading models');
     loadModels();
 
-    //TODO-Randy: Add default data
 }
 module.exports.initialize = initialize;
 
