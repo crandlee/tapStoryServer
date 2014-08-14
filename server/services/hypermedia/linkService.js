@@ -29,7 +29,7 @@ function addLink(uri, rel, isRelative, method, isSelf) {
 function getLinkObject(uri, isRelative, method) {
     isRelative = isRelative || false;
     return {
-        uri: (!isRelative ? config.baseUri : '') + uri,
+        href: (!isRelative ? config.baseUri : '') + uri,
         method: method,
         isRelative: isRelative
     };
