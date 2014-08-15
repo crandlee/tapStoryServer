@@ -11,7 +11,7 @@ var fs = require('fs');
 function beginListen(port, next) {
 
     var svr = getServer();
-    port = port || 3030;
+    port = port || config.port;
     next = next || function() {};
     svr.listen(port, function() {
         next({name : svr.name, url: svr.url });
