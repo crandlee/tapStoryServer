@@ -3,9 +3,11 @@ require('require-enhanced')();
 
 var authCtrl = global.rootRequire('ctrl-auth');
 var userCtrl = global.rootRequire('ctrl-user');
+var uploadsCtrl = global.rootRequire('ctrl-uploads');
+
 var passport = require('passport');
 
-module.exports = function(serverSvc) {
+module.exports = function (serverSvc) {
 
 
     //User
@@ -42,6 +44,17 @@ module.exports = function(serverSvc) {
     serverSvc.addRoute('GET', '/user/:userName/roles',
         authCtrl.authenticateMethod(),
         userCtrl.getRoles);
+
+
+    //Uploads
+
+    serverSvc.addRoute('POST', '/upload',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.upload);
+
+    serverSvc.addRoute('GET', '/upload',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.getUploadsScreen);
 
 
 };

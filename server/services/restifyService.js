@@ -6,7 +6,6 @@ var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = global.rootRequire('cfg-config')[env];
 var cors = global.rootRequire('cfg-cors');
-var fs = require('fs');
 
 function beginListen(port, next) {
 
@@ -54,20 +53,8 @@ function getServer() {
         }));
         server.on('MethodNotAllowed', cors.preflightHandler);
 
-        //MultipartForm / File upload handling
-        server.use(restify.bodyParser({
-            multipartFileHandler : function(part) {
-                part.on('data', function(data) {
-                    //TODO-Randy: Refactor this into another module
-                    var fileName = part.filename;
-                    if (fileName) {
-                        fs.writeFile('server/uploads/' + fileName, data, function(err) {
-                           if (err) console.log('File upload failed: ' + err);
-                        });
-                    }
-                });
-            }
-        }));
+
+        server.use(restify.bodyParser());
     }
 
     return server;

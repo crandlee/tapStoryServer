@@ -24,6 +24,13 @@ function setKey(key, val) {
 
 }
 
+function setExpires(key, seconds) {
+
+    client.expire(key, seconds);
+
+}
+
+
 function getKey(key) {
 
     var pid = promiseSvc.createPromise();
@@ -111,5 +118,6 @@ function deleteKeysWithPrefix(prefix) {
 module.exports = {
   setKey: setKey,
   getKey: getKey,
-  updateFromArray: updateFromArray
+  updateFromArray: updateFromArray,
+  setExpires: setExpires
 };
