@@ -65,6 +65,7 @@ describe.only('models', function () {
                     should.exist(ret);
                     ret.should.equal(groupId);
                     testUser.fileGroup.length.should.equal(1);
+                    testUser.fileGroup[0].files.length.should.equal(1);
                 });
 
                 it('adds the file to the list sorted by groupId, fileName when file is new', function() {
@@ -72,14 +73,14 @@ describe.only('models', function () {
                         largerId = groupId1 > groupId2 ? groupId1 : groupId2,
                         smallerId = groupId1 > groupId2 ? groupId2 : groupId1;
 
-                    testUser.addFile('AAAAAAA', largerId);
-                    testUser.addFile('ZZZZZZZ', largerId);
-                    testUser.addFile('BBBBBBB', smallerId);
+                    testUser.addFile('aaaaaaa', largerId);
+                    testUser.addFile('zzzzzzz', largerId);
+                    testUser.addFile('bbbbbbb', smallerId);
 
-                    testUser.fileGroup.length.should.equal(3);
+                    testUser.fileGroup.length.should.equal(2);
 
                     testUser.fileGroup[0].groupId.should.equal(smallerId);
-                    testUser.fileGroup[1].fileName.should.equal('AAAAAAA');
+                    testUser.fileGroup[1].files[0].should.equal('aaaaaaa');
                 });
 
                 it('fails when the file already exists', function() {
@@ -108,19 +109,29 @@ describe.only('models', function () {
                     var groupId = uuid.v4();
                     testUser.addFile(testFileName, groupId);
                     testUser.fileGroup.length.should.equal(1);
+                    testUser.fileGroup[0].files.length.should.equal(1);
                     testUser.removeFile(uuid.v4(), testFileName);
                     testUser.fileGroup.length.should.equal(1);
+                    testUser.fileGroup[0].files.length.should.equal(1);
 
                 });
                 it('removes the file when file does exist', function() {
 
-                    var testFileName = utils.getRandomString(20);
+                    var testFileName = utils.getRandomString(20).toLowerCase();
+                    var testFileName2 = utils.getRandomString(20).toLowerCase();
                     var groupId = uuid.v4();
+                    var groupId2 = uuid.v4();
                     testUser.addFile(testFileName, groupId);
-                    testUser.fileGroup.length.should.equal(1);
+                    testUser.addFile(testFileName2, groupId);
+                    testUser.addFile(testFileName2, groupId2);
+                    testUser.fileGroup.length.should.equal(2);
+                    testUser.removeFile(groupId2, testFileName2);
+                    testUser.fileGroup[0].files.length.should.equal(2);
                     testUser.removeFile(groupId, testFileName);
+                    testUser.fileGroup.length.should.equal(1);
+                    testUser.fileGroup[0].files.length.should.equal(1);
+                    testUser.removeFile(groupId, testFileName2);
                     testUser.fileGroup.length.should.equal(0);
-
                 });
             });
 

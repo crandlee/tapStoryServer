@@ -23,7 +23,9 @@ var schema = mongoose.Schema({
     fileGroup: [
         {
             groupId: { type: String, default: uuid.v4() },
-            fileName: { type: String }
+            files: [
+                { type: String }
+            ]
         }
     ]
 });
@@ -33,31 +35,49 @@ var schema = mongoose.Schema({
 //Instance methods
 schema.methods = {
 
-    addFile: function(fileName, groupId) {
+    addFile: function (fileName, groupId) {
 
         //Validation
-        if (!fileName) errSvc.throwError( { userName: this.userName }, "Attempted to add a file with empty file name");
-        var newFileGroup = buildFileGroup(groupId, fileName);
-        if (fileGroupExistingIndex.call(this, newFileGroup) === -1) {
+        if (!fileName) errSvc.throwError({ userName: this.userName }, "Attempted to add a file with empty file name");
+        var newFile = buildTestFile(groupId, fileName);
+        var existingFileGroup = _.find(this.fileGroup, function (fg) {
+            return fg.groupId === newFile.groupId
+        });
+        if (fileExistingIndex(existingFileGroup, newFile) === -1) {
 
-            //Add file to group
-            groupId = groupId || uuid.v4();
-            this.fileGroup.splice(fileGroupIndexToAdd.call(this, newFileGroup), 0, newFileGroup);
-            return groupId;
+            //Add group/file
+            newFile.groupId = groupId || uuid.v4();
+            if (!existingFileGroup) {
+                existingFileGroup = addFileToGroup({ groupId: newFile.groupId, files: []}, newFile);
+                this.fileGroup.splice(groupIndexToAdd.call(this, newFile.groupId), 0, existingFileGroup);
+            } else {
+                addFileToGroup(existingFileGroup, newFile);
+            }
+            return newFile.groupId;
 
         } else {
-            errSvc.buildAndLogError( { userName: this.userName, fileGroup: newFileGroup }, "File already exists for this user" );
+
+            errSvc.buildAndLogError({ userName: this.userName, fileGroup: newFile }, "File already exists for this user");
             return null;
         }
 
     },
 
-    removeFile: function(groupId, fileName) {
+    removeFile: function (groupId, fileName) {
 
-        var removeFileGroup = buildFileGroup(groupId, fileName);
-        var existingIndex = fileGroupExistingIndex.call(this, removeFileGroup);
-        if (existingIndex > -1) {
-            this.fileGroup.splice(existingIndex, 1);
+        var removeFile = buildTestFile(groupId, fileName);
+        var targetGroupIndex = _.findIndex(this.fileGroup, function (fg) {
+            return fg.groupId === removeFile.groupId
+        });
+        if (targetGroupIndex > -1) {
+            var targetGroup = this.fileGroup[targetGroupIndex];
+            if (targetGroup) {
+                var targetFileIndex = fileExistingIndex(targetGroup, removeFile);
+                if (targetFileIndex > -1) {
+                    targetGroup.files.splice(targetFileIndex, 1);
+                    if (targetGroup.files.length === 0) this.fileGroup.splice(targetGroupIndex, 1);
+                }
+            }
         }
 
     },
@@ -99,7 +119,7 @@ schema.methods = {
 
 
 //Static Methods
-schema.statics._setErrorService = function(errorService){
+schema.statics._setErrorService = function (errorService) {
     errSvc = errorService;
 };
 
@@ -127,7 +147,7 @@ function createDefaultUsers() {
 
 }
 
-function buildFileGroup(groupId, fileName) {
+function buildTestFile(groupId, fileName) {
 
     return {
         groupId: groupId,
@@ -135,19 +155,35 @@ function buildFileGroup(groupId, fileName) {
     }
 }
 
-function fileGroupExistingIndex(newFileGroup) {
+function fileExistingIndex(existingGroup, file) {
 
-    return _.findIndex(this.fileGroup, function(existFileGroup) {
-        return existFileGroup.groupId === newFileGroup.groupId
-            && existFileGroup.fileName.toLowerCase() === newFileGroup.fileName.toLowerCase()
+    if (existingGroup && existingGroup.files)
+        return existingGroup.files.indexOf(file.fileName.toLowerCase());
+    else
+        return -1;
+
+}
+
+
+function groupIndexToAdd(groupId) {
+
+    var testGroup = { groupId: groupId };
+    return _.sortedIndex(this.fileGroup, testGroup, function (fileGroupToTest) {
+        return fileGroupToTest.groupId;
     });
 
 }
 
-function fileGroupIndexToAdd(newFileGroup) {
+function fileIndexToAdd(fileArray, newFile) {
 
-    return _.sortedIndex(this.fileGroup, newFileGroup, function(fileGroupToTest) {
-            return fileGroupToTest.groupId + fileGroupToTest.fileName;
-    });
+    return _.sortedIndex(fileArray, newFile.fileName);
+
+}
+
+function addFileToGroup(existingFileGroup, newFile) {
+
+    existingFileGroup.files.splice(fileIndexToAdd(existingFileGroup.files, newFile), 0, newFile.fileName.toLowerCase());
+    return existingFileGroup;
+
 
 }
