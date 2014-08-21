@@ -12,7 +12,7 @@ function save(options) {
 
     //TODO-Randy: unit test
 
-    var pid = promiseSvc.createPromise({ externalPromise: options.pid });
+    var pid = promiseSvc.createPromise({ externalPromise: options.externalPromise });
 
     try {
 
@@ -40,35 +40,36 @@ function save(options) {
             errSvc.errorFromPromise(pid, {}, 'Missing map function for ' + model.modelName, 'resourceService.save');
 
         //Do not continue if any rejections have occurred
-        if (promiseSvc.getPromise(pid, { peekPromise: true }).isRejected())
-            return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        if (promiseSvc.isRejected(pid))
+            return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
+
 
         //Update or Add
         model.findOne(singleSearch).exec(function (err, resource) {
+
             if (err) errSvc.errorFromPromise(pid, err, 'Could not get ' + model.modelName + ' for update', 'resourceService.save');
+
             if (resource) {
+
 
                 if (addOnly)
                     errSvc.errorFromPromise(pid,
                         err, 'Can only create new ' + model.modelName + ' with this method', 'resourceService.save', "E1000");
 
-                mapPropertiesToResource(resource)
-                    .then(function (resourceFinal) {
-
-                        resourceFinal.save(function (err, resource) {
-                            if (err) {
-                                errSvc.errorFromPromise(pid, err, 'Could not save ' + model.modelName, 'resourceService.save');
-                            } else {
-                                promiseSvc.resolve(resource, pid);
-                            }
-                        });
-                    })
-                    .fail(function (err) {
-                        promiseSvc.reject(err, pid);
+                var resourceFinal = mapPropertiesToResource(resource, pid);
+                if (!promiseSvc.isRejected(pid)) {
+                    console.log(resourceFinal);
+                    resourceFinal.save(function (err, resource) {
+                        if (err) {
+                            errSvc.errorFromPromise(pid, err, 'Could not save ' + model.modelName, 'resourceService.save');
+                        } else {
+                            promiseSvc.resolve(resource, pid);
+                        }
                     });
 
-            } else {
+                }
 
+            } else {
                 if (updateOnly)
                     errSvc.errorFromPromise(pid,
                         err, 'Can only update ' + model.modelName + ' with this method', 'resourceService.save', "E1002");
@@ -90,14 +91,14 @@ function save(options) {
             }
         });
 
-        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.pid });
+        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.externalPromise });
 
-        return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
 
     } catch (e) {
 
         errSvc.errorFromPromise(pid, { error: e.toString(), resource: (options && options.modelName) || 'unknown' }, 'Error saving resource', 'resourceService.save');
-        return promiseSvc.getPromise(pid, { externalPromise: (options && options.pid) });
+        return promiseSvc.getPromise(pid, { externalPromise: (options && options.externalPromise) });
 
     }
 
@@ -105,7 +106,7 @@ function save(options) {
 
 function getSingle(options) {
 
-    var pid = promiseSvc.createPromise({ externalPromise: options.pid });
+    var pid = promiseSvc.createPromise({ externalPromise: options.externalPromise });
     try {
 
         //Allow model to be set externally for testing purposes
@@ -118,8 +119,8 @@ function getSingle(options) {
 
 
         //Do not continue if any rejections have occurred
-        if (promiseSvc.getPromise(pid, { peekPromise: true}).isRejected())
-            return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        if (promiseSvc.isRejected(pid))
+            return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
 
         model.findOne(query, select).exec(function (err, resource) {
             if (err) errSvc.errorFromPromise(pid, err, 'Could not get ' + model.modelName + ' from search', 'resourceService.getSingle');
@@ -130,13 +131,14 @@ function getSingle(options) {
             }
         });
 
-        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.pid });
-        return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.externalPromise });
+        return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
 
     } catch (e) {
 
-        errSvc.errorFromPromise(pid, { error: e.toString(), resource: (options && options.modelName) || 'unknown' }, 'Error retrieving a single resource');
-        return promiseSvc.getPromise(pid, { externalPromise: (options && options.pid) });
+        errSvc.errorFromPromise(pid, { error: e.toString(), resource: (options && options.modelName) || 'unknown' },
+            'Error retrieving a single resource', 'resourceService.getSingle');
+        return promiseSvc.getPromise(pid, { externalPromise: (options && options.externalPromise) });
 
     }
 
@@ -144,7 +146,7 @@ function getSingle(options) {
 
 function getList(options) {
 
-    var pid = promiseSvc.createPromise({ externalPromise: options.pid });
+    var pid = promiseSvc.createPromise({ externalPromise: options.externalPromise });
 
     try {
 
@@ -157,8 +159,8 @@ function getList(options) {
         var select = (options && options.select) || '';
 
         //Do not continue if any rejections have occurred
-        if (promiseSvc.getPromise(pid, { peekPromise: true}).isRejected())
-            return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        if (promiseSvc.isRejected(pid))
+            return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
 
         model.find(query, select).exec(function (err, resources) {
             if (err) errSvc.errorFromPromise(pid, err, 'Could not get list of ' + model.modelName + ' from search', 'resourceService.getList');
@@ -169,13 +171,14 @@ function getList(options) {
             }
         });
 
-        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.pid });
-        return promiseSvc.getPromise(pid, { externalPromise: options.pid });
+        if (options && options.testMode) promiseSvc.clearPromise(pid, { externalPromise: options.externalPromise });
+        return promiseSvc.getPromise(pid, { externalPromise: options.externalPromise });
 
     } catch (e) {
 
-        errSvc.errorFromPromise(pid, { error: e.toString(), resource: (options && options.modelName) || 'unknown' }, 'Error retrieving resource list');
-        return promiseSvc.getPromise(pid, { externalPromise: (options && options.pid) });
+        errSvc.errorFromPromise(pid, { error: e.toString(), resource: (options && options.modelName) || 'unknown' },
+            'Error retrieving resource list', 'resourceService.getList');
+        return promiseSvc.getPromise(pid, { externalPromise: (options && options.externalPromise) });
 
     }
 
@@ -183,21 +186,21 @@ function getList(options) {
 
 function processResourceSave(argNames, args, setupFunction, options) {
 
-    var pid = promiseSvc.createPromise({ externalPromise: (options && options.pid) });
+    var pid = promiseSvc.createPromise({ externalPromise: (options && options.externalPromise) });
 
     try {
 
         var completeOptions = utilObj.args2Obj((options || {}), argNames, args);
         if (setupFunction && typeof setupFunction === 'function')
             setupFunction(completeOptions);
-        return resourceSvc.save(completeOptions);
+        return save(completeOptions);
 
     } catch (e) {
 
         errSvc.errorFromPromise(pid, { error: e.toString(),
             resource: (options && options.modelName) || 'unknown' },
             'Error processing save for resource', 'resourceService.processResourceSave');
-        return promiseSvc.getPromise(pid, { externalPromise: (options && options.pid) });
+        return promiseSvc.getPromise(pid, { externalPromise: (options && options.externalPromise) });
 
     }
 }

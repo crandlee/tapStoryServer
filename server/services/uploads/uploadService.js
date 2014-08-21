@@ -24,17 +24,20 @@ function uploadFiles(filesFromRequest, options) {
             //of the async readFile which needed snapshots of the values in each
             //iteration of the loop
             (function (fp, fn) {
-                fs.readFile(fp, function (err, data) {
-                    if (err) {
-                        if (err) errSvc.errorFromPromise(pid, { error: err, path: fp}
-                            , "Could not read uploaded file from temporary folder");
-                    } else {
-                        fsWriteSvc.writeFile(fn, data, { promiseId: pid, dirName: null });
-                        if (!promiseSvc.getPromise(pid, { peekPromise: true }).isRejected()) {
-                            userSvc.addFile(userName, fn, groupId);
+                if (fp && fn) {
+
+                    fs.readFile(fp, function (err, data) {
+                        if (err) {
+                            if (err) errSvc.errorFromPromise(pid, { error: err, path: fp}
+                                , "Could not read uploaded file from temporary folder");
+                        } else {
+                            fsWriteSvc.writeFile(fn, data, { externalPromise: pid, dirName: groupId });
+                            if (!promiseSvc.isRejected(pid)) {
+                                userSvc.addFile(userName, fn, groupId, { externalPromise: pid });
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
             }(filesFromRequest[fieldName].path, filesFromRequest[fieldName].name));
 

@@ -12,27 +12,27 @@ function save(updateProperties, options) {
 
 }
 
-function addRole(userName, newRole) {
+function addRole(userName, newRole, options) {
 
     return resourceSvc.processResourceSave(['userName', 'role'],
         arguments, userSvcOptions.setAddRoleOptions, options);
 }
 
-function removeRole(userName, existRole) {
+function removeRole(userName, existRole, options) {
 
     return resourceSvc.processResourceSave(['userName', 'role'],
         arguments, userSvcOptions.setRemoveRoleOptions, options);
 
 }
 
-function addFile(userName, fileName, groupId) {
+function addFile(userName, fileName, groupId, options) {
 
     return resourceSvc.processResourceSave(['userName', 'file', 'groupId'],
         arguments, userSvcOptions.setAddFileOptions, options);
 
 }
 
-function removeFile(userName, fileName, groupId) {
+function removeFile(userName, fileName, groupId, options) {
 
     return resourceSvc.processResourceSave(['userName', 'file', 'groupId'],
         arguments, userSvcOptions.setRemoveFileOptions, options);
@@ -40,15 +40,15 @@ function removeFile(userName, fileName, groupId) {
 }
 
 
-function getList(query) {
+function getList(query, options) {
 
-    return resourceSvc.getList({ modelName: 'User', query: query });
+    return resourceSvc.getList(extend(options, { modelName: 'User', query: query }));
 
 }
 
-function getSingle(userName) {
+function getSingle(userName, options) {
 
-    return resourceSvc.getSingle({ modelName: 'User', query: {userName: userName} });
+    return resourceSvc.getSingle(extend(options, { modelName: 'User', query: {userName: userName} }));
 
 }
 

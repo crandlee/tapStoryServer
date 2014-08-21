@@ -23,9 +23,8 @@ function saveUserOptions(options) {
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
 
-    options.mapPropertiesToResource = function(resource) {
+    options.mapPropertiesToResource = function(resource, pid) {
 
-        var pid = promiseSvc.createPromise();
         if (options.firstName)
             resource.firstName = options.firstName;
         if (options.lastName)
@@ -35,13 +34,10 @@ function saveUserOptions(options) {
         if (options.password && options.password.length > 0) {
             encryptionSvc.saltAndHash(options.password).then(function (token) {
                 resource.userSecret = token;
-                promiseSvc.resolve(resource, pid);
             });
-        } else {
-            promiseSvc.resolve(resource, pid);
         }
-        return promiseSvc.getPromise(pid);
 
+        return resource;
     };
 
 }
@@ -60,21 +56,18 @@ function setFileOptions(addOrRemove, options) {
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
 
-    options.mapPropertiesToResource = function(resource) {
-        var pid = promiseSvc.createPromise();
+    options.mapPropertiesToResource = function(resource, pid) {
         try {
             if (addOrRemove && addOrRemove === 'remove') {
                 resource.removeFile(options.groupId, options.file);
             } else {
                 resource.addFile(options.file, options.groupId);
             }
-            promiseSvc.resolve(pid, null);
         } catch(e) {
             errSvc.errorFromPromise(pid, { userName: resource.userName, error: e },
                 'Could not associate the uploaded file with this user', 'userServiceOptions.setFileOptions');
         }
-
-        return promiseSvc.getPromise(pid);
+        return resource;
     };
 
 
@@ -93,20 +86,13 @@ function setAddRoleOptions(options) {
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
 
-    options.mapPropertiesToResource = function(resource) {
-        var pid = promiseSvc.createPromise();
+    options.mapPropertiesToResource = function(resource, pid) {
+
         if (options.role && _.indexOf(resource.roles, options.role) === -1) {
             if (!authorizeSvc.isValidRole(options.role))
                 errSvc.errorFromPromise(pid, {}, 'Not a valid role');
-            else {
-                resource.roles.push(options.role);
-                promiseSvc.resolve(resource, pid);
-            }
-        } else {
-            promiseSvc.resolve(resource, pid);
         }
-
-        return promiseSvc.getPromise(pid);
+        return resource;
     };
 
 }
@@ -124,13 +110,11 @@ function setRemoveRoleOptions(options) {
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
 
-    options.mapPropertiesToResource = function(resource) {
-        var pid = promiseSvc.createPromise();
+    options.mapPropertiesToResource = function(resource, pid) {
 
         if (options.role && _.indexOf(resource.roles, options.role) > -1)
             resource.roles.splice(_.indexOf(resource.roles, options.role), 1);
-        promiseSvc.resolve(resource, pid);
-        return promiseSvc.getPromise(pid);
+        return resource;
     };
 
 }

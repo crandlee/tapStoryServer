@@ -10,22 +10,28 @@ var mkdirp = require('mkdirp');
 function finalizeFile(destPath, data, pid) {
 
     fs.writeFile(destPath, data, function (err) {
-        if (err) {
-            errSvc.errorFromPromise(pid, { error: err, path: destPath}
-                , "Could not write upload file to file system", 'fsWriteService.finalizeFile');
-        } else {
-            promiseSvc.resolve("OK", pid);
-        }
+
+       try {
+
+           if (err) {
+               throw new Error(err);
+           } else {
+               promiseSvc.resolve("OK", pid);
+           }
+
+       } catch(e) {
+
+           errSvc.errorFromPromise(pid, { error: e.toString(), path: destPath}
+               , "Could not write upload file to file system", 'fsWriteService.finalizeFile');
+
+       }
+
     });
 }
 
 function writeFile(destFile, data, options) {
 
-    var pid = (options && options.promiseId) || null;
-    var createOwnPid = (!pid);
-    if (!pid) {
-        pid = promiseSvc.createPromise()
-    }
+    var pid = promiseSvc.createPromise({ externalPromise: (options && options.externalPromise) });
     var optionalDir = options.dirName || '';
     var destPath = config.uploadPath + destFile;
 
@@ -33,18 +39,24 @@ function writeFile(destFile, data, options) {
     if (optionalDir) {
         var projectedPath = config.uploadPath + optionalDir;
         mkdirp(projectedPath, function (err) {
-            if (err) {
-                errSvc.errorFromPromise(pid, { error: err, path: projectedPath}
+            try {
+                if (err) {
+                    throw new Error(err);
+                } else {
+                    finalizeFile(projectedPath + '/' + destFile, data, pid);
+                }
+
+            } catch (e) {
+                errSvc.errorFromPromise(pid, { error: e.toString(), path: projectedPath}
                     , "Could not create the specified upload directory", "fsWriteService.writeFile");
-            } else {
-                finalizeFile(projectedPath + '/' + destFile, data, pid);
+
             }
         });
     } else {
         finalizeFile(destPath, data, pid);
     }
 
-    return createOwnPid ? promiseSvc.getPromise(pid) : null;
+    return promiseSvc.getPromise(pid, { externalPromise: (options && options.externalPromise) });
 
 }
 

@@ -93,7 +93,6 @@ function canPop(id) {
 
 function popPromiseObject(id, force) {
 
-
     var index = getPromiseObjectIndex(id);
     if (index > -1 && (canPop(id) || force)) {
         promiseObjects.splice(index, 1);
@@ -120,6 +119,7 @@ function getPromise(id, options) {
     //caller intends to do another get promise later where this option is not set.
     var peekPromise = (options && options.peekPromise) || false;
 
+
     //Return nothing when externalPromise is set.  This indicates that the caller
     //is not responsible for the promise and thus does not have the 'authority'
     //to do anything with it.
@@ -132,6 +132,13 @@ function getPromise(id, options) {
         popPromiseObject(id);
     }
     return !!po ? po.promiseWrapper.promise : null;
+
+}
+
+function isRejected(id) {
+
+    var po = getPromiseObject(id);
+    return (!po || po.promiseWrapper.promise.isRejected());
 
 }
 
@@ -196,7 +203,8 @@ module.exports = {
     getPromiseIdList: getPromiseIdList,
     wrapWithPromise: wrapWithPromise,
     makeEmptyPromise: makeEmptyPromise,
-    promiseLib: promiseLib
+    promiseLib: promiseLib,
+    isRejected: isRejected
 
 };
 
