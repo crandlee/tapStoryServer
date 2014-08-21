@@ -137,6 +137,68 @@ describe('services', function () {
 
             });
 
+            describe('addFile', function() {
+
+                it('properly builds the options object', function() {
+
+                    var userName = utils.getRandomString(10);
+                    var fileName = utils.getRandomString(10).toLowerCase();
+                    var groupId = utils.getRandomString(10);
+                    var options = { userName: userName, file: fileName, groupId: groupId };
+                    userSvc.optionsBuilder.setAddFileOptions(options);
+                    options.userName.should.equal(userName);
+                    options.updateOnly.should.equal(true);
+                    options.file.should.equal(fileName);
+                    options.groupId.should.equal(groupId);
+                    should.exist(options.preValidation);
+                    options.modelName.should.equal('User');
+                    options.singleSearch.userName.should.equal(userName);
+                    should.exist(options.mapPropertiesToResource);
+
+
+                });
+
+                it('calls save on the resource service with the proper options object', function() {
+                    var userName = utils.getRandomString(10);
+                    var fileName = utils.getRandomString(10).toLowerCase();
+                    var groupId = utils.getRandomString(10);
+                    userSvc.addFile(userName, fileName, groupId);
+                    //Assumes getting called with options object
+                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
+                });
+            });
+
+            describe('removeFile', function() {
+
+                it('properly builds the options object', function() {
+
+                    var userName = utils.getRandomString(10);
+                    var fileName = utils.getRandomString(10).toLowerCase();
+                    var groupId = utils.getRandomString(10);
+                    var options = { userName: userName, file: fileName, groupId: groupId };
+                    userSvc.optionsBuilder.setRemoveFileOptions(options);
+                    options.userName.should.equal(userName);
+                    options.updateOnly.should.equal(true);
+                    options.file.should.equal(fileName);
+                    options.groupId.should.equal(groupId);
+                    should.exist(options.preValidation);
+                    options.modelName.should.equal('User');
+                    options.singleSearch.userName.should.equal(userName);
+                    should.exist(options.mapPropertiesToResource);
+
+
+                });
+
+                it('calls save on the resource service with the proper options object', function() {
+                    var userName = utils.getRandomString(10);
+                    var fileName = utils.getRandomString(10).toLowerCase();
+                    var groupId = utils.getRandomString(10);
+                    userSvc.removeFile(userName, fileName, groupId);
+                    //Assumes getting called with options object
+                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
+                });
+            });
+
             afterEach(function() {
                 sandbox.restore();
             });

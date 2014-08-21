@@ -38,7 +38,7 @@ function removeRole(userName, existRole) {
 
 function addFile(userName, fileName, groupId) {
 
-    var options = utilObj.args2Obj({},['userName', 'fileName', 'groupId'], arguments);
+    var options = utilObj.args2Obj({},['userName', 'file', 'groupId'], arguments);
     userSvcOptions.setAddFileOptions(options);
     return resourceSvc.save(options);
 
@@ -46,7 +46,7 @@ function addFile(userName, fileName, groupId) {
 
 function removeFile(userName, fileName, groupId) {
 
-    var options = objectUtils.mergeObjectFromArguments({},['userName', 'fileName', 'groupId'], arguments);
+    var options = utilObj.args2Obj({},['userName', 'file', 'groupId'], arguments);
     userSvcOptions.setRemoveFileOptions(options);
     return resourceSvc.save(options);
 
@@ -76,6 +76,8 @@ module.exports = {
     getList: getList,
     addRole: addRole,
     removeRole: removeRole,
+    addFile: addFile,
+    removeFile: removeFile,
     optionsBuilder: userSvcOptions,
     _setErrorService: _setErrorService
 };
