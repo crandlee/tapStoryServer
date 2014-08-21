@@ -79,7 +79,7 @@ describe('controllers', function() {
                 fn = userCtrl.saveUser(optionsStub);
                 userSvcStub.save = promiseSvc.makeEmptyPromise(userSvcStub.save);
                 fn(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.save, reqStub.body, { addOnly: optionsStub.addOnly });
+                sinon.assert.calledWithExactly(userSvcStub.save, { addOnly: optionsStub.addOnly }, reqStub.body );
 
             });
 

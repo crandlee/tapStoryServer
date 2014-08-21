@@ -23,7 +23,7 @@ function saveUser(options) {
         if (!req.body || Object.getOwnPropertyNames(req.body).length === 0) {
             res.send(400, 'No request body');
         } else {
-            userSvc.save(req.body, {addOnly: addOnly})
+            userSvc.save({addOnly: addOnly}, req.body)
                 .done(function (user) {
                     res.send((addOnly ? 201 : 200), user.viewModel('user'));
                     return next();

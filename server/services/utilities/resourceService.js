@@ -7,7 +7,7 @@ var extend = require('extend');
 var promiseSvc = global.rootRequire('svc-promise');
 
 
-function save(updateProperties, options) {
+function save(options) {
 
     var addOnly = (options && options.addOnly) || false;
     var updateOnly = (options && options.updateOnly) || false;
@@ -19,7 +19,7 @@ function save(updateProperties, options) {
     //Allow for some pre-validation and rejection via promise
     var preValidation = (options && options.preValidation) || null;
     if (preValidation && typeof preValidation === 'function')
-        preValidation(updateProperties, options, pid);
+        preValidation(options, pid);
 
 
     //Get the search criteria for a single resource
@@ -45,7 +45,7 @@ function save(updateProperties, options) {
                 errSvc.errorFromPromise(pid,
                     err, 'Can only create new ' + model.modelName + ' with this method', "E1000");
 
-            mapPropertiesToResource(resource, updateProperties)
+            mapPropertiesToResource(resource)
                 .then(function (resourceFinal) {
 
                     resourceFinal.save(function (err, resource) {
@@ -66,7 +66,7 @@ function save(updateProperties, options) {
                 errSvc.errorFromPromise(pid,
                     err, 'Can only update ' + model.modelName + ' with this method', "E1002");
 
-            mapPropertiesToResource({}, updateProperties)
+            mapPropertiesToResource({})
                 .then(function (resourceFinal) {
 
                     if (options.onNew) resourceFinal = extend(resourceFinal, options.onNew);

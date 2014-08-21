@@ -48,11 +48,11 @@ module.exports = function (serverSvc) {
 
     //Uploads
 
-    serverSvc.addRoute('POST', '/upload',
+    serverSvc.addRoute('POST', '/user/:userName/upload',
         authCtrl.authenticateMethod(),
         uploadsCtrl.upload);
 
-    serverSvc.addRoute('GET', '/upload',
+    serverSvc.addRoute('GET', '/user/:userName/upload',
         authCtrl.authenticateMethod(),
         uploadsCtrl.getUploadsScreen);
 

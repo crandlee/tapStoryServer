@@ -8,7 +8,7 @@ var should = require('chai').should();
 var proxyquire = require('proxyquire');
 var uuid = require('node-uuid');
 
-describe.only('models', function () {
+describe('models', function () {
 
     var sandbox, encUtility, authorizeSvc, errSvc;
     var User, testRole, testUser;

@@ -53,7 +53,7 @@ describe('services', function () {
                     var userName = utils.getRandomString(10);
                     var updateProps = { userName: userName };
                     userSvc.save(updateProps, optionsStub);
-                    sinon.assert.calledWithExactly(resourceSvc.save, updateProps, optionsStub);
+                    sinon.assert.calledWithExactly(resourceSvc.save, optionsStub);
                 });
             });
 
@@ -86,7 +86,8 @@ describe('services', function () {
 
                     var userName = utils.getRandomString(10);
                     var roleName = utils.getRandomString(10).toLowerCase();
-                    var options = userSvc.getOptionsObject('addRole', userName, roleName);
+                    var options = { userName: userName, role: roleName};
+                    userSvc.optionsBuilder.setAddRoleOptions(options);
                     options.userName.should.equal(userName);
                     options.updateOnly.should.equal(true);
                     options.role.should.equal(roleName);
@@ -102,9 +103,8 @@ describe('services', function () {
                     var userName = utils.getRandomString(10);
                     var roleName = utils.getRandomString(10).toLowerCase();
                     userSvc.addRole(userName, roleName);
-                    var updateProps = { role: roleName };
                     //Assumes getting called with options object
-                    sinon.assert.calledWith(resourceSvc.save, updateProps, sinon.match.object);
+                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
                 });
             });
 
@@ -114,7 +114,8 @@ describe('services', function () {
 
                     var userName = utils.getRandomString(10);
                     var roleName = utils.getRandomString(10).toLowerCase();
-                    var options = userSvc.getOptionsObject('removeRole', userName, roleName);
+                    var options = { userName: userName, role: roleName };
+                    userSvc.optionsBuilder.setRemoveRoleOptions(options, userName, roleName);
                     options.userName.should.equal(userName);
                     options.updateOnly.should.equal(true);
                     options.role.should.equal(roleName);
@@ -130,9 +131,8 @@ describe('services', function () {
                     var userName = utils.getRandomString(10);
                     var roleName = utils.getRandomString(10).toLowerCase();
                     userSvc.removeRole(userName, roleName);
-                    var updateProps = { role: roleName };
                     //Assumes getting called with options object
-                    sinon.assert.calledWith(resourceSvc.save, updateProps, sinon.match.object);
+                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
                 });
 
             });

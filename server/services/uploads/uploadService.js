@@ -6,10 +6,12 @@ var errSvc = global.rootRequire('svc-error')(null, "");
 var promiseSvc = global.rootRequire('svc-promise');
 var fsWriteSvc = global.rootRequire('svc-fswrite');
 
-function uploadFiles(filesFromRequest) {
+function uploadFiles(filesFromRequest, options) {
 
     //TODO-Randy - needs test
     var pid = promiseSvc.createPromise();
+
+    var userName = (options && options.userName) || null;
 
     for (var fieldName in filesFromRequest) {
         if (filesFromRequest.hasOwnProperty(fieldName)) {
@@ -19,12 +21,10 @@ function uploadFiles(filesFromRequest) {
             (function (fp, fn) {
                 fs.readFile(fp, function (err, data) {
                     if (err) {
-                        var errMsg = "Could not read file from upload path " + fp;
-                        errSvc.buildAndLogError({ error: err }, errMsg);
-                        promiseSvc.reject(errMsg, pid);
+                        if (err) errSvc.errorFromPromise(pid, { error: err, path: fp}
+                            , "Could not read uploaded file from temporary folder");
                     } else {
-                        var test = global.rootRequire('util-test');
-                        fsWriteSvc.writeFile(fn, data, { promiseId: pid, dirName: test.getRandomString(10) });
+                        fsWriteSvc.writeFile(fn, data, { promiseId: pid, dirName: null });
                     }
                 });
 
