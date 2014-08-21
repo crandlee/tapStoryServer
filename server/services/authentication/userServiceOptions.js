@@ -3,19 +3,18 @@ require('require-enhanced')();
 
 var _ = require('lodash');
 var authorizeSvc = global.rootRequire('svc-auth');
-var errSvc = global.rootRequire('svc-error')(null, "userService");
+var errSvc = global.rootRequire('svc-error');
 var promiseSvc = global.rootRequire('svc-promise');
 var encryptionSvc = global.rootRequire('util-encryption');
 
-function _setErrorService(errorService){
-    errSvc = errorService;
-}
 
-function saveUserOptions(options, args) {
+function saveUserOptions(options) {
 
     options.preValidation = function(options, pid) {
 
-        if (!options.userName) errSvc.errorFromPromise(pid, {}, 'userName must be valid');
+        if (!options.userName)
+            errSvc.errorFromPromise(pid, {},
+                'userName must be valid', 'userServiceOptions.saveUserOptions');
 
     };
     options.onNew = {
@@ -51,9 +50,12 @@ function setFileOptions(addOrRemove, options) {
 
     options.updateOnly = true;
     options.preValidation = function(options, pid) {
-        if (!options.userName) errSvc.errorFromPromise(pid, {}, 'user name must be valid');
-        if (!options.groupId) errSvc.errorFromPromise(pid, {}, 'user file group id must be valid');
-        if (!options.file) errSvc.errorFromPromise(pid, {}, 'upload file for user must be valid');
+        if (!options.userName) errSvc.errorFromPromise(pid, {},
+            'user name must be valid', 'userServiceOptions.setFileOptions');
+        if (!options.groupId) errSvc.errorFromPromise(pid, {},
+            'user file group id must be valid', 'userServiceOptions.setFileOptions');
+        if (!options.file) errSvc.errorFromPromise(pid, {},
+            'upload file for user must be valid', 'userServiceOptions.setFileOptions');
     };
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
@@ -68,7 +70,8 @@ function setFileOptions(addOrRemove, options) {
             }
             promiseSvc.resolve(pid, null);
         } catch(e) {
-            errSvc.errorFromPromise(pid, { userName: resource.userName, error: e }, 'Could not associate the uploaded file with this user');
+            errSvc.errorFromPromise(pid, { userName: resource.userName, error: e },
+                'Could not associate the uploaded file with this user', 'userServiceOptions.setFileOptions');
         }
 
         return promiseSvc.getPromise(pid);
@@ -82,8 +85,10 @@ function setAddRoleOptions(options) {
     options.updateOnly = true;
     options.role = options.role.toLowerCase();
     options.preValidation = function(options, pid) {
-        if (!options.role) errSvc.errorFromPromise(pid, {}, 'new role must be valid');
-        if (!options.userName) errSvc.errorFromPromise(pid, {}, 'user name must be valid');
+        if (!options.role) errSvc.errorFromPromise(pid, {},
+            'new role must be valid', 'userServiceOptions.setAddRoleOptions');
+        if (!options.userName) errSvc.errorFromPromise(pid, {},
+            'user name must be valid', 'userServiceOptions.setAddRoleOptions');
     };
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
@@ -111,8 +116,10 @@ function setRemoveRoleOptions(options) {
     options.updateOnly = true;
     options.role = options.role.toLowerCase();
     options.preValidation = function(options, pid) {
-        if (!options.role) errSvc.errorFromPromise(pid, {}, 'role must be valid');
-        if (!options.userName) errSvc.errorFromPromise(pid, {}, 'user name must be valid');
+        if (!options.role) errSvc.errorFromPromise(pid, {},
+            'role must be valid', 'userServiceOptions.setRemoveRoleOptions');
+        if (!options.userName) errSvc.errorFromPromise(pid, {},
+            'user name must be valid', 'userServiceOptions.setRemoveRoleOptions');
     };
     options.modelName = 'User';
     options.singleSearch = { userName: options.userName };
@@ -133,6 +140,5 @@ module.exports = {
     setRemoveFileOptions: _.partial(setFileOptions, 'remove'),
     setAddRoleOptions: setAddRoleOptions,
     setRemoveRoleOptions: setRemoveRoleOptions,
-    setSaveUserOptions: saveUserOptions,
-    _setErrorService : _setErrorService
+    setSaveUserOptions: saveUserOptions
 };

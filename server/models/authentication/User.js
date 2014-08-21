@@ -6,7 +6,7 @@ var encryptionUtility = global.rootRequire('util-encryption');
 var authorizeSvc = global.rootRequire('svc-auth');
 var linkSvc = global.rootRequire('svc-link');
 var uuid = require('node-uuid');
-var errSvc = global.rootRequire('svc-error')(null, 'User');
+var errSvc = global.rootRequire('svc-error');
 var _ = require('lodash');
 
 //Schema setup
@@ -38,7 +38,8 @@ schema.methods = {
     addFile: function (fileName, groupId) {
 
         //Validation
-        if (!fileName) errSvc.throwError({ userName: this.userName }, "Attempted to add a file with empty file name");
+        if (!fileName) errSvc.throwError({ userName: this.userName },
+            "Attempted to add a file with empty file name", 'User.addFile');
         var newFile = buildTestFile(groupId, fileName);
         var existingFileGroup = _.find(this.fileGroup, function (fg) {
             return fg.groupId === newFile.groupId
@@ -117,11 +118,6 @@ schema.methods = {
     }
 };
 
-
-//Static Methods
-schema.statics._setErrorService = function (errorService) {
-    errSvc = errorService;
-};
 
 //Virtual Getters
 // --NONE--

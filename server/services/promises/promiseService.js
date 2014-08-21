@@ -6,14 +6,16 @@ var uuid = require('node-uuid');
 var functionUtils = global.rootRequire('util-function');
 var _ = require('lodash');
 var promiseObjects = [];
-var internalId = null;
-
-
-if (!internalId) internalId = uuid.v4();
 
 //Wraps the promise library and keeps a stack of promise objects
 
-function createPromise() {
+function createPromise(options) {
+
+    //An externalPromise (pid) indicates that a promise has been previously
+    //created by another function up the chain and will therefore be
+    //managed by that function.  In this case, we only return the existing pid
+    //instead of creating a new one.
+    if (options && options.externalPromise) return options.externalPromise;
 
     //Return the new id of the object
     return pushPromiseObject();
@@ -101,17 +103,31 @@ function popPromiseObject(id, force) {
 
 }
 
-function clearPromise(id) {
+function clearPromise(id, options) {
+
+    //Do nothing if externalPromise has been set.  This means the
+    //calling function does not have this authority.
+    if (options && options.externalPromise) return null;
 
     popPromiseObject(id, true);
 
 }
 
-function getPromise(id) {
+function getPromise(id, options) {
+
+    //peekPromise allows you to get the promise without potentially removing it
+    //from the stack as if it were legitimately returned.  This indicates that the
+    //caller intends to do another get promise later where this option is not set.
+    var peekPromise = (options && options.peekPromise) || false;
+
+    //Return nothing when externalPromise is set.  This indicates that the caller
+    //is not responsible for the promise and thus does not have the 'authority'
+    //to do anything with it.
+    if (options && options.externalPromise) return null;
 
     var po = getPromiseObject(id);
 
-    if (po) {
+    if (po && !peekPromise) {
         po.promiseReturned = true;
         popPromiseObject(id);
     }
@@ -169,9 +185,6 @@ function promiseLib() {
     return Q;
 }
 
-function getServiceId() {
-    return internalId;
-}
 
 module.exports = {
     createPromise: createPromise,
@@ -183,8 +196,7 @@ module.exports = {
     getPromiseIdList: getPromiseIdList,
     wrapWithPromise: wrapWithPromise,
     makeEmptyPromise: makeEmptyPromise,
-    promiseLib: promiseLib,
-    getServiceId: getServiceId
+    promiseLib: promiseLib
 
 };
 

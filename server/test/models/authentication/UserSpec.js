@@ -18,14 +18,13 @@ describe('models', function () {
         sandbox = sinon.sandbox.create();
         encUtility = sandbox.stub(global.rootRequire('util-encryption'));
         authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
-        errSvc = sandbox.stub(global.rootRequire('svc-error')(null, "User"));
+        errSvc = sandbox.stub(global.rootRequire('svc-error'));
         errSvc.throwError.throws(new Error());
 
         proxyquire(global.getRoutePathFromKey('model-User'),
-        { encryptionUtility: encUtility, authorizeSvc: authorizeSvc });
+        { encryptionUtility: encUtility, authorizeSvc: authorizeSvc, errSvc: errSvc });
 
         User = mongoose.model('User');
-        User._setErrorService(errSvc);
 
         testRole = utils.getRandomString(10);
         testUser = new User(

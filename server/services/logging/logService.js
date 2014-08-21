@@ -4,12 +4,12 @@ require('require-enhanced')();
 var bunyan = require('bunyan');
 var extend = require('extend');
 var logger = null;
-var sourceModule = null;
+var uuid = require('node-uuid');
+var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
 
 function getMsgObject(msg, method) {
 
-    return { 'serverModule': sourceModule,
-        'serverMessage' : msg,
+    return { 'serverMessage' : msg,
         'serverMethod': method };
 
 }
@@ -27,10 +27,10 @@ function callLogger(type, msg, obj, method) {
 
 }
 
-function initialize(options, source) {
+function initialize(options) {
 
-    sourceModule = source;
-    if (!options) options = getStandardOptions();
+    options = options || {};
+    options = extend(options, getStandardOptions());
     logger = bunyan.createLogger(options);
     /* jshint validthis: true */
     return this;
@@ -39,12 +39,14 @@ function initialize(options, source) {
 
 function logError(msg, obj, method) {
 
+    obj = extend(obj, {'errorRef' : uuid.v4()});
     return callLogger('error', msg, obj, method);
 
 }
 
 function logWarning(msg, obj, method) {
 
+    obj = extend(obj, {'errorRef' : uuid.v4()});
     return callLogger('warn', msg, obj, method);
 
 }
@@ -71,14 +73,14 @@ function logTrace(msg, obj, method) {
 function getStandardOptions() {
 
     return {
-        name: 'tapStoryServer',
+        name: config.applicationName,
         streams: [
             {
                 stream: process.stdout,
                 level: 'debug'
             },
             {
-                path: 'tapStoryServer.log',
+                path: config.rootPath + config.logName,
                 level: 'trace'
             }
         ]

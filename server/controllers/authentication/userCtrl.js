@@ -2,16 +2,10 @@
 require('require-enhanced')();
 
 var userSvc = global.rootRequire('svc-user');
-var errSvc = global.rootRequire('svc-error')(null, "userController");
+var errSvc = global.rootRequire('svc-error');
 var _ = require('lodash');
 var linkSvc = global.rootRequire('svc-link');
 var promiseSvc = global.rootRequire('svc-promise');
-
-function setErrorService(errorService) {
-
-    errSvc = errorService;
-
-}
 
 function saveUser(options) {
 
@@ -144,6 +138,5 @@ module.exports = {
     getUsers: getUsers,
     addRole: addRole,
     removeRole: removeRole,
-    getRoles: getRoles,
-    _setErrorService: setErrorService
+    getRoles: getRoles
 };

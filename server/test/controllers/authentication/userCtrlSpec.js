@@ -28,7 +28,7 @@ describe('controllers', function() {
             linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
 
             userCtrl = proxyquire(global.getRoutePathFromKey('ctrl-user'),
-                { userSvc: userSvcStub, linkSvc: linkSvcStub });
+                { userSvc: userSvcStub, linkSvc: linkSvcStub, errSvc: errSvc });
             resStub  = sandbox.stub({
                 status: function() {},
                 send: function() {},
@@ -47,7 +47,6 @@ describe('controllers', function() {
             });
             nextStub = sandbox.stub();
             optionsStub = { addOnly: addOnly };
-            userCtrl._setErrorService(errSvcStub);
 
         });
 

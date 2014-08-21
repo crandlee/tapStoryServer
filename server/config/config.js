@@ -7,7 +7,9 @@ module.exports = {
         port: process.env.PORT || 3030,
         baseUri: '/api',
         uploadPath: global.rootPath + 'server/uploads/',
-        allowedRemoteOrigins: ['http://localhost:3000']
+        allowedRemoteOrigins: ['http://localhost:3000'],
+        applicationName: 'tapStoryServer',
+        logName: 'tapStoryServer.log'
     },
     production: {
         rootPath: global.rootPath,
@@ -15,6 +17,8 @@ module.exports = {
         port: process.env.PORT || 80,
         baseUri: '/api',
         uploadPath: global.rootPath + 'server/uploads/',
-        allowedRemoteOrigins: []
+        allowedRemoteOrigins: [],
+        applicationName: 'tapStoryServer',
+        logName: 'tapStoryServer.log'
     }
 };

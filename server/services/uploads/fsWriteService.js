@@ -2,7 +2,7 @@
 require('require-enhanced')();
 
 var fs = require('fs');
-var errSvc = global.rootRequire('svc-error')(null, 'fsWriteService');
+var errSvc = global.rootRequire('svc-error');
 var promiseSvc = global.rootRequire('svc-promise');
 var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
 var mkdirp = require('mkdirp');
@@ -12,7 +12,7 @@ function finalizeFile(destPath, data, pid) {
     fs.writeFile(destPath, data, function (err) {
         if (err) {
             errSvc.errorFromPromise(pid, { error: err, path: destPath}
-                , "Could not write upload file to file system");
+                , "Could not write upload file to file system", 'fsWriteService.finalizeFile');
         } else {
             promiseSvc.resolve("OK", pid);
         }
@@ -35,7 +35,7 @@ function writeFile(destFile, data, options) {
         mkdirp(projectedPath, function (err) {
             if (err) {
                 errSvc.errorFromPromise(pid, { error: err, path: projectedPath}
-                    , "Could not create the specified upload directory");
+                    , "Could not create the specified upload directory", "fsWriteService.writeFile");
             } else {
                 finalizeFile(projectedPath + '/' + destFile, data, pid);
             }
