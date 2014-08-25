@@ -2,40 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3b3e1fd-9cb5-4959-aaff-d59ea208a842" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/server/test/services/promises/promiseServiceSpec.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/config/CORS.js" afterPath="$PROJECT_DIR$/server/config/CORS.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/authentication/User.js" afterPath="$PROJECT_DIR$/server/models/authentication/User.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" afterPath="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authorization/authorizationService.js" afterPath="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/caching/cacheService.js" afterPath="$PROJECT_DIR$/server/services/caching/cacheService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/config/configSpec.js" afterPath="$PROJECT_DIR$/server/test/config/configSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" afterPath="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/encryptionUtility.js" afterPath="$PROJECT_DIR$/server/utilities/encryptionUtility.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/error/errorService.js" afterPath="$PROJECT_DIR$/server/services/error/errorService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" afterPath="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" afterPath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/functionUtilities.js" afterPath="$PROJECT_DIR$/server/utilities/functionUtilities.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/require-enhanced/index.js" afterPath="$PROJECT_DIR$/node_modules/require-enhanced/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/logging/logService.js" afterPath="$PROJECT_DIR$/server/services/logging/logService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/objectUtilities.js" afterPath="$PROJECT_DIR$/server/utilities/objectUtilities.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/passportService.js" afterPath="$PROJECT_DIR$/server/services/authentication/passportService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/promises/promiseService.js" afterPath="$PROJECT_DIR$/server/services/promises/promiseService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/utilities/resourceService.js" afterPath="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/routes.js" afterPath="$PROJECT_DIR$/server/routes/routes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/config/require-shortcuts.json" afterPath="$PROJECT_DIR$/server/config/require-shortcuts.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/uploads/uploadService.js" afterPath="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/authentication/uploadsCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/authentication/uploadsCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userService.js" afterPath="$PROJECT_DIR$/server/services/authentication/userService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" afterPath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="tapStoryServer.iws" />
@@ -53,47 +26,47 @@
   <component name="DaemonCodeAnalyzer">
     <disable_hints />
   </component>
+  <component name="DockManager">
+    <window id="3">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="uploadService.js" pinned="false" current="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.6768559" vertical-offset="115" max-vertical-offset="1617">
+                    <caret line="35" column="59" selection-start-line="35" selection-start-column="59" selection-end-line="35" selection-end-column="59" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="tapStoryServer" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="uploadService.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
+      <file leaf-file-name="uploadsServiceSpec.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2614108" vertical-offset="252" max-vertical-offset="1449">
-              <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+            <state vertical-scroll-proportion="-4.6875" vertical-offset="1383" max-vertical-offset="4263">
+              <caret line="73" column="27" selection-start-line="73" selection-start-column="21" selection-end-line="73" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="resourceService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
+      <file leaf-file-name="fsWriteServiceSpec.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4620">
-              <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fsWriteService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="882">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="errorService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="1848">
-              <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.7385892" vertical-offset="2584" max-vertical-offset="3885">
+              <caret line="140" column="74" selection-start-line="140" selection-start-column="74" selection-end-line="140" selection-end-column="74" />
               <folding />
             </state>
           </provider>
@@ -112,8 +85,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/server/controllers/coreCtrl.js" />
-        <option value="$PROJECT_DIR$/server/services/utilities/fileSystemService.js" />
         <option value="$PROJECT_DIR$/server/test/services/promises/promiseServiceSpec.js" />
         <option value="$PROJECT_DIR$/server/services/authentication/CORS.js" />
         <option value="$PROJECT_DIR$/node_modules/multer/index.js" />
@@ -126,7 +97,6 @@
         <option value="$PROJECT_DIR$/server/services/uploads/fsUploadService.js" />
         <option value="$PROJECT_DIR$/server/routes/uploads/routes.js" />
         <option value="$PROJECT_DIR$/server/routes/authentication/routes.js" />
-        <option value="$PROJECT_DIR$/server/config/require-shortcuts.json" />
         <option value="$PROJECT_DIR$/server/config/config.js" />
         <option value="$PROJECT_DIR$/tapStoryServer.log" />
         <option value="$PROJECT_DIR$/server/config/CORS.js" />
@@ -148,7 +118,6 @@
         <option value="$PROJECT_DIR$/server/services/authentication/userService.js" />
         <option value="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
         <option value="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
-        <option value="$PROJECT_DIR$/server/services/promises/promiseService.js" />
         <option value="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" />
         <option value="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" />
         <option value="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" />
@@ -160,9 +129,13 @@
         <option value="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" />
         <option value="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
         <option value="$PROJECT_DIR$/server/models/authentication/User.js" />
-        <option value="$PROJECT_DIR$/server/services/error/errorService.js" />
+        <option value="$PROJECT_DIR$/server/config/require-shortcuts.json" />
         <option value="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
+        <option value="$PROJECT_DIR$/server/services/promises/promiseService.js" />
+        <option value="$PROJECT_DIR$/server/services/error/errorService.js" />
+        <option value="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" />
         <option value="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
+        <option value="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" />
       </list>
     </option>
   </component>
@@ -263,6 +236,72 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="uploads" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="services" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -285,7 +324,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="utilities" />
+              <option name="myItemId" value="uploads" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -307,7 +346,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="error" />
+              <option name="myItemId" value="promises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="config" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -497,6 +554,26 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24978392" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32858992" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33376455" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729626" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39974126" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988358" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3182406" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32849163" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1823573" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24978392" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32858992" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -518,13 +595,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/node_modules/restify/lib/plugins/cors.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14685315" vertical-offset="1134" max-vertical-offset="2772">
-          <caret line="58" column="50" selection-start-line="58" selection-start-column="50" selection-end-line="58" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/services/hypermedia/linkService.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.48083624" vertical-offset="438" max-vertical-offset="1302">
@@ -693,14 +763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/require-shortcuts.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.87906975" vertical-offset="0" max-vertical-offset="777">
-          <caret line="18" column="22" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.42281878" vertical-offset="630" max-vertical-offset="2667">
@@ -737,14 +799,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.7804347" vertical-offset="0" max-vertical-offset="1365">
           <caret line="39" column="17" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="798">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -793,40 +847,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34927234" vertical-offset="63" max-vertical-offset="1449">
-          <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.72267205" vertical-offset="1680" max-vertical-offset="2247">
-          <caret line="102" column="34" selection-start-line="102" selection-start-column="34" selection-end-line="102" selection-end-column="34" />
-          <folding>
-            <element signature="e#829#1018#0" expanded="false" />
-            <element signature="e#913#1006#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/services/authorization/authorizationService.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34008098" vertical-offset="0" max-vertical-offset="494">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/promises/promiseService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.17463617" vertical-offset="1449" max-vertical-offset="3444">
-          <caret line="73" column="1" selection-start-line="73" selection-start-column="1" selection-end-line="73" selection-end-column="1" />
-          <folding>
-            <element signature="n#!!block;n#makeEmptyPromise#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -912,34 +937,93 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1" max-vertical-offset="1848">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="882">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1365" max-vertical-offset="4620">
+        <state vertical-scroll-proportion="3.5726142" vertical-offset="0" max-vertical-offset="4620">
           <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="798">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="14" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/config/require-shortcuts.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.5" vertical-offset="240" max-vertical-offset="798">
+          <caret line="25" column="50" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/promises/promiseService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43150684" vertical-offset="0" max-vertical-offset="3675">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="241" max-vertical-offset="1449">
+          <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="325" max-vertical-offset="2247">
+          <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
+          <folding>
+            <element signature="e#829#1018#0" expanded="false" />
+            <element signature="e#913#1006#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43558952" vertical-offset="0" max-vertical-offset="1869">
+          <caret line="19" column="9" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2614108" vertical-offset="252" max-vertical-offset="1449">
-          <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.6768559" vertical-offset="115" max-vertical-offset="1617">
+          <caret line="35" column="59" selection-start-line="35" selection-start-column="59" selection-end-line="35" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46464646" vertical-offset="106" max-vertical-offset="1134">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.6875" vertical-offset="1383" max-vertical-offset="4263">
+          <caret line="73" column="27" selection-start-line="73" selection-start-column="21" selection-end-line="73" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7385892" vertical-offset="2584" max-vertical-offset="3885">
+          <caret line="140" column="74" selection-start-line="140" selection-start-column="74" selection-end-line="140" selection-end-column="74" />
           <folding />
         </state>
       </provider>

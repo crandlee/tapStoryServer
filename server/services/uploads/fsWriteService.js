@@ -4,15 +4,16 @@ require('require-enhanced')();
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 
-function finalizeFile(destPath, data) {
-
-    return global.Promise.denodeify(fs.writeFile)(destPath, data)
-        .fail(global.errSvc.promiseError("Could not write upload file to file system",
-            { path: destPath }));
-
-}
 
 function writeFile(destFile, data, options) {
+
+    var finalizeFile = options.finalizeFile || function(destPath, data) {
+
+        return global.promiseUtils.deNodeify(fs.writeFile)(destPath, data)
+            .fail(global.errSvc.promiseError("Could not write upload file to file system",
+                { path: destPath }));
+
+    };
 
     var optionalDir = options.dirName || '';
     var destPath = global.config.uploadPath + destFile;
@@ -20,9 +21,11 @@ function writeFile(destFile, data, options) {
     //Handle optional subfolder under upload folder
     if (optionalDir) {
         var projectedPath = global.config.uploadPath + optionalDir;
-        return global.Promise.denodeify(mkdirp)(projectedPath)
-            .then(function() {
-                return finalizeFile(projectedPath + '/' + destFile, data);
+        return global.promiseUtils.deNodeify(mkdirp)(projectedPath)
+            .then(function(ret) {
+                //Sending return value of this to finalizeFile for unit testing results
+                //verifying the call to mkdirp.  Not sure of a better way to do this.
+                return finalizeFile(projectedPath + '/' + destFile, data, ret);
             })
             .fail(global.errSvc.promiseError("Could not create the specified upload directory",
                 { path: projectedPath }));
@@ -32,6 +35,15 @@ function writeFile(destFile, data, options) {
 
 }
 
+function _setMkdirp(stub) {
+    mkdirp = stub;
+}
+function _setFs(stub) {
+    fs = stub;
+}
+
 module.exports = {
-    writeFile: writeFile
+    writeFile: global.Promise.fbind(writeFile),
+    _setMkdirp: _setMkdirp,
+    _setFs: _setFs
 };

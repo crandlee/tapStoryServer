@@ -21,6 +21,7 @@
     { "k":"svc-filesystem", "v": "services/utilities/fileSystemService" },
     { "k":"svc-resource", "v": "services/utilities/resourceService" },
     { "k":"svc-uploads", "v": "services/uploads/uploadService" },
+    { "k":"svc-write", "v": "services/uploads/fsWriteService" },
     { "k":"svc-fswrite", "v": "services/uploads/fsWriteService" },
     { "k":"svc-restify", "v": "services/restifyService" },
     { "k":"util-object", "v": "utilities/objectUtilities" },

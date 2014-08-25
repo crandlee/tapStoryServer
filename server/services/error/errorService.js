@@ -14,7 +14,8 @@ function error(msg, props, opts) {
 
 function promiseError(msg, props, opts) {
     return function(err) {
-        if (props && err && err.messsage) {
+        props = props || {};
+        if (err && err.message) {
             props = global.extend(props, { error: err.message });
         }
         error(msg, props, opts);

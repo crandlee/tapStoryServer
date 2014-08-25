@@ -5,64 +5,68 @@ var functionUtils = global.rootRequire('util-function');
 
 function wrapWithPromise(fn, context) {
 
-    //Begin a new promise and attach it to the function
-    var dfr = global.Promise.defer();
+    return (function() {
 
-    var options = {
-        before: null,
-        context: context,
-        result: dfr.promise
-    };
-    fn.resolvingWith = function (value, exactlyValue) {
-        options.after = function () {
-            var args = Array.prototype.slice.call(arguments);
-            dfr.resolve(function() {
-                if(exactlyValue) {
-                    if (typeof value === 'object' || typeof value === 'function') {
-                        //Can still use the extended properties if this is an object or function / not for 'value' types
-                        return global.extend(true, value, makePromiseReturnVal(args, value));
+        //Begin a new promise and attach it to the function
+        var dfr = global.Promise.defer();
+
+        var options = {
+            before: null,
+            context: context,
+            result: dfr.promise
+        };
+        fn.resolvingWith = function (value, exactlyValue) {
+            options.after = function () {
+                var args = Array.prototype.slice.call(arguments);
+                dfr.resolve(function() {
+                    if(exactlyValue) {
+                        if (typeof value === 'object' || typeof value === 'function') {
+                            //Can still use the extended properties if this is an object or function / not for 'value' types
+                            return global.extend(true, value, makePromiseReturnVal(args, value));
+                        } else {
+                            return value;
+                        }
                     } else {
-                        return value;
+                        return makePromiseReturnVal(args, value);
                     }
-                } else {
-                    return makePromiseReturnVal(args, value);
-                }
-            }());
+                }());
+            };
+            return functionUtils.wrap(fn, options);
         };
-        return functionUtils.wrap(fn, options);
-    };
 
-    fn.noop = function() {
-        options.after = function () {
-            dfr.resolve(makePromiseReturnVal(Array.prototype.slice.call(arguments), null));
+        fn.noop = function() {
+            options.after = function () {
+                dfr.resolve(makePromiseReturnVal(Array.prototype.slice.call(arguments), null));
+            };
+            return functionUtils.wrap(fn, options);
         };
-        return functionUtils.wrap(fn, options);
-    };
 
 
-    fn.realNull = function() {
-        options.after = function () {
-            dfr.resolve(null);
+        fn.realNull = function() {
+            options.after = function () {
+                dfr.resolve(null);
+            };
+            return functionUtils.wrap(fn, options);
         };
-        return functionUtils.wrap(fn, options);
-    };
 
 
-    fn.rejectingWith = function (err, exactlyErr, serverInternalCode) {
-        options.after = function () {
-            dfr.reject(
-                (function(internal) {
-                    var thisErr =  exactlyErr ? new Error(err) :
-                        new Error(JSON.stringify(makePromiseReturnVal(Array.prototype.slice.call(arguments), err)));
-                    if (internal) thisErr.serverInternalCode = internal;
-                    return thisErr;
-                }(serverInternalCode))
-            );
+        fn.rejectingWith = function (err, exactlyErr, serverInternalCode) {
+            options.after = function () {
+                dfr.reject(
+                    (function(internal) {
+                        var thisErr =  exactlyErr ? new Error(err) :
+                            new Error(JSON.stringify(makePromiseReturnVal(Array.prototype.slice.call(arguments), err)));
+                        if (internal) thisErr.serverInternalCode = internal;
+                        return thisErr;
+                    }(serverInternalCode))
+                );
+            };
+            return functionUtils.wrap(fn, options);
         };
-        return functionUtils.wrap(fn, options);
-    };
 
-    return fn;
+        return fn;
+
+    }(fn, context, Array.prototype.slice.call(arguments, 2)));
 }
 
 function makePromiseReturnVal(args, val) {
