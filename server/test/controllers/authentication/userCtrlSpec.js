@@ -96,8 +96,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             fn(reqStub, resStub, nextStub);
             userSvcStub.save()
                 .then(function(ret) {
-                    sinon.assert.calledWithExactly(resStub.status, 201);
-                    sinon.assert.calledWithExactly(resStub.end, ret.userName);
+                    sinon.assert.calledWithExactly(resStub.send, 201, ret.userName);
                 })
                 .fail(function(err) {
                     throw err;
@@ -119,8 +118,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             fn(reqStub, resStub, nextStub);
             userSvcStub.save()
                 .then(function(ret) {
-                    sinon.assert.calledWithExactly(resStub.status, 200);
-                    sinon.assert.calledWithExactly(resStub.end, ret.userName);
+                    sinon.assert.calledWithExactly(resStub.send, 200, ret.userName);
                 })
                 .fail(function(err) {
                     throw err;
@@ -225,8 +223,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             userCtrl.getUser(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
                 .then(function() {
-                    sinon.assert.calledWithExactly(resStub.status, 200);
-                    sinon.assert.calledWithExactly(resStub.end, userName);
+                    sinon.assert.calledWithExactly(resStub.send, 200, userName);
                 })
                 .fail(function(err) {
                     throw err;
@@ -325,11 +322,10 @@ describe('controllers/authentication/userCtrl.js', function () {
             userCtrl.getUsers(reqStub, resStub, nextStub);
             userSvcStub.getList()
                 .then(function(users) {
-                    sinon.assert.calledWithExactly(resStub.status, 200);
                     var viewModels = global._.map(users, function (user) {
                         return user.viewModel('users');
                     });
-                    sinon.assert.calledWithExactly(resStub.end, viewModels);
+                    sinon.assert.calledWithExactly(resStub.send, 200, viewModels);
                 })
                 .fail(function(err) {
                     throw err;
@@ -446,8 +442,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
                 .then(function() {
-                    sinon.assert.calledWithExactly(resStub.status, 201);
-                    sinon.assert.calledWithExactly(resStub.end, { roles : userStub.roles });
+                    sinon.assert.calledWithExactly(resStub.send, 201, { roles : userStub.roles });
                 })
                 .fail(function(err) {
                     throw err;
@@ -564,8 +559,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             userCtrl.removeRole(reqStub, resStub, nextStub);
             userSvcStub.removeRole()
                 .then(function() {
-                    sinon.assert.calledWithExactly(resStub.status, 200);
-                    sinon.assert.calledWithExactly(resStub.end, { roles : userStub.roles });
+                    sinon.assert.calledWithExactly(resStub.send, 200, { roles : userStub.roles });
                 })
                 .fail(function(err) {
                     throw err;
@@ -645,8 +639,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             userCtrl.getRoles(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
                 .then(function() {
-                    sinon.assert.calledWithExactly(resStub.status, 200);
-                    sinon.assert.calledWithExactly(resStub.end, { roles: testRes.roles });
+                    sinon.assert.calledWithExactly(resStub.send, 200, { roles: testRes.roles });
                 })
                 .fail(function(err) {
                     throw err;

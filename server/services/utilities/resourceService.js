@@ -52,7 +52,7 @@ function save(opts) {
         var returnResource = function(resource) {
             if (resource && resource._id) return resource;
         };
-        return global.promiseUtils.deNodeify(opts.model.create)(resource)
+        return global.promiseUtils.deNodeify(opts.model.create, opts.model)(resource)
             .then(returnResource)
             .fail(function(err) {
                 if (err) global.errSvc.error('Could not create new resource',
@@ -72,7 +72,7 @@ function save(opts) {
 
     var saveUpdatedResource = opts.saveUpdatedResourceStub || function(opts, resource) {
 
-        return global.promiseUtils.deNodeify(resource.save)()
+        return global.promiseUtils.deNodeify(resource.save, opts.model)()
             .then(function(resource) { return resource; })
             .fail(function(err) {
                 if (err) global.errSvc.error('Could not update resource',
@@ -91,7 +91,7 @@ function save(opts) {
 
     var saveResource = opts.saveResourceStub || function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.findOne)(opts.singleSearch)
+        return global.promiseUtils.deNodeify(opts.model.findOne, opts.model)(opts.singleSearch)
             .then(function(resource) {
                 return !resource ? addResource(opts) : updateResource(opts, resource);
             })
@@ -118,15 +118,13 @@ function getSingle(opts) {
         opts.model = opts.model || getModelFromOptions(opts);
         if (!opts.query) global.errSvc.error('No query provided for resource',
             { modelName: (opts.model && opts.model.modelName) });
-        if (!opts.select) global.errSvc.error('No selector provided for resource',
-            { modelName: (opts.model && opts.model.modelName) });
 
         return opts;
     };
 
     var getResource = function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.findOne)(opts.query, opts.select)
+        return global.promiseUtils.deNodeify(opts.model.findOne, opts.model)(opts.query, opts.select || '')
             .then(function(resource) {
                 if (!resource) global.errSvc.error('No resource was returned',
                     { modelName: opts.model.modelName, select: opts.select, query: opts.query });
@@ -136,7 +134,6 @@ function getSingle(opts) {
                 if (err) global.errSvc.error('An error was returned retrieving the resource',
                     { error: err.message, modelName: opts.model.modelName, select: opts.select, query: opts.query });
             });
-
 
     };
 
@@ -154,15 +151,12 @@ function getList(opts) {
         opts.model = opts.model || getModelFromOptions(opts);
         if (!opts.query) global.errSvc.error('No query provided for resource list',
             { modelName: (opts.model && opts.model.modelName) });
-        if (!opts.select) global.errSvc.error('No selector provided for resource list',
-            { modelName: (opts.model && opts.model.modelName) });
-
         return opts;
     };
 
     var getResources = function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.find)(opts.query, opts.select)
+        return global.promiseUtils.deNodeify(opts.model.find, opts.model)(opts.query, opts.select || '')
             .then(function(resources) {
                 if (!resources || resources.length === 0)
                     global.errSvc.error('No resources were returned',

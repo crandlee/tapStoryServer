@@ -86,12 +86,13 @@ function makeEmptyPromise(sinonStub) {
 
 }
 
-function deNodeify(fn) {
+function deNodeify(fn, context) {
 
     //This function will run Q's denodeify unless it
     //has been wrapped in a promise via the wrapPromise function
     //in this case it will be assumed to be stubbed
     if (fn && fn.isWrappedPromise) return fn;
+    if (fn && context) fn = fn.bind(context);
     return global.Promise.denodeify(fn);
 
 }

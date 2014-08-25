@@ -91,7 +91,8 @@ describe('services/utilities/resourceService', function () {
                 ret.args[0].should.equal(opts.singleSearch);
             }).fail(function(err) {
                 throw err;
-            }).done();
+            })
+            .done();
 
         });
 
@@ -221,19 +222,6 @@ describe('services/utilities/resourceService', function () {
             resSvc.getSingle(options).fail(checkRejection).done(done, done);
         });
 
-        it('rejects when select not passed in', function (done) {
-            var options = {
-                query: global.testUtils.getRandomString(10),
-                select: null,
-                model: {}
-            };
-            var checkRejection = function(err) {
-                global.should.exist(err);
-                err.toString().should.contain('No selector provided');
-            };
-            resSvc.getSingle(options).fail(checkRejection).done(done, done);
-        });
-
         it('calls model.findOne with query and select', function (done) {
 
             var options = {
@@ -314,18 +302,6 @@ describe('services/utilities/resourceService', function () {
             resSvc.getList(options).fail(checkRejection).done(done, done);
         });
 
-        it('rejects when select not passed in', function (done) {
-            var options = {
-                query: global.testUtils.getRandomString(10),
-                select: null,
-                model: {}
-            };
-            var checkRejection = function(err) {
-                global.should.exist(err);
-                err.toString().should.contain('No selector provided');
-            };
-            resSvc.getList(options).fail(checkRejection).done(done, done);
-        });
 
         it('calls model.find with query and select', function (done) {
 

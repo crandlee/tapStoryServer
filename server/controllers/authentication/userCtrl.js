@@ -17,8 +17,7 @@ function saveUser(options) {
         } else {
             userSvc.save({addOnly: addOnly}, req.body)
                 .then(function (user) {
-                    res.status((addOnly ? 201 : 200));
-                    res.end(user.viewModel('user'));
+                    res.send((addOnly ? 201 : 200), user.viewModel('user'));
                 })
                 .fail(function (err) {
                     res.status(global.errSvc.checkErrorCode(err, "E1000") ? 405 : 500);
@@ -40,8 +39,7 @@ function getUser(req, res, next) {
     } else {
         userSvc.getSingle(req.params.userName)
             .then(function (user) {
-                res.status(200);
-                res.end(user.viewModel('user'));
+                res.send(200, user.viewModel('user'));
             })
             .fail(function (err) {
                 res.status(global.errSvc.checkErrorCode(err, "E1001") ? 404 : 500);
@@ -59,16 +57,19 @@ function getUsers(req, res, next) {
 
     userSvc.getList({})
         .then(function (users) {
-            res.status(200);
-            res.end(global._.map(users, function (user) {
+            res.send(200, global._.map(users, function (user) {
                 return user.viewModel('users');
             }));
+            return next();
         })
         .fail(function (err) {
             res.status(global.errSvc.checkErrorCode(err, "E1001") ? 404 : 500);
             res.end(err.message);
+            return next();
+
         })
-        .fin(next)
+        .fin(function() {
+        })
         .done();
 
 }
@@ -81,8 +82,7 @@ function addRole(req, res, next) {
     if (req.params.userName && req.body.role) {
         userSvc.addRole(req.params.userName, req.body.role)
             .then(function (user) {
-                res.status(201);
-                res.end(linkSvc.attachLinksToObject({ roles: user.roles }, [
+                res.send(201, linkSvc.attachLinksToObject({ roles: user.roles }, [
                     { uri: '/../' + user.userName, rel: 'user', isRelative: true}
                 ]));
             })
@@ -103,8 +103,7 @@ function removeRole(req, res, next) {
     if (req.params.userName && req.body.role) {
         userSvc.removeRole(req.params.userName, req.body.role)
             .then(function (user) {
-                res.status(200);
-                res.end(linkSvc.attachLinksToObject({ roles: user.roles }, [
+                res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
                     { uri: '/../' + user.userName, rel: 'user', isRelative: true}
                 ]));
             })
@@ -125,8 +124,7 @@ function getRoles(req, res, next) {
     if (req.params.userName) {
         userSvc.getSingle(req.params.userName)
             .then(function (user) {
-                res.status(200);
-                res.end(linkSvc.attachLinksToObject({ roles: user.roles }, [
+                res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
                     { uri: '/../' + user.userName, rel: 'user', isRelative: true}
                 ]));
             })
