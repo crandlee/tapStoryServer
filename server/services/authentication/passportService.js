@@ -24,24 +24,26 @@ function userLookupForStrategy(username, password, done) {
 
 }
 
-module.exports.userLookupForStrategy = userLookupForStrategy;
-
 function initialize(serverSvc) {
-
     passport.use(new BasicStrategy(userLookupForStrategy));
 
     //Add passport to the server service
     if (serverSvc && serverSvc.addMiddleware)
         serverSvc.addMiddleware(passport.initialize(), 'passport');
-
 }
-module.exports.initialize = initialize;
 
 
 function authenticateMethod() {
-
     return passport.authenticate('basic', { session: false });
 }
 
-module.exports.authenticateMethod = authenticateMethod;
+function _setUserService(service) {
+    userSvc = service;
+}
 
+module.exports = {
+    authenticateMethod: authenticateMethod,
+    initialize: initialize,
+    userLookupForStrategy: userLookupForStrategy,
+    _setUserService: _setUserService
+};

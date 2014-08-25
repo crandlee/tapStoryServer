@@ -1,166 +1,63 @@
 "use strict";
 require('require-enhanced')();
 
-var Q = require('q');
-var uuid = require('node-uuid');
 var functionUtils = global.rootRequire('util-function');
-var _ = require('lodash');
-var promiseObjects = [];
-
-//Wraps the promise library and keeps a stack of promise objects
-
-function createPromise(options) {
-
-    //An externalPromise (pid) indicates that a promise has been previously
-    //created by another function up the chain and will therefore be
-    //managed by that function.  In this case, we only return the existing pid
-    //instead of creating a new one.
-    if (options && options.externalPromise) return options.externalPromise;
-
-    //Return the new id of the object
-    return pushPromiseObject();
-
-}
-
-function pushPromiseObject() {
-
-    var po = {
-        promiseWrapper: Q.defer(),
-        resolvedRejected: false,
-        promiseReturned: false,
-        id: uuid.v4()
-    };
-    promiseObjects.push(po);
-    return po.id;
-
-}
-
-function resolve(val, id) {
-
-    return completeAction(true, val, id);
-
-}
-
-function reject(val, id) {
-
-    return completeAction(false, val, id);
-
-}
-
-function completeAction(toResolve, val, id) {
-
-    var po = getPromiseObject(id);
-    if (po) {
-        po.resolvedRejected = true;
-        if (toResolve) {
-            po.promiseWrapper.resolve(val);
-        } else {
-            po.promiseWrapper.reject(val);
-        }
-        popPromiseObject(id);
-        return true;
-    }
-    return false;
-
-}
-
-
-function getPromiseObjectIndex(id) {
-
-
-    return _.findIndex(promiseObjects, function(po) {
-        return po.id === id;
-    });
-
-}
-
-function getPromiseObject(id) {
-
-    var index = getPromiseObjectIndex(id);
-    if (index > -1) {
-        return promiseObjects[index];
-    }
-    return null;
-
-}
-
-function canPop(id) {
-
-    var po = getPromiseObject(id);
-    return (po && (po.resolvedRejected && po.promiseReturned));
-
-}
-
-function popPromiseObject(id, force) {
-
-    var index = getPromiseObjectIndex(id);
-    if (index > -1 && (canPop(id) || force)) {
-        promiseObjects.splice(index, 1);
-        return true;
-    }
-    return false;
-
-}
-
-function clearPromise(id, options) {
-
-    //Do nothing if externalPromise has been set.  This means the
-    //calling function does not have this authority.
-    if (options && options.externalPromise) return null;
-
-    popPromiseObject(id, true);
-
-}
-
-function getPromise(id, options) {
-
-    //peekPromise allows you to get the promise without potentially removing it
-    //from the stack as if it were legitimately returned.  This indicates that the
-    //caller intends to do another get promise later where this option is not set.
-    var peekPromise = (options && options.peekPromise) || false;
-
-
-    //Return nothing when externalPromise is set.  This indicates that the caller
-    //is not responsible for the promise and thus does not have the 'authority'
-    //to do anything with it.
-    if (options && options.externalPromise) return null;
-
-    var po = getPromiseObject(id);
-
-    if (po && !peekPromise) {
-        po.promiseReturned = true;
-        popPromiseObject(id);
-    }
-    return !!po ? po.promiseWrapper.promise : null;
-
-}
-
-function isRejected(id) {
-
-    var po = getPromiseObject(id);
-    return (!po || po.promiseWrapper.promise.isRejected());
-
-}
 
 function wrapWithPromise(fn, context) {
 
     //Begin a new promise and attach it to the function
-    var id = createPromise();
+    var dfr = global.Promise.defer();
+
     var options = {
         before: null,
         context: context,
-        result: getPromise(id)
+        result: dfr.promise
     };
-    fn.resolvingWith = function (value) {
+    fn.resolvingWith = function (value, exactlyValue) {
         options.after = function () {
-            resolve(value, id);
+            var args = Array.prototype.slice.call(arguments);
+            dfr.resolve(function() {
+                if(exactlyValue) {
+                    if (typeof value === 'object' || typeof value === 'function') {
+                        //Can still use the extended properties if this is an object or function / not for 'value' types
+                        return global.extend(true, value, makePromiseReturnVal(args, value));
+                    } else {
+                        return value;
+                    }
+                } else {
+                    return makePromiseReturnVal(args, value);
+                }
+            }());
         };
         return functionUtils.wrap(fn, options);
     };
 
-    fn.rejectingWith = function (err) {
+    fn.noop = function() {
         options.after = function () {
-            reject(err, id);
+            dfr.resolve(makePromiseReturnVal(Array.prototype.slice.call(arguments), null));
+        };
+        return functionUtils.wrap(fn, options);
+    };
+
+
+    fn.realNull = function() {
+        options.after = function () {
+            dfr.resolve(null);
+        };
+        return functionUtils.wrap(fn, options);
+    };
+
+
+    fn.rejectingWith = function (err, exactlyErr, serverInternalCode) {
+        options.after = function () {
+            dfr.reject(
+                (function(internal) {
+                    var thisErr =  exactlyErr ? new Error(err) :
+                        new Error(JSON.stringify(makePromiseReturnVal(Array.prototype.slice.call(arguments), err)));
+                    if (internal) thisErr.serverInternalCode = internal;
+                    return thisErr;
+                }(serverInternalCode))
+            );
         };
         return functionUtils.wrap(fn, options);
     };
@@ -168,44 +65,100 @@ function wrapWithPromise(fn, context) {
     return fn;
 }
 
+function makePromiseReturnVal(args, val) {
+    return {
+        returned: val,
+        args: args
+    };
+
+}
 
 function makeEmptyPromise(sinonStub) {
 
     //For sinon stubs that just need to compile as a promise
     //and don't actually need to resolve/reject
-
-    sinonStub.returns(Q.defer().promise);
+    sinonStub.returns(global.Promise.defer().promise);
     return sinonStub;
+
 }
 
-function getPromiseIdList() {
-    return _.map(promiseObjects, function(po) {
-       return po.id;
-    });
+function deNodeify(fn) {
+
+    //This function will run Q's denodeify unless it
+    //has been wrapped in a promise via the wrapPromise function
+    //in this case it will be assumed to be stubbed
+    if (fn && fn.isWrappedPromise) return fn;
+    return global.Promise.denodeify(fn);
+
 }
 
-function promiseCount() {
-    return promiseObjects.length;
+
+function getResolveNullPromiseStub(context) {
+
+    return wrapWithPromise(createStubPartial(context))
+        .realNull();
+
 }
 
-function promiseLib() {
-    return Q;
+
+function getResolveExactlyPromiseStub(resolvingWith, context) {
+
+    var args = Array.prototype.slice.call(arguments, 2);
+    return wrapWithPromise(createStubPartial(context, args))
+        .resolvingWith(resolvingWith, true);
+
 }
 
+function getResolvingPromiseStub(resolvingWith, context) {
+
+    var args = Array.prototype.slice.call(arguments, 2);
+    return wrapWithPromise(createStubPartial(context, args))
+        .resolvingWith(resolvingWith);
+
+}
+
+function getRejectingPromiseStub(rejectingWith, context, serverInternalCode) {
+
+    var args = Array.prototype.slice.call(arguments, 3);
+    return wrapWithPromise(createStubPartial(context, args))
+        .rejectingWith(rejectingWith, false, serverInternalCode);
+
+}
+
+function getRejectExactlyPromiseStub(rejectingWith, context, serverInternalCode) {
+
+    var args = Array.prototype.slice.call(arguments, 3);
+    return wrapWithPromise(createStubPartial(context, args))
+        .rejectingWith(rejectingWith, true, serverInternalCode);
+
+}
+
+function getNoopPromiseStub(context) {
+
+    var args = Array.prototype.slice.call(arguments, 1);
+    return wrapWithPromise(createStubPartial(context, args))
+        .noop();
+
+}
+
+function createStubPartial(context, args) {
+
+    return function() {
+        var stub = function() {};
+        return stub.apply(context, args);
+    };
+}
 
 module.exports = {
-    createPromise: createPromise,
-    resolve: resolve,
-    reject: reject,
-    getPromise: getPromise,
-    promiseCount: promiseCount,
-    clearPromise: clearPromise,
-    getPromiseIdList: getPromiseIdList,
     wrapWithPromise: wrapWithPromise,
     makeEmptyPromise: makeEmptyPromise,
-    promiseLib: promiseLib,
-    isRejected: isRejected
-
+    deNodeify: deNodeify,
+    getResolvingPromiseStub: getResolvingPromiseStub,
+    getRejectingPromiseStub: getRejectingPromiseStub,
+    getResolveNullPromiseStub: getResolveNullPromiseStub,
+    getNoopPromiseStub: getNoopPromiseStub,
+    getResolveExactlyPromiseStub: getResolveExactlyPromiseStub,
+    getRejectExactlyPromiseStub: getRejectExactlyPromiseStub
 };
 
 

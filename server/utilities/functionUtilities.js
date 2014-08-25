@@ -7,7 +7,7 @@ function wrap(functionToWrap, options) {
     var context = (options && options.context);
     var resultReplace = (options && options.result);
 
-    return function() {
+    var retFn = function() {
         var args = Array.prototype.slice.call(arguments), result;
         if (before && typeof before === 'function')
             before.apply(context || this, args);
@@ -16,6 +16,8 @@ function wrap(functionToWrap, options) {
             after.apply(context || this, args);
         return resultReplace || result;
     };
+    retFn.isWrappedPromise = true;
+    return retFn;
 }
 
 module.exports = {

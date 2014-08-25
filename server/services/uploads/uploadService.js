@@ -2,52 +2,62 @@
 require('require-enhanced')();
 
 var fs = require('fs');
-var errSvc = global.rootRequire('svc-error');
-var promiseSvc = global.rootRequire('svc-promise');
-var fsWriteSvc = global.rootRequire('svc-fswrite');
+var writeSvc = global.rootRequire('svc-fswrite');
 var userSvc = global.rootRequire('svc-user');
 var uuid = require('node-uuid');
+
 
 function uploadFiles(filesFromRequest, options) {
 
     //TODO-Randy - needs test
-    var pid = promiseSvc.createPromise();
-
     //Set up info needed for user saving
     var userName = (options && options.userName) || null;
     var groupId = uuid.v4();
 
+    var fileOutputComplete = options.fileOutputComplete || function(filePath, fileName, data, groupId) {
+
+        return writeSvc.writeFile(fileName, data, { dirName: groupId })
+            .then(function() {
+                return userSvc.addFile(userName, fileName, groupId);
+            })
+            .fail(global.errSvc.promiseError("Could not read uploaded file from temporary folder"),
+                { path: filePath, fileName: fileName });
+    };
+
+    var processFile = options.processFile || function(filePath, fileName, groupId) {
+
+        if (filePath && fileName) {
+
+            return global.Promise.denodeify(fs.readFile)(filePath)
+                .then(global._.partial(fileOutputComplete, filePath, fileName, groupId))
+                .fail(global.errSvc.promiseError("Could not read uploaded file from temporary folder",
+                        { path: filePath, fileName: fileName } ));
+
+        }
+
+    };
+
     //Process the files
     for (var fieldName in filesFromRequest) {
         if (filesFromRequest.hasOwnProperty(fieldName)) {
-            //NOTE: The following section needed a functional closure because
-            //of the async readFile which needed snapshots of the values in each
-            //iteration of the loop
-            (function (fp, fn) {
-                if (fp && fn) {
-
-                    fs.readFile(fp, function (err, data) {
-                        if (err) {
-                            if (err) errSvc.errorFromPromise(pid, { error: err, path: fp}
-                                , "Could not read uploaded file from temporary folder");
-                        } else {
-                            fsWriteSvc.writeFile(fn, data, { externalPromise: pid, dirName: groupId });
-                            if (!promiseSvc.isRejected(pid)) {
-                                userSvc.addFile(userName, fn, groupId, { externalPromise: pid });
-                            }
-                        }
-                    });
-                }
-
-            }(filesFromRequest[fieldName].path, filesFromRequest[fieldName].name));
-
+            processFile(filesFromRequest[fieldName].path,
+                filesFromRequest[fieldName].name, groupId);
         }
     }
 
-    return promiseSvc.getPromise(pid);
+}
 
+function _setWriteService(service) {
+    writeSvc = service;
+}
+
+function _setUserService(service) {
+    userSvc = service;
 }
 
 module.exports = {
-    uploadFiles: uploadFiles
+    uploadFiles: uploadFiles,
+    _setWriteService: _setWriteService,
+    _setUserService: _setUserService
+
 };

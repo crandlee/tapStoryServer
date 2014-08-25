@@ -1,21 +1,18 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')( { test: true });
 
-var sinon = require('sinon');
-var proxyquire = require('proxyquire');
 
-describe('controllers', function() {
-   describe('coreCtrl.js', function() {
+describe('controllers/coreCtrl.js', function() {
 
+       var sinon = global.sinon, sandbox;
        var linkSvcStub, coreCtrl, resStub, next;
-       var sandbox;
 
 
        beforeEach(function() {
 
            sandbox = sinon.sandbox.create();
            linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
-           coreCtrl = proxyquire(global.getRoutePathFromKey('ctrl-core'), { linkSvc: linkSvcStub });
+           coreCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-core'), { linkSvc: linkSvcStub });
            resStub  = sandbox.stub({
                send: function() {
 
@@ -50,5 +47,4 @@ describe('controllers', function() {
        afterEach(function() {
            sandbox.restore();
        });
-   });
 });

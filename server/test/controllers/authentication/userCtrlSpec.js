@@ -1,489 +1,713 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')({ test: true });
 
-var sinon = require('sinon');
-var should = require('chai').should();
-var utils = global.rootRequire('util-test');
-var promiseSvc = global.rootRequire('svc-promise');
-var proxyquire = require('proxyquire');
+describe('controllers/authentication/userCtrl.js', function () {
 
-describe('controllers', function() {
-    describe('userCtrl.js', function() {
+    var sinon = global.sinon, sandbox;
 
-        var userSvcStub, errSvcStub, userCtrl,
-            linkSvcStub, resStub, reqStub, nextStub, optionsStub;
-        var sandbox;
-        var addOnly = false;
+    var userSvcStub, userCtrl,
+        linkSvcStub, resStub, reqStub, nextStub, optionsStub;
+    var addOnly = false;
 
-        beforeEach(function() {
+    beforeEach(function () {
 
-            sandbox = sinon.sandbox.create();
-            userSvcStub = sandbox.stub(global.rootRequire('svc-user'));
-            errSvcStub = {
-                errorFromPromise: function(pid, err) {
-                    promiseSvc.reject(err, pid);
+        sandbox = sinon.sandbox.create();
+        linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
+        userSvcStub = sandbox.stub(global.rootRequire('svc-user'));
+        userCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-user'),
+            { linkSvc: linkSvcStub });
+
+        resStub = sandbox.stub({
+            status: function () {
+            },
+            send: function () {
+            },
+            end: function () {
+            }
+        });
+        reqStub = sandbox.stub({
+            body: {
+                user: {
+
                 },
-                checkErrorCode: sandbox.stub()
+                role: 'admin'
+            },
+            params: {
+                userName: global.testUtils.getRandomString(10)
+            }
+        });
+        nextStub = sandbox.stub();
+        optionsStub = { addOnly: addOnly };
+
+    });
+
+
+    describe('saveUser', function () {
+
+        var fn = null;
+        it('returns a route function', function () {
+
+            fn = userCtrl.saveUser();
+            global.should.exist(fn);
+            fn.should.be.a('function');
+
+        });
+
+        it('if no user passed in, returns a bad request message', function () {
+
+            fn = userCtrl.saveUser();
+            reqStub.body = null;
+            fn(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'No request body');
+        });
+
+        it('calls save on the user service with the req.user and the addOnly flag', function (done) {
+
+            optionsStub.addOnly = true;
+            fn = userCtrl.saveUser(optionsStub);
+            userSvcStub.save = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            fn(reqStub, resStub, nextStub);
+            userSvcStub.save()
+                .then(function(ret) {
+                    ret.args[0].addOnly.should.equal(true);
+                    ret.args[1].should.equal(reqStub.body);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+        it('if save succeeds and addOnly true, returns a user view model and a 201 status', function (done) {
+
+            optionsStub.addOnly = true;
+            var testRes = { userName: global.testUtils.getRandomString(10),
+                viewModel: function() { return this.userName; } };
+            userSvcStub.save = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userCtrl._setUserService(userSvcStub);
+            fn = userCtrl.saveUser(optionsStub);
+            fn(reqStub, resStub, nextStub);
+            userSvcStub.save()
+                .then(function(ret) {
+                    sinon.assert.calledWithExactly(resStub.status, 201);
+                    sinon.assert.calledWithExactly(resStub.end, ret.userName);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+        });
+
+        it('if save succeeds and addOnly false, returns a user view model and a 200 status', function (done) {
+
+            optionsStub.addOnly = false;
+            var testRes = { userName: global.testUtils.getRandomString(10),
+                viewModel: function() { return this.userName; } };
+            userSvcStub.save = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userCtrl._setUserService(userSvcStub);
+            fn = userCtrl.saveUser(optionsStub);
+            fn(reqStub, resStub, nextStub);
+            userSvcStub.save()
+                .then(function(ret) {
+                    sinon.assert.calledWithExactly(resStub.status, 200);
+                    sinon.assert.calledWithExactly(resStub.end, ret.userName);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+        it('if save fails, return a 405 if fails due to existing resource', function (done) {
+
+            optionsStub.addOnly = false;
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.save = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1000");
+            userCtrl._setUserService(userSvcStub);
+            fn = userCtrl.saveUser(optionsStub);
+            fn(reqStub, resStub, nextStub);
+            userSvcStub.save()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 405);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+        it('if save fails, return a 500 for any other failure', function (done) {
+
+            optionsStub.addOnly = false;
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.save = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            userCtrl._setUserService(userSvcStub);
+            fn = userCtrl.saveUser(optionsStub);
+            fn(reqStub, resStub, nextStub);
+            userSvcStub.save()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+    });
+
+    describe('getUser', function () {
+
+        it('if no userName passed in, returns a bad request message', function () {
+
+            reqStub.params.userName = null;
+            userCtrl.getUser(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects user name to retrieve user');
+
+        });
+
+        it('calls getSingle on the user service with the req.param.userName', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            reqStub.params.userName = userName;
+            userSvcStub.getSingle = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUser(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function(ret) {
+                    ret.args[0].should.equal(userName);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+        it('if getSingle on the user service succeeds, then send 200 and the user view model', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var testRes = { userName: userName,
+                viewModel: function() { return this.userName; } };
+            reqStub.params.userName = userName;
+            userSvcStub.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUser(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    sinon.assert.calledWithExactly(resStub.status, 200);
+                    sinon.assert.calledWithExactly(resStub.end, userName);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+        });
+
+        it('if getSingle on the user service fails due to no resource, then 404 and error', function (done) {
+
+            reqStub.params.userName = 'anything';
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUser(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 404);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+        it('if getSingle on the user service fails generally, then 500 and error', function (done) {
+
+            reqStub.params.userName = 'anything';
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUser(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+
+    });
+
+    describe('getUsers', function () {
+
+        it('calls getList on the user service with an empty object', function (done) {
+
+            userSvcStub.getList = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUsers(reqStub, resStub, nextStub);
+            userSvcStub.getList()
+                .then(function(ret) {
+                    ret.args[0].should.be.an('object');
+                    Object.keys(ret.args[0]).length.should.equal(0);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+        it('if getList on the user service succeeds, then send 200 and the user view model', function (done) {
+
+            var viewModelStub = { firstName: global.testUtils.getRandomString(10) };
+            var usersStub = [
+                { viewModel: function () {
+                    return viewModelStub;
+                } },
+                { viewModel: function () {
+                    return viewModelStub;
+                } }
+            ];
+            userSvcStub.getList = global.promiseUtils.getResolveExactlyPromiseStub(usersStub);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUsers(reqStub, resStub, nextStub);
+            userSvcStub.getList()
+                .then(function(users) {
+                    sinon.assert.calledWithExactly(resStub.status, 200);
+                    var viewModels = global._.map(users, function (user) {
+                        return user.viewModel('users');
+                    });
+                    sinon.assert.calledWithExactly(resStub.end, viewModels);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+        it('if getList on the user service fails due to no resource, then send 404 and error', function (done) {
+
+            var testErrString = global.testUtils.getRandomString(20);
+            userSvcStub.getList = global.promiseUtils.getRejectExactlyPromiseStub(testErrString, null, "E1001");
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUsers(reqStub, resStub, nextStub);
+            userSvcStub.getList()
+                .then(function() {
+                    throw new Error('Resolved instead of rejected');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 404);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+        it('if getList on the user service fails due to other, then send 500 and error', function (done) {
+
+            var testErrString = global.testUtils.getRandomString(20);
+            userSvcStub.getList = global.promiseUtils.getRejectExactlyPromiseStub(testErrString);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getUsers(reqStub, resStub, nextStub);
+            userSvcStub.getList()
+                .then(function() {
+                    throw new Error('Resolved instead of rejected');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+
+        });
+
+    });
+
+    describe('addRole', function () {
+
+        it('if no userName passed in, returns a bad request message', function () {
+
+            reqStub.params.userName = null;
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects "userName" in query');
+
+        });
+
+        it('if no role passed in, returns a bad request message', function () {
+
+            reqStub.body.role = null;
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects "role"');
+
+        });
+
+        it('calls addRole on the user service with the req.param.userName and req.body.role', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var role = global.testUtils.getRandomString(10);
+            reqStub.params.userName = userName;
+            reqStub.body.role = role;
+            userSvcStub.addRole = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            userSvcStub.addRole()
+                .then(function(ret) {
+                    ret.args[0].should.equal(userName);
+                    ret.args[1].should.equal(role);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+        it('if addRole on the user service succeeds, then send 201 and the list of roles', function (done) {
+
+            var rolesStub = [ global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)];
+            var userStub = {
+                roles: rolesStub,
+                userName: global.testUtils.getRandomString(10)
             };
-            linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
-
-            userCtrl = proxyquire(global.getRoutePathFromKey('ctrl-user'),
-                { userSvc: userSvcStub, linkSvc: linkSvcStub, errSvc: errSvc });
-            resStub  = sandbox.stub({
-                status: function() {},
-                send: function() {},
-                end: function() {}
-            });
-            reqStub = sandbox.stub({
-               body: {
-                   user: {
-
-                   },
-                   role: 'admin'
-               },
-               params: {
-                   userName: utils.getRandomString(10)
-               }
-            });
-            nextStub = sandbox.stub();
-            optionsStub = { addOnly: addOnly };
-
-        });
-
-
-        describe('saveUser', function() {
-
-            var fn = null;
-            it('returns a route function', function() {
-
-                fn = userCtrl.saveUser();
-                should.exist(fn);
-                fn.should.be.a('function');
-
-            });
-
-
-            it('if no user passed in, returns a bad request message', function() {
-
-                fn = userCtrl.saveUser();
-                reqStub.body = null;
-                userSvcStub.save = promiseSvc.makeEmptyPromise(userSvcStub.save);
-                fn(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'No request body');
-
-            });
-
-            it('calls save on the user service with, the req.user and the addOnly flag', function() {
-
-                fn = userCtrl.saveUser(optionsStub);
-                userSvcStub.save = promiseSvc.makeEmptyPromise(userSvcStub.save);
-                fn(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.save, { addOnly: optionsStub.addOnly }, reqStub.body );
-
-            });
-
-            it('if save succeeds and addOnly true, returns a user view model and a 201 status', function(done) {
-
-                optionsStub.addOnly = true;
-                fn = userCtrl.saveUser(optionsStub);
-                var viewModelStub = { firstName: utils.getRandomString(10) };
-                var userStub = { viewModel: function() { return viewModelStub;} };
-                userSvcStub.save = promiseSvc.wrapWithPromise(userSvcStub.save)
-                    .resolvingWith(userStub);
-                fn(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 201, viewModelStub);
-                    done();
+            linkSvcStub.attachLinksToObject.returnsArg(0);
+            userSvcStub.addRole = global.promiseUtils.getResolveExactlyPromiseStub(userStub);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            userSvcStub.addRole()
+                .then(function() {
+                    sinon.assert.calledWithExactly(resStub.status, 201);
+                    sinon.assert.calledWithExactly(resStub.end, { roles : userStub.roles });
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
-
-            });
-
-            it('if save succeeds and addOnly false, returns a user view model and a 200 status', function(done) {
-
-                optionsStub.addOnly = false;
-                fn = userCtrl.saveUser(optionsStub);
-                var viewModelStub = { firstName: utils.getRandomString(10) };
-                var userStub = { viewModel: function() { return viewModelStub;} };
-                userSvcStub.save = promiseSvc.wrapWithPromise(userSvcStub.save)
-                    .resolvingWith(userStub);
-                fn(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 200, viewModelStub);
-                    done();
-                });
-
-
-            });
-            it('if save fails, return a 405 if fails due to existing resource', function(done) {
-
-                fn = userCtrl.saveUser(optionsStub);
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.save = promiseSvc.wrapWithPromise(userSvcStub.save)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                fn(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 405, randomErrString);
-                    done();
-                });
-
-            });
-            it('if save fails, return a 500 for any other failure', function(done) {
-
-                fn = userCtrl.saveUser(optionsStub);
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.save = promiseSvc.wrapWithPromise(userSvcStub.save)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-
-                fn(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
-                });
-
-
-
-            });
-
-        });
-
-        describe('getUser', function() {
-
-            it('if no userName passed in, returns a bad request message', function() {
-
-                reqStub.params.userName = null;
-                userSvcStub.getSingle = promiseSvc.makeEmptyPromise(userSvcStub.getSingle);
-                userCtrl.getUser(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, "Server expects user name to retrieve user");
-
-            });
-
-            it('calls getSingle on the user service with the req.param.userName', function() {
-
-                userSvcStub.getSingle = promiseSvc.makeEmptyPromise(userSvcStub.getSingle);
-                userCtrl.getUser(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.getSingle, reqStub.params.userName);
-
-            });
-
-            it('if getSingle on the user service succeeds, then send 200 and the user view model', function(done) {
-
-                var viewModelStub = { firstName: utils.getRandomString(10) };
-                var userStub = { viewModel: function() { return viewModelStub;} };
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .resolvingWith(userStub);
-
-                userCtrl.getUser(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 200, viewModelStub);
-                    done();
-                });
-            });
-
-            it('if getSingle on the user service fails due to no resource, then 404 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                userCtrl.getUser(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 404, randomErrString);
-                    done();
-                });
-
-            });
-            it('if getSingle on the user service fails generally, then 500 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-                userCtrl.getUser(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
-                });
-
-            });
 
 
         });
 
-        describe('getUsers', function() {
+        it('if addRole on the user service fails due to already existing, then 400 and error', function (done) {
 
-            it('calls getList on the user service with an empty object', function() {
-
-                userSvcStub.getList = promiseSvc.makeEmptyPromise(userSvcStub.getList);
-                userCtrl.getUsers(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.getList, {});
-
-            });
-
-            it('if getList on the user service succeeds, then send 200 and the user view model', function(done) {
-
-                var viewModelStub = { firstName: utils.getRandomString(10) };
-                var usersStub = [
-                    { viewModel: function() { return viewModelStub;} },
-                    { viewModel: function() { return viewModelStub;} }
-                ];
-                userSvcStub.getList = promiseSvc.wrapWithPromise(userSvcStub.getList)
-                    .resolvingWith(usersStub);
-                userCtrl.getUsers(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 200, [ viewModelStub, viewModelStub]);
-                    done();
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1002");
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            userSvcStub.addRole()
+                .then(function() {
+                    throw new Error('Resolved instead of rejected');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 400);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
-
-
-            });
-
-            it('if getList on the user service fails due to no resource, then send 404 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getList = promiseSvc.wrapWithPromise(userSvcStub.getList)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                userCtrl.getUsers(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 404, randomErrString);
-                    done();
-                });
-
-
-            });
-
-            it('if getList on the user service fails due to other, then send 500 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getList = promiseSvc.wrapWithPromise(userSvcStub.getList)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-                userCtrl.getUsers(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
-                });
-
-
-            });
 
         });
 
-        describe('addRole', function() {
+        it('if addRole on the user service fails due to other error, then 500 and error', function (done) {
 
-            it('if no userName passed in, returns a bad request message', function() {
-
-                reqStub.params.userName = null;
-                userSvcStub.addRole = promiseSvc.makeEmptyPromise(userSvcStub.addRole);
-                userCtrl.addRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects "userName" in query');
-
-            });
-
-            it('if no role passed in, returns a bad request message', function() {
-
-                reqStub.body.role = null;
-                userSvcStub.addRole = promiseSvc.makeEmptyPromise(userSvcStub.addRole);
-                userCtrl.addRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects "role"');
-
-            });
-
-            it('calls addRole on the user service with the req.param.userName and req.body.role', function() {
-
-                userSvcStub.addRole = promiseSvc.makeEmptyPromise(userSvcStub.addRole);
-                userCtrl.addRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.addRole, reqStub.params.userName, reqStub.body.role);
-
-            });
-
-            it('if addRole on the user service succeeds, then send 201 and the list of roles', function(done) {
-
-                var rolesStub = [ utils.getRandomString(0), utils.getRandomString(10)];
-                var userStub = {
-                    roles: rolesStub,
-                    userName: reqStub.params.userName
-                };
-                userSvcStub.addRole = promiseSvc.wrapWithPromise(userSvcStub.addRole)
-                    .resolvingWith(userStub);
-                linkSvcStub.attachLinksToObject.returns(rolesStub);
-                userCtrl.addRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(linkSvcStub.attachLinksToObject,
-                        {roles: rolesStub},[{ uri: '/../' + userStub.userName, rel: 'user', isRelative:true}]);
-                    sinon.assert.calledWithExactly(resStub.send, 201, rolesStub);
-                    done();
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            userSvcStub.addRole()
+                .then(function() {
+                    throw new Error('Resolved instead of rejected');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
 
+        });
 
-            });
 
-            it('if addRole on the user service fails due to already existing, then 400 and error', function(done) {
+    });
 
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.addRole = promiseSvc.wrapWithPromise(userSvcStub.addRole)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                userCtrl.addRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 400, randomErrString);
-                    done();
+    describe('removeRole', function () {
+
+        it('if no userName passed in, returns a bad request message', function () {
+
+            reqStub.params.userName = null;
+            userCtrl.removeRole(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects "userName" in query');
+
+        });
+
+        it('if no role passed in, returns a bad request message', function () {
+
+            reqStub.body.role = null;
+            userCtrl.removeRole(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects "role"');
+
+        });
+
+        it('calls removeRole on the user service with the req.param.userName and req.body.role', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var role = global.testUtils.getRandomString(10);
+            reqStub.params.userName = userName;
+            reqStub.body.role = role;
+            userSvcStub.removeRole = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.removeRole(reqStub, resStub, nextStub);
+            userSvcStub.removeRole()
+                .then(function(ret) {
+                    ret.args[0].should.equal(userName);
+                    ret.args[1].should.equal(role);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
 
-            });
+        });
 
-            it('if addRole on the user service fails due to other error, then 500 and error', function(done) {
+        it('if removeRole on the user service succeeds, then send 200 and the list of roles', function (done) {
 
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.addRole = promiseSvc.wrapWithPromise(userSvcStub.addRole)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-                userCtrl.addRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
+            var rolesStub = [ global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)];
+            var userStub = {
+                roles: rolesStub,
+                userName: global.testUtils.getRandomString(10)
+            };
+            linkSvcStub.attachLinksToObject.returnsArg(0);
+            userSvcStub.removeRole = global.promiseUtils.getResolveExactlyPromiseStub(userStub);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.removeRole(reqStub, resStub, nextStub);
+            userSvcStub.removeRole()
+                .then(function() {
+                    sinon.assert.calledWithExactly(resStub.status, 200);
+                    sinon.assert.calledWithExactly(resStub.end, { roles : userStub.roles });
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
-
-            });
 
 
         });
 
-        describe('removeRole', function() {
+        it('if removeRole on the user service fails due to error, then 500 and error', function (done) {
 
-            it('if no userName passed in, returns a bad request message', function() {
-
-                reqStub.params.userName = null;
-                userSvcStub.removeRole = promiseSvc.makeEmptyPromise(userSvcStub.removeRole);
-                userCtrl.removeRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects "userName" in query');
-
-            });
-
-            it('if no role passed in, returns a bad request message', function() {
-
-                reqStub.body.role = null;
-                userSvcStub.removeRole = promiseSvc.makeEmptyPromise(userSvcStub.removeRole);
-                userCtrl.removeRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects "role"');
-
-            });
-
-            it('calls removeRole on the user service with the req.param.userName and req.body.role', function() {
-
-                userSvcStub.removeRole = promiseSvc.makeEmptyPromise(userSvcStub.removeRole);
-                userCtrl.removeRole(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.removeRole, reqStub.params.userName, reqStub.body.role);
-
-            });
-
-            it('if removeRole on the user service succeeds, then send 200 and the list of roles', function(done) {
-
-                var rolesStub = [ utils.getRandomString(0), utils.getRandomString(10)];
-                var userStub = {
-                    roles: rolesStub,
-                    userName: reqStub.params.userName
-                };
-                userSvcStub.removeRole = promiseSvc.wrapWithPromise(userSvcStub.removeRole)
-                    .resolvingWith(userStub);
-
-                linkSvcStub.attachLinksToObject.returns(rolesStub);
-                userCtrl.removeRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(linkSvcStub.attachLinksToObject,
-                        {roles: rolesStub},[{ uri: '/../' + userStub.userName, rel: 'user', isRelative:true}]);
-                    sinon.assert.calledWithExactly(resStub.send, 200, rolesStub);
-                    done();
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.addRole(reqStub, resStub, nextStub);
+            userSvcStub.addRole()
+                .then(function() {
+                    throw new Error('Resolved instead of rejected');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
                 });
-
-
-            });
-
-            it('if removeRole on the user service fails due to already existing, then 400 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.removeRole = promiseSvc.wrapWithPromise(userSvcStub.removeRole)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                userCtrl.removeRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 400, randomErrString);
-                    done();
-                });
-
-            });
-
-            it('if removeRole on the user service fails due to other error, then 500 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.removeRole = promiseSvc.wrapWithPromise(userSvcStub.removeRole)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-                userCtrl.removeRole(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
-                });
-
-            });
-            
-        });
-
-        describe('getRoles', function() {
-
-            it('if no userName passed in, returns a bad request message', function() {
-
-                reqStub.params.userName = null;
-                userSvcStub.getSingle = promiseSvc.makeEmptyPromise(userSvcStub.getSingle);
-                userCtrl.getRoles(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(resStub.send, 400, 'Server expects user name to retrieve user');
-
-            });
-
-            it('calls getSingle on the user service with the req.param.userName', function() {
-
-                userSvcStub.getSingle = promiseSvc.makeEmptyPromise(userSvcStub.getSingle);
-                userCtrl.getRoles(reqStub, resStub, nextStub);
-                sinon.assert.calledWithExactly(userSvcStub.getSingle, reqStub.params.userName);
-
-            });
-
-            it('if getSingle on the user service succeeds, then send 200 and the list of roles with links', function(done) {
-
-                var rolesStub = [ utils.getRandomString(0), utils.getRandomString(10)];
-                var userStub = {
-                    roles: rolesStub,
-                    userName: reqStub.params.userName
-                };
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .resolvingWith(userStub);
-
-                linkSvcStub.attachLinksToObject.returns(rolesStub);
-                userCtrl.getRoles(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(linkSvcStub.attachLinksToObject,
-                        {roles: rolesStub},[{ uri: '/../' + userStub.userName, rel: 'user', isRelative:true}]);
-                    sinon.assert.calledWithExactly(resStub.send, 200, rolesStub);
-                    done();
-                });
-
-
-            });
-
-            it('if getSingle on the user service fails due to no resource, then 404 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(true);
-                userCtrl.getRoles(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 404, randomErrString);
-                    done();
-                });
-
-            });
-            it('if getSingle on the user service fails generally, then 500 and error', function(done) {
-
-                var randomErrString = utils.getRandomString(20);
-                userSvcStub.getSingle = promiseSvc.wrapWithPromise(userSvcStub.getSingle)
-                    .rejectingWith(randomErrString);
-                errSvcStub.checkErrorCode.returns(false);
-                userCtrl.getRoles(reqStub, resStub, function() {
-                    sinon.assert.calledWithExactly(resStub.send, 500, randomErrString);
-                    done();
-                });
-
-            });
 
         });
 
-        afterEach(function() {
-            sandbox.restore();
+    });
+
+    describe('getRoles', function () {
+
+        it('if no userName passed in, returns a bad request message', function () {
+
+            reqStub.params.userName = null;
+            userCtrl.getRoles(reqStub, resStub, nextStub);
+            sinon.assert.calledWithExactly(resStub.status, 400);
+            sinon.assert.calledWithExactly(resStub.end, 'Server expects user name to retrieve user');
+
         });
+
+        it('calls getSingle on the user service with the req.param.userName', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            reqStub.params.userName = userName;
+            userSvcStub.getSingle = global.promiseUtils.getNoopPromiseStub();
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getRoles(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function(ret) {
+                    ret.args[0].should.equal(userName);
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+        it('if getSingle on the user service succeeds, then send 200 and the list of roles with links', function (done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var testRes = { userName: userName, roles: [global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)] };
+            reqStub.params.userName = userName;
+            linkSvcStub.attachLinksToObject.returnsArg(0);
+            userSvcStub.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getRoles(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    sinon.assert.calledWithExactly(resStub.status, 200);
+                    sinon.assert.calledWithExactly(resStub.end, { roles: testRes.roles });
+                })
+                .fail(function(err) {
+                    throw err;
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+
+        });
+
+        it('if getSingle on the user service fails due to no resource, then 404 and error', function (done) {
+
+            reqStub.params.userName = 'anything';
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getRoles(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 404);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+        it('if getSingle on the user service fails generally, then 500 and error', function (done) {
+
+            reqStub.params.userName = 'anything';
+            var testError = global.testUtils.getRandomString(10);
+            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            userCtrl._setUserService(userSvcStub);
+            userCtrl.getRoles(reqStub, resStub, nextStub);
+            userSvcStub.getSingle()
+                .then(function() {
+                    throw new Error('Resolved instead of rejecting');
+                })
+                .fail(function(err) {
+                    sinon.assert.calledWithExactly(resStub.status, 500);
+                    sinon.assert.calledWithExactly(resStub.end, err.message);
+                    err.message.should.contain(testError);
+                })
+                .fin(done)
+                .done(function() {
+                    sinon.assert.calledOnce(nextStub);
+                });
+
+        });
+
+    });
+
+    afterEach(function () {
+        sandbox.restore();
     });
 });

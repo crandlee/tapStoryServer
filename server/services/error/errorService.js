@@ -2,39 +2,67 @@
 require('require-enhanced')();
 
 var logSvc = global.rootRequire('svc-logging');
-var extend = require('extend');
-var promiseSvc = global.rootRequire('svc-promise');
-var _ = require('lodash');
+var loggingBypassed = false;
 
-function throwError(err, msg, method, internalCode) {
+function error(msg, props, opts) {
 
-    throw new Error(buildAndLogError(err, msg, method, internalCode));
+    opts = opts || {};
+    var internalCode = opts.internalCode || null;
+    throw new Error(JSON.stringify(stripDetailsFromFinal(buildAndLogError(msg, props, internalCode))));
+
 }
 
-function buildAndLogError(err, msg, method, internalCode) {
-    err = err || {};
-    if (internalCode) err = extend(err, { 'serverInternalCode' : internalCode });
-    return logSvc.logError(msg, err, method);
+function promiseError(msg, props, opts) {
+    return function(err) {
+        if (props && err && err.messsage) {
+            props = global.extend(props, { error: err.message });
+        }
+        error(msg, props, opts);
+    };
 }
 
-function errorFromPromise(pid, err, msg, method, internalCode) {
-    promiseSvc.reject(stripDetailsFromFinal(buildAndLogError(err, msg, method, internalCode)), pid);
+function warn(msg, props, method) {
+
+    return logSvc.logWarning(msg, props, method);
+
+}
+
+function buildAndLogError(msg, props, internalCode) {
+
+    props = props || {};
+    if (internalCode) props = global.extend(props, { 'serverInternalCode' : internalCode });
+    return logSvc.logError(msg, props);
+
 }
 
 function stripDetailsFromFinal(obj) {
+
     //Allow us to hide properties from what is shown to user
     //They may have too many details about internals.  Generally these
     //should still appear in the log
-    if (obj) {
-        _.forOwn(obj, function(num, key) {
-            if (_.indexOf(['errorRef', 'serverMessage'], key) === -1)
+    if (obj && !loggingBypassed) {
+        global._.forOwn(obj, function(num, key) {
+            if (global._.indexOf(['errorRef', 'serverMessage', 'errDisplay'], key) === -1) {
                 delete obj[key];
+            }
         });
     }
+
     return obj;
+
 }
+
 function checkErrorCode(err, code) {
+
     return (err && err.serverInternalCode && err.serverInternalCode === code);
+
+}
+
+function bypassLogger(shouldTurnOff) {
+
+    loggingBypassed = shouldTurnOff;
+    logSvc.bypassLogging(shouldTurnOff);
+
 }
 
 module.exports = (function(logOptions) {
@@ -42,10 +70,13 @@ module.exports = (function(logOptions) {
     logSvc = logSvc.initialize(logOptions);
     return {
 
-        throwError: throwError,
+        bypassLogger: bypassLogger,
+        error: error,
+        warn: warn,
         buildAndLogError: buildAndLogError,
-        errorFromPromise: errorFromPromise,
-        checkErrorCode: checkErrorCode
+        checkErrorCode: checkErrorCode,
+        promiseError: promiseError
 
     };
+
 }());

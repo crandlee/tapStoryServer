@@ -1,42 +1,33 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')({ test: true });
 
-var sinon = require('sinon');
-var should = require('chai').should();
-var utils = global.rootRequire('util-test');
-var proxyquire = require('proxyquire');
+describe('services/authorization/authorizationService.js', function () {
 
-describe('services', function () {
-    describe('authorization', function () {
+    var sinon = global.sinon, sandbox;
+    var authSvc;
 
-        var sandbox;
-        var authSvc;
+    beforeEach(function () {
 
-        beforeEach(function() {
-
-            sandbox = sinon.sandbox.create();
-            authSvc = proxyquire(global.getRoutePathFromKey('svc-auth'),
-                {  });
-
-        });
-
-        describe('authorizationService.js', function () {
-
-            describe('isValidRole', function() {
-                it('returns true when valid role is given', function() {
-                    authSvc.isValidRole("admin").should.equal(true);
-
-                });
-                it('returns false when invalid role is given', function() {
-                   var randomRole = utils.getRandomString(32);
-                   authSvc.isValidRole(randomRole).should.equal(false);
-                });
-            });
-        });
-
-        afterEach(function() {
-            sandbox.restore();
-        });
+        sandbox = sinon.sandbox.create();
+        authSvc = global.proxyquire(global.getRoutePathFromKey('svc-auth'),
+            {  });
 
     });
+
+
+    describe('isValidRole', function () {
+        it('returns true when valid role is given', function () {
+            authSvc.isValidRole("admin").should.equal(true);
+
+        });
+        it('returns false when invalid role is given', function () {
+            var randomRole = global.testUtils.getRandomString(32);
+            authSvc.isValidRole(randomRole).should.equal(false);
+        });
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
 });

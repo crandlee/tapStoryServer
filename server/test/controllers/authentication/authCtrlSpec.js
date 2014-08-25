@@ -1,21 +1,17 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')({ test: true });
 
-var sinon = require('sinon');
-var should = require('chai').should();
-var proxyquire = require('proxyquire');
 
-describe('controllers', function() {
-    describe('authCtrl.js', function() {
+describe('controllers/authentication/authCtrlSpec.js', function() {
 
+        var sinon = global.sinon, sandbox;
         var authSvcStub, authCtrl, resStub, reqStub, nextStub;
-        var sandbox;
 
         beforeEach(function() {
 
             sandbox = sinon.sandbox.create();
             authSvcStub = sandbox.stub(global.rootRequire('svc-passport'));
-            authCtrl = proxyquire(global.getRoutePathFromKey('ctrl-auth'), { authSvc: authSvcStub });
+            authCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-auth'), { authSvc: authSvcStub });
             resStub  = sandbox.stub({
                 status: function() {},
                 send: function() {},
@@ -51,7 +47,7 @@ describe('controllers', function() {
 
             it('returns a function', function() {
                 fn = authCtrl.authorizeMethod();
-                should.exist(fn);
+                global.should.exist(fn);
                 fn.should.be.a('function');
             });
 
@@ -72,7 +68,7 @@ describe('controllers', function() {
                 nextStub.returns(nextRetVal);
                 var ret = fn(reqStub, resStub, nextStub);
                 sinon.assert.calledOnce(nextStub);
-                should.exist(ret);
+                global.should.exist(ret);
                 ret.should.equal(nextRetVal);
 
             });
@@ -103,5 +99,5 @@ describe('controllers', function() {
         afterEach(function() {
             sandbox.restore();
         });
-    });
+
 });

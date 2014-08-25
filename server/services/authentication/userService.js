@@ -3,52 +3,51 @@ require('require-enhanced')();
 
 var resourceSvc = global.rootRequire('svc-resource');
 var userSvcOptions = global.rootRequire('svc-opts-user');
-var extend = require('extend');
 
 function save(updateProperties, options) {
 
-    options = extend(options, updateProperties);
+    options = global.extend(options, updateProperties);
     return resourceSvc.processResourceSave(null, null, userSvcOptions.setSaveUserOptions, options);
 
 }
 
 function addRole(userName, newRole, options) {
 
-    return resourceSvc.processResourceSave(['userName', 'role'],
-        arguments, userSvcOptions.setAddRoleOptions, options);
+    return resourceSvc.processResourceSave({ userName: userName, role: newRole},
+        userSvcOptions.setAddRoleOptions, options);
 }
 
 function removeRole(userName, existRole, options) {
 
-    return resourceSvc.processResourceSave(['userName', 'role'],
-        arguments, userSvcOptions.setRemoveRoleOptions, options);
+    return resourceSvc.processResourceSave({ userName: userName, role: existRole},
+        userSvcOptions.setRemoveRoleOptions, options);
 
 }
 
 function addFile(userName, fileName, groupId, options) {
 
-    return resourceSvc.processResourceSave(['userName', 'file', 'groupId'],
-        arguments, userSvcOptions.setAddFileOptions, options);
+    return resourceSvc.processResourceSave({ userName: userName, file: fileName, groupId: groupId},
+        userSvcOptions.setAddFileOptions, options);
 
 }
 
 function removeFile(userName, fileName, groupId, options) {
 
-    return resourceSvc.processResourceSave(['userName', 'file', 'groupId'],
-        arguments, userSvcOptions.setRemoveFileOptions, options);
+    return resourceSvc.processResourceSave({ userName: userName, file: fileName, groupId: groupId},
+        userSvcOptions.setRemoveFileOptions, options);
 
 }
 
 
 function getList(query, options) {
 
-    return resourceSvc.getList(extend(options, { modelName: 'User', query: query }));
+    return resourceSvc.getList(global.extend(options, { modelName: 'User', query: query }));
 
 }
 
 function getSingle(userName, options) {
 
-    return resourceSvc.getSingle(extend(options, { modelName: 'User', query: {userName: userName} }));
+    return resourceSvc.getSingle(global.extend(options, { modelName: 'User', query: {userName: userName} }));
 
 }
 

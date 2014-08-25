@@ -1,215 +1,130 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')({ test: true });
 
-var sinon = require('sinon');
-var should = require('chai').should();
+describe('services/authentication/userService', function () {
 
-//RL - This module has become trivialized as most of its functionality has been moved to the
-//resource service now.
+    var sinon = global.sinon, sandbox;
+    var userSvc, resourceSvcStub, userSvcOptions;
 
-//TODO-Randy: Rethink some unit tests for the new functionality in the resource service and the user service options
+    beforeEach(function () {
 
-//var proxyquire = require('proxyquire');
-//var utils = global.rootRequire('util-test');
+        global.errSvc.bypassLogger(true);
+        sandbox = sinon.sandbox.create();
+        resourceSvcStub = sandbox.stub(global.rootRequire('svc-resource'));
+        userSvcOptions = global.rootRequire('svc-opts-user');
+        userSvc = global.proxyquire(global.getRoutePathFromKey('svc-user'),
+            { resourceSvc: resourceSvcStub });
 
-//describe('services', function () {
-//    describe('authentication', function () {
-//
-//        var sandbox;
-//        var userSvc;
-//        var errSvc;
-//        var resourceSvc;
-//        var encryptionSvc;
-//        var authorizeSvc;
-//        var promiseSvc;
-//
-//        describe('userService.js', function () {
-//
-//            beforeEach(function() {
-//
-//                sandbox = sinon.sandbox.create();
-//                errSvc = sandbox.stub(global.rootRequire('svc-error'));
-//                resourceSvc = sandbox.stub(global.rootRequire('svc-resource'));
-//                encryptionSvc = sandbox.stub(global.rootRequire('util-encryption'));
-//                authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
-//                promiseSvc = sandbox.stub(global.rootRequire('svc-promise'));
-//                userSvc = proxyquire(global.getRoutePathFromKey('svc-user'),
-//                    { resourceSvc: resourceSvc,
-//                        encryptionSvc: encryptionSvc, authorizeSvc: authorizeSvc, promiseSvc: promiseSvc, errSvc: errSvc });
-//
-//            });
-//
-//            describe('save', function() {
-//
-////                it.only('properly builds the options object', function() {
-////                    var optionsStub = sandbox.stub({});
-////                    var userName = utils.getRandomString(10);
-////                    userSvc.save({ userName: userName }, optionsStub);
-////                    optionsStub.userName = userName;
-////                    should.exist(optionsStub.preValidation);
-////                    optionsStub.onNew.roles.should.equal('user');
-////                    optionsStub.modelName.should.equal('User');
-////                    optionsStub.singleSearch.userName.should.equal(userName);
-////                    should.exist(optionsStub.mapPropertiesToResource);
-////                });
-//
-//                it('calls process on the resource service', function() {
-//                    var optionsStub = sandbox.stub({});
-//                    var userName = utils.getRandomString(10);
-//                    var updateProps = { userName: userName };
-//                    userSvc.save(updateProps, optionsStub);
-//                    sinon.assert.calledWithExactly(resourceSvc.save, optionsStub);
-//                });
-//            });
-//
-//            describe('getSingle', function() {
-//
-//                it('calls getSingle on the resource service with the proper options', function() {
-//                   var userName = utils.getRandomString(10);
-//                   var options = { modelName: 'User', query: { userName: userName } };
-//                   userSvc.getSingle(userName);
-//                   sinon.assert.calledWithExactly(resourceSvc.getSingle, options);
-//                });
-//
-//            });
-//
-//            describe('getList', function() {
-//
-//                it('calls getList on the resource service with the proper options', function() {
-//                    var query = utils.getRandomString(10);
-//                    var options = { modelName: 'User', query: query };
-//                    userSvc.getList(query);
-//                    sinon.assert.calledWithExactly(resourceSvc.getList, options);
-//                });
-//
-//
-//            });
-//
-//            describe('addRole', function() {
-//
-//                it('properly builds the options object', function() {
-//
-//                    var userName = utils.getRandomString(10);
-//                    var roleName = utils.getRandomString(10).toLowerCase();
-//                    var options = { userName: userName, role: roleName};
-//                    userSvc.optionsBuilder.setAddRoleOptions(options);
-//                    options.userName.should.equal(userName);
-//                    options.updateOnly.should.equal(true);
-//                    options.role.should.equal(roleName);
-//                    should.exist(options.preValidation);
-//                    options.modelName.should.equal('User');
-//                    options.singleSearch.userName.should.equal(userName);
-//                    should.exist(options.mapPropertiesToResource);
-//
-//
-//                });
-//
-//                it('calls save on the resource service with the proper options object', function() {
-//                    var userName = utils.getRandomString(10);
-//                    var roleName = utils.getRandomString(10).toLowerCase();
-//                    userSvc.addRole(userName, roleName);
-//                    //Assumes getting called with options object
-//                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
-//                });
-//            });
-//
-//            describe('removeRole', function() {
-//
-//                it('properly builds the options object', function() {
-//
-//                    var userName = utils.getRandomString(10);
-//                    var roleName = utils.getRandomString(10).toLowerCase();
-//                    var options = { userName: userName, role: roleName };
-//                    userSvc.optionsBuilder.setRemoveRoleOptions(options, userName, roleName);
-//                    options.userName.should.equal(userName);
-//                    options.updateOnly.should.equal(true);
-//                    options.role.should.equal(roleName);
-//                    should.exist(options.preValidation);
-//                    options.modelName.should.equal('User');
-//                    options.singleSearch.userName.should.equal(userName);
-//                    should.exist(options.mapPropertiesToResource);
-//
-//
-//                });
-//
-//                it('calls save on the resource service with the proper options object', function() {
-//                    var userName = utils.getRandomString(10);
-//                    var roleName = utils.getRandomString(10).toLowerCase();
-//                    userSvc.removeRole(userName, roleName);
-//                    //Assumes getting called with options object
-//                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
-//                });
-//
-//            });
-//
-//            describe('addFile', function() {
-//
-//                it('properly builds the options object', function() {
-//
-//                    var userName = utils.getRandomString(10);
-//                    var fileName = utils.getRandomString(10).toLowerCase();
-//                    var groupId = utils.getRandomString(10);
-//                    var options = { userName: userName, file: fileName, groupId: groupId };
-//                    userSvc.optionsBuilder.setAddFileOptions(options);
-//                    options.userName.should.equal(userName);
-//                    options.updateOnly.should.equal(true);
-//                    options.file.should.equal(fileName);
-//                    options.groupId.should.equal(groupId);
-//                    should.exist(options.preValidation);
-//                    options.modelName.should.equal('User');
-//                    options.singleSearch.userName.should.equal(userName);
-//                    should.exist(options.mapPropertiesToResource);
-//
-//
-//                });
-//
-//                it('calls save on the resource service with the proper options object', function() {
-//                    var userName = utils.getRandomString(10);
-//                    var fileName = utils.getRandomString(10).toLowerCase();
-//                    var groupId = utils.getRandomString(10);
-//                    userSvc.addFile(userName, fileName, groupId);
-//                    //Assumes getting called with options object
-//                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
-//                });
-//            });
-//
-//            describe('removeFile', function() {
-//
-//                it('properly builds the options object', function() {
-//
-//                    var userName = utils.getRandomString(10);
-//                    var fileName = utils.getRandomString(10).toLowerCase();
-//                    var groupId = utils.getRandomString(10);
-//                    var options = { userName: userName, file: fileName, groupId: groupId };
-//                    userSvc.optionsBuilder.setRemoveFileOptions(options);
-//                    options.userName.should.equal(userName);
-//                    options.updateOnly.should.equal(true);
-//                    options.file.should.equal(fileName);
-//                    options.groupId.should.equal(groupId);
-//                    should.exist(options.preValidation);
-//                    options.modelName.should.equal('User');
-//                    options.singleSearch.userName.should.equal(userName);
-//                    should.exist(options.mapPropertiesToResource);
-//
-//
-//                });
-//
-//                it('calls save on the resource service with the proper options object', function() {
-//                    var userName = utils.getRandomString(10);
-//                    var fileName = utils.getRandomString(10).toLowerCase();
-//                    var groupId = utils.getRandomString(10);
-//                    userSvc.removeFile(userName, fileName, groupId);
-//                    //Assumes getting called with options object
-//                    sinon.assert.calledWith(resourceSvc.save, sinon.match.object);
-//                });
-//            });
-//
-//            afterEach(function() {
-//                sandbox.restore();
-//            });
-//
-//        });
-//
-//
-//    });
-//});
+    });
+
+
+    describe('save', function() {
+        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+
+            var updateProperties = { testMe: global.testUtils.getRandomString(10) };
+            var options = { myOption: global.testUtils.getRandomString(10) };
+            userSvc.save(updateProperties, options);
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave, null, null,
+                userSvcOptions.setSaveUserOptions, global.extend(options, updateProperties) );
+            done();
+
+        });
+    });
+
+    describe('addRole', function() {
+        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var newRole = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.addRole(userName, newRole, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+                { userName: userName, role: newRole }, userSvcOptions.setAddRoleOptions, opts);
+            done();
+
+        });
+
+    });
+
+    describe('removeRole', function() {
+        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var existRole = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.removeRole(userName, existRole, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+                { userName: userName, role: existRole }, userSvcOptions.setRemoveRoleOptions, opts);
+            done();
+
+        });
+
+    });
+
+    describe('addFile', function() {
+        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var fileName = global.testUtils.getRandomString(10);
+            var groupId = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.addFile(userName, fileName, groupId, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+                { userName: userName, file: fileName, groupId: groupId },
+                userSvcOptions.setAddFileOptions, opts);
+            done();
+        });
+
+    });
+
+    describe('removeFile', function() {
+        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+
+            var userName = global.testUtils.getRandomString(10);
+            var fileName = global.testUtils.getRandomString(10);
+            var groupId = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.removeFile(userName, fileName, groupId, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+                { userName: userName, file: fileName, groupId: groupId },
+                userSvcOptions.setRemoveFileOptions, opts);
+            done();
+
+        });
+
+    });
+
+    describe('getList', function() {
+
+        it('calls getList on the resource service with the proper parameters', function(done) {
+
+            var query = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.getList(query, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.getList,
+                global.extend(opts, { modelName: 'User', query: query }));
+            done();
+
+        });
+
+    });
+
+    describe('getSingle', function() {
+        it('calls getSingle on the resource service with the proper parameters', function(done) {
+
+            var query = global.testUtils.getRandomString(10);
+            var opts = { opt1: global.testUtils.getRandomString(10) };
+            userSvc.getSingle(query, opts);
+            sinon.assert.calledWithExactly(resourceSvcStub.getSingle,
+                global.extend(opts, { modelName: 'User', query: query }));
+            done();
+
+        });
+
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+});

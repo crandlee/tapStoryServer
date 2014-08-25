@@ -6,8 +6,6 @@ var encryptionUtility = global.rootRequire('util-encryption');
 var authorizeSvc = global.rootRequire('svc-auth');
 var linkSvc = global.rootRequire('svc-link');
 var uuid = require('node-uuid');
-var errSvc = global.rootRequire('svc-error');
-var _ = require('lodash');
 
 //Schema setup
 var schema = mongoose.Schema({
@@ -37,12 +35,12 @@ schema.methods = {
 
     addFile: function (fileName, groupId) {
 
-        //Validation
-        if (!fileName) errSvc.throwError({ userName: this.userName },
-            "Attempted to add a file with empty file name", 'User.addFile');
+        if (!fileName)
+            global.errSvc.error("Attempted to add a file with empty file name", { userName: this.userName });
+
         var newFile = buildTestFile(groupId, fileName);
-        var existingFileGroup = _.find(this.fileGroup, function (fg) {
-            return fg.groupId === newFile.groupId
+        var existingFileGroup = global._.find(this.fileGroup, function (fg) {
+            return fg.groupId === newFile.groupId;
         });
         if (fileExistingIndex(existingFileGroup, newFile) === -1) {
 
@@ -58,7 +56,8 @@ schema.methods = {
 
         } else {
 
-            errSvc.buildAndLogError({ userName: this.userName, fileGroup: newFile }, "File already exists for this user");
+            global.errSvc.warn("File already exists for this user",
+                { userName: this.userName, fileGroup: newFile }, "User.addFile");
             return null;
         }
 
@@ -67,8 +66,9 @@ schema.methods = {
     removeFile: function (groupId, fileName) {
 
         var removeFile = buildTestFile(groupId, fileName);
-        var targetGroupIndex = _.findIndex(this.fileGroup, function (fg) {
-            return fg.groupId === removeFile.groupId
+        /* jshint validthis:true */
+        var targetGroupIndex = global._.findIndex(this.fileGroup, function (fg) {
+            return fg.groupId === removeFile.groupId;
         });
         if (targetGroupIndex > -1) {
             var targetGroup = this.fileGroup[targetGroupIndex];
@@ -80,10 +80,11 @@ schema.methods = {
                 }
             }
         }
-
+        return true;
     },
 
     authenticate: function (passwordToMatch) {
+        //Promise
         return encryptionUtility.checkEqualToken(passwordToMatch, this.userSecret);
     },
 
@@ -137,7 +138,8 @@ function createDefaultUsers() {
                 })
                 .fail(function () {
                     console.log('Could not create default user.');
-                });
+                })
+                .done();
         }
     });
 
@@ -148,7 +150,7 @@ function buildTestFile(groupId, fileName) {
     return {
         groupId: groupId,
         fileName: fileName
-    }
+    };
 }
 
 function fileExistingIndex(existingGroup, file) {
@@ -164,7 +166,8 @@ function fileExistingIndex(existingGroup, file) {
 function groupIndexToAdd(groupId) {
 
     var testGroup = { groupId: groupId };
-    return _.sortedIndex(this.fileGroup, testGroup, function (fileGroupToTest) {
+    /* jshint validthis:true */
+    return global._.sortedIndex(this.fileGroup, testGroup, function (fileGroupToTest) {
         return fileGroupToTest.groupId;
     });
 
@@ -172,7 +175,7 @@ function groupIndexToAdd(groupId) {
 
 function fileIndexToAdd(fileArray, newFile) {
 
-    return _.sortedIndex(fileArray, newFile.fileName);
+    return global._.sortedIndex(fileArray, newFile.fileName);
 
 }
 

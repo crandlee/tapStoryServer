@@ -6,6 +6,7 @@ var extend = require('extend');
 var logger = null;
 var uuid = require('node-uuid');
 var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
+var loggingBypassed = false;
 
 function getMsgObject(msg, method) {
 
@@ -22,7 +23,7 @@ function buildFinalLogObject(msg, obj, method) {
 function callLogger(type, msg, obj, method) {
 
     var final = buildFinalLogObject(msg, obj, method);
-    if (logger) logger[type].call(logger, final);
+    if (logger && !loggingBypassed) logger[type].call(logger, final);
     return final;
 
 }
@@ -31,7 +32,7 @@ function initialize(options) {
 
     options = options || {};
     options = extend(options, getStandardOptions());
-    logger = bunyan.createLogger(options);
+    logger = loggingBypassed ? null : bunyan.createLogger(options);
     /* jshint validthis: true */
     return this;
 
@@ -87,6 +88,11 @@ function getStandardOptions() {
     };
 }
 
+function bypassLogging(shouldBypass) {
+
+    loggingBypassed = shouldBypass;
+
+}
 
 module.exports = {
     initialize: initialize,
@@ -95,5 +101,6 @@ module.exports = {
     logDebug: logDebug,
     logInfo: logInfo,
     logTrace: logTrace,
-    getStandardOptions: getStandardOptions
+    getStandardOptions: getStandardOptions,
+    bypassLogging: bypassLogging
 };

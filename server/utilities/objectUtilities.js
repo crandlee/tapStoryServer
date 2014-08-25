@@ -1,12 +1,11 @@
 'use strict';
 require('require-enhanced')();
 
-function mergeObjectFromArguments(obj, argNames, args, startPosition, endPosition) {
+function mergeObjectFromArray(obj, argNames, argsArray) {
 
-    var realArgs = Array.prototype.slice.call(args, startPosition, endPosition);
     if (argNames && Array.isArray(argNames)) {
         argNames.forEach(function(name, index) {
-           if (realArgs.length > index) obj[name] = realArgs[index];
+           if (argsArray.length > index) obj[name] = argsArray[index];
         });
     }
     return obj;
@@ -14,5 +13,5 @@ function mergeObjectFromArguments(obj, argNames, args, startPosition, endPositio
 }
 
 module.exports = {
-    args2Obj: mergeObjectFromArguments
+    arr2Obj: mergeObjectFromArray
 };

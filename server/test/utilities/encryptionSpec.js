@@ -1,88 +1,107 @@
 "use strict";
-require('require-enhanced')();
+require('require-enhanced')({ test: true });
 
-var chai = require('chai');
-var should = chai.should();
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+var enc = global.rootRequire('util-encryption');
 
-describe('Utilities Tests', function () {
-    describe('encryption.js', function () {
-        var enc = global.rootRequire('util-encryption');
-        var testSalt = '$2a$10$PgbZyyejZthZd9r23j/iUO';
-        var testSecret = 'secret123@';
-        this.timeout(1000);
-        describe('createSalt', function () {
-            it('creates a valid salt', function (done) {
-                enc.createSalt().then(function (salt) {
-                    should.exist(salt);
-                    done();
-                });
+describe('utilities/encryptionUtility.js', function () {
 
+
+    var testSalt = '$2a$10$PgbZyyejZthZd9r23j/iUO';
+    var testSecret = 'secret123@';
+
+    describe('createSalt', function () {
+        it('creates a valid salt', function (done) {
+
+            enc.createSalt().fin(done).done(function (salt) {
+                global.should.exist(salt);
+            });
+
+        });
+    });
+
+    describe('hashPwd', function () {
+
+        it('properly hashes a password', function (done) {
+            enc.hashPwd(testSecret, testSalt).fin(done).done(function (token) {
+                global.should.exist(token);
             });
         });
-        describe('hashPwd', function () {
-            it('properly hashes a password', function (done) {
-                enc.hashPwd(testSalt, testSecret).then(function (token) {
-                    should.exist(token);
-                    done();
-                });
-            });
-            it('should return the same token on multiple runs w/ same input', function(done) {
-                enc.hashPwd(testSalt, testSecret).then(function (token1) {
-                    should.exist(token1);
-                    enc.hashPwd(testSalt, testSecret).then(function (token2) {
-                        should.exist(token2);
-                        token1.should.equal(token2);
-                        done();
-                    });
-                });
-            });
-        });
-        describe('saltAndHash', function () {
-            it('returns a salted and hashed token', function (done) {
-                enc.saltAndHash(testSecret).should.be.fulfilled
-                    .then(function(hash) {
-                        should.exist(hash);
-                    }).should.notify(done);
 
-            });
-            it('returns a different token on multiple runs', function (done) {
+        it('should return the same token on multiple runs w/ same input', function (done) {
+            function enc1() {
+                return enc.hashPwd(testSecret, testSalt);
+            }
 
-                enc.saltAndHash(testSecret)
-                    .then(function(token1) {
-                        should.exist(token1);
-                        enc.saltAndHash(testSecret).then(function (token2) {
-                            should.exist(token2);
-                            token1.should.not.equal(token2);
-                        }).should.notify(done);
-                    });
-            });
-        });
-        describe('checkEqualToken', function() {
-            it('matches same token with hashed token', function(done) {
-                enc.saltAndHash(testSecret)
-                    .then(function(token1) {
-                        should.exist(token1);
-                        enc.checkEqualToken(testSecret, token1).then(function (isMatch) {
-                            should.exist(isMatch);
-                            isMatch.should.equal(true);
-                        }).should.notify(done);
-                    });
+            function enc2() {
+                return enc.hashPwd(testSecret, testSalt);
+            }
 
-            });
-            it('not match different token with hashed token', function(done) {
-                enc.saltAndHash(testSecret)
-                    .then(function(token1) {
-                        should.exist(token1);
-                        enc.checkEqualToken('Some other secret', token1).then(function (isMatch) {
-                            should.exist(isMatch);
-                            isMatch.should.equal(false);
-                        }).should.notify(done);
-                    });
-
-            });
+            global.Promise.all([enc1(), enc2()])
+                .spread(function (token1, token2) {
+                    global.should.exist(token1);
+                    global.should.exist(token2);
+                    token1.should.equal(token2);
+                })
+                .fin(done).done();
         });
 
     });
+
+    describe('saltAndHash', function () {
+
+        it('returns a salted and hashed token', function (done) {
+
+            enc.saltAndHash(testSecret).should.be.fulfilled
+                .then(function (hash) {
+                    global.should.exist(hash);
+                }).should.notify(done);
+
+
+        });
+        it('returns a different token on multiple runs', function (done) {
+
+            function enc1() {
+                return enc.saltAndHash(testSecret);
+            }
+
+            function enc2() {
+                return enc.saltAndHash(testSecret);
+            }
+
+            global.Promise.all([enc1(), enc2()])
+                .spread(function (token1, token2) {
+                    global.should.exist(token1);
+                    global.should.exist(token2);
+                    token1.should.not.equal(token2);
+                })
+                .fin(done).done();
+
+        });
+    });
+    describe('checkEqualToken', function () {
+        it('matches same token with hashed token', function (done) {
+
+            enc.saltAndHash(testSecret)
+                .then(function (token1) {
+                    global.should.exist(token1);
+                    enc.checkEqualToken(testSecret, token1).then(function (isMatch) {
+                        global.should.exist(isMatch);
+                        isMatch.should.equal(true);
+                    }).should.notify(done);
+                });
+
+        });
+        it('not match different token with hashed token', function (done) {
+            enc.saltAndHash(testSecret)
+                .then(function (token1) {
+                    global.should.exist(token1);
+                    enc.checkEqualToken('Some other secret', token1).then(function (isMatch) {
+                        global.should.exist(isMatch);
+                        isMatch.should.equal(false);
+                    }).should.notify(done);
+                });
+
+        });
+    });
+
 });

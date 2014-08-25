@@ -3,15 +3,12 @@ require('require-enhanced')();
 
 var fileSystemSvc = global.rootRequire('svc-filesystem');
 var recursive = require('recursive-readdir');
-var promiseSvc = global.rootRequire('svc-promise');
 
 module.exports.setFileSystemService = function(fss) {
     fileSystemSvc = fss;
 };
 
 function getSubDirectories (dir, done) {
-
-
     //fn takes parameters (err, directoryPath)
     if (done && typeof(done) === 'function') {
         var results = [];
@@ -37,18 +34,12 @@ function getSubDirectories (dir, done) {
         });
     }
 }
-module.exports.getSubDirectories = getSubDirectories;
-
 
 function getFilesRecursive(rootPath) {
-    var pid = promiseSvc.createPromise();
-    recursive(rootPath, function(err, files) {
-        if (err) {
-            promiseSvc.reject(err, pid);
-        } else {
-            promiseSvc.resolve(files, pid);
-        }
-    });
-    return promiseSvc.getPromise(pid);
+    return global.Promise.denodeify(recursive)(rootPath);
 }
-module.exports.getFilesRecursive = getFilesRecursive;
+
+module.exports = {
+    getFilesRecursive: getFilesRecursive,
+    getSubDirectories: getSubDirectories
+};
