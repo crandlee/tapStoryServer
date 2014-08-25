@@ -24,7 +24,7 @@ describe('services/authentication/userService', function () {
             var updateProperties = { testMe: global.testUtils.getRandomString(10) };
             var options = { myOption: global.testUtils.getRandomString(10) };
             userSvc.save(updateProperties, options);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave, null, null,
+            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave, null,
                 userSvcOptions.setSaveUserOptions, global.extend(options, updateProperties) );
             done();
 

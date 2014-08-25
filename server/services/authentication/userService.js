@@ -7,7 +7,7 @@ var userSvcOptions = global.rootRequire('svc-opts-user');
 function save(updateProperties, options) {
 
     options = global.extend(options, updateProperties);
-    return resourceSvc.processResourceSave(null, null, userSvcOptions.setSaveUserOptions, options);
+    return resourceSvc.processResourceSave(null, userSvcOptions.setSaveUserOptions, options);
 
 }
 

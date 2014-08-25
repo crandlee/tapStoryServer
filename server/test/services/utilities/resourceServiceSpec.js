@@ -173,7 +173,7 @@ describe('services/utilities/resourceService', function () {
 
         });
 
-        it('throws an error when model.save fails', function(done) {
+        it.only('throws an error when model.save fails', function(done) {
 
             var opts = getServiceOptionsStub();
             var testError = global.testUtils.getRandomString(10);

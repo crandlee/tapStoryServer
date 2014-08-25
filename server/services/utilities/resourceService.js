@@ -2,8 +2,6 @@
 require('require-enhanced')();
 
 var mongoose = require('mongoose');
-var utilObj = global.rootRequire('util-object');
-
 function save(opts) {
 
     var setupOptions = opts.setupOptionsStub || function(opts) {
@@ -66,13 +64,30 @@ function save(opts) {
             global.errSvc.error('Can only update existing resource with this method',
                 { modelName: opts.model.modelName }, { internalCode: "E1002"});
 
-        return opts.mapPropertiesToResource({}).then(global._.partial(saveAddedResource, opts));
+        return opts.mapPropertiesToResource({}, opts).then(global._.partial(saveAddedResource, opts));
 
     };
 
     var saveUpdatedResource = opts.saveUpdatedResourceStub || function(opts, resource) {
 
-        return global.promiseUtils.deNodeify(resource.save, opts.model)()
+//        var dfr = global.Promise.defer();
+//        try {
+//            if (resource) {
+//                resource.save(function(err) {
+//                    if (err) global.errSvc.error('Could not update resource',
+//                        { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
+//
+//                })
+//            } else {
+//               global.errSvc.error('No resource to be updated', {});
+//            }
+//            dfr.resolve(resource);
+//        } catch(err) {
+//            dfr.reject(err);
+//        }
+//        return dfr.promise;
+
+        return global.promiseUtils.deNodeify(resource.save, resource)()
             .then(function(resource) { return resource; })
             .fail(function(err) {
                 if (err) global.errSvc.error('Could not update resource',
@@ -102,7 +117,6 @@ function save(opts) {
 
 
     };
-
 
     setupOptions(opts);
     return validateOptions(opts)
@@ -192,11 +206,16 @@ function processResourceSave(params, setupFunction, options) {
 function getModelFromOptions(options) {
 
     var modelName = (options && options.modelName) || '';
-    var model = mongoose.model(modelName);
-    if (!model) {
-        global.errSvc.error({ modelName: modelName }, 'No model set for the resource', 'resourceService.getModelFromOptions');
+    try {
+        var model = mongoose.model(modelName);
+        if (!model) {
+            global.errSvc.error({ modelName: modelName }, 'No model set for the resource', 'resourceService.getModelFromOptions');
+        }
+        return model;
+    } catch(err) {
+        global.errSvc.error("Unable to set the model for the resource", { modelName: modelName });
     }
-    return model;
+
 
 }
 
