@@ -24,9 +24,9 @@ function removeRole(userName, existRole, options) {
 
 }
 
-function addFile(userName, fileName, groupId, options) {
+function addFiles(userName, fileNames, groupId, options) {
 
-    return resourceSvc.processResourceSave({ userName: userName, file: fileName, groupId: groupId},
+    return resourceSvc.processResourceSave({ userName: userName, file: fileNames, groupId: groupId},
         userSvcOptions.setAddFileOptions, options);
 
 }
@@ -51,6 +51,17 @@ function getSingle(userName, options) {
 
 }
 
+function getFileGroups(userName, options) {
+
+    function getFileGroupsFromUserResource(user) {
+        return user.fileGroup || [];
+    }
+
+    return getSingle(userName, options)
+        .then(getFileGroupsFromUserResource)
+        .fail(global.errSvc.promiseError("Could not retrieve file groups from user",
+            { userName: userName } ));
+}
 
 module.exports = {
     save: save,
@@ -58,7 +69,8 @@ module.exports = {
     getList: getList,
     addRole: addRole,
     removeRole: removeRole,
-    addFile: addFile,
+    addFiles: addFiles,
     removeFile: removeFile,
+    getFileGroups: getFileGroups,
     optionsBuilder: userSvcOptions
 };

@@ -10,18 +10,29 @@ function connectDb(config) {
     mongoose.connect(config.db);
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'MongoDb Connection Error'));
-    db.once('open', function () {
+    db.on('open', function () {
         console.log('MongoDb Connection Opened');
+        console.log('Loading models');
+        loadModels()
+            .then(function(){
+                if (global.canBeginTest === null)
+                    global.canBeginTest = true;
+            })
+            .fail(function(err) { throw err; })
+            .done();
+
     });
+
+    return db;
 
 }
 function loadModels() {
 
-    fileSystemUtility.getFilesRecursive('./server/models')
-        .done(function(files) {
-            _.map(files, function(fileName) {
-                require('../../../' + fileName.replace('.js',''));
-            });
+    return fileSystemUtility.getFilesRecursive(global.rootPath + 'server/models')
+        .then(function(files) {
+            return global.Promise(_.map(files, function(fileName) {
+                require(fileName.replace('.js',''));
+            }));
         });
 
 }
@@ -29,10 +40,8 @@ function loadModels() {
 function initialize(config) {
 
     console.log('Initializing database ' + config.db);
-    connectDb(config);
-    console.log('Loading models');
-    loadModels();
-
+    return connectDb(config);
+   
 }
 module.exports.initialize = initialize;
 

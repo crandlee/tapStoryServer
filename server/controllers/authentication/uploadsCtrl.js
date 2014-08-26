@@ -13,7 +13,8 @@ function upload(req, res, next) {
     } else {
         uploads.uploadFiles(req.files, { userName: req.params.userName })
             .then(function () {
-                res.status(200);
+                res.header('Location', config.baseUri + '/users/' + encodeURIComponent(req.params.userName) + '/fileGroups');
+                res.status(302);
                 res.end();
             })
             .fail(function (err) {
@@ -32,22 +33,53 @@ function getUploadsScreen(req, res, next) {
         res.end();
     } else {
         /* jshint validthis:true */
-        res.end(this.getUploadsHtml(req.params.userName, config.baseUri));
+        res.end(getUploadsHtml(req.params.userName, config.baseUri));
     }
     return next();
 
 }
 
-function getUploadsHtml(userName, baseUri) {
+function getFileGroups(req, res, next) {
+
+    if (!req.params || !req.params.userName) {
+        res.status(400);
+        res.end();
+        return next();
+    } else {
+        uploads.getFileGroups(req.params.userName)
+            .then(function(fileGroups) {
+                res.send(200, fileGroups);
+            })
+            .fail(function(err) {
+                res.status(500);
+                res.end(err.message);
+            })
+            .done(function() {
+                return next();
+            });
+    }
+
+
+}
+
+var getUploadsHtml = function(userName, baseUri) {
     return '<html><head></head><body>' +
-        '<form method="POST" action="' + baseUri + '/user/' + encodeURIComponent(userName) + '/upload" enctype="multipart/form-data">' +
+        '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/files" enctype="multipart/form-data">' +
         '<input type="text" name="textField"><br/>' +
         '<input type="file" name="fileField"><br/>' +
         '<input type="file" name="fileField2"><br/>' +
+        '<input type="file" name="fileField3"><br/>' +
+        '<input type="file" name="fileField4"><br/>' +
+        '<input type="file" name="fileField5"><br/>' +
+        '<input type="file" name="fileField6"><br/>' +
+        '<input type="file" name="fileField7"><br/>' +
+        '<input type="file" name="fileField8"><br/>' +
+        '<input type="file" name="fileField9"><br/>' +
+        '<input type="file" name="fileField10"><br/>' +
         '<input type="submit">' +
         '</form>' +
         '</body></html>';
-}
+};
 
 function _setUploadsService(service) {
     uploads = service;
@@ -57,5 +89,6 @@ module.exports = {
     upload: upload,
     getUploadsScreen: getUploadsScreen,
     getUploadsHtml: getUploadsHtml,
+    getFileGroups: getFileGroups,
     _setUploadsService: _setUploadsService
 };

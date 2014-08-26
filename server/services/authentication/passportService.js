@@ -37,6 +37,7 @@ function authenticateMethod() {
     return passport.authenticate('basic', { session: false });
 }
 
+
 function _setUserService(service) {
     userSvc = service;
 }

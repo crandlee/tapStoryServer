@@ -7,6 +7,26 @@ var userSvc = global.rootRequire('svc-user');
 var uuid = require('node-uuid');
 
 
+function getFileGroups(userName, options) {
+
+    //Get file groups from user object then verify with storage service
+    //that file group actually exists.
+    return userSvc.getFileGroups(userName, options)
+        .then(userFileGroupsToArray)
+        .then(writeSvc.verifyFileGroups)
+        .fail(global.errSvc.promiseError("Could not get file groups",
+            { userName: userName } ));
+
+}
+
+function userFileGroupsToArray(userFileGroups) {
+
+    return global.Promise(global._.map(userFileGroups, function(userFileGroup) {
+        return userFileGroup.groupId;
+    }));
+
+}
+
 function uploadFiles(filesFromRequest, options) {
 
     //Set up info needed for user saving
@@ -16,8 +36,8 @@ function uploadFiles(filesFromRequest, options) {
     var fileOutputComplete = options.fileOutputComplete || function(filePath, fileName, groupId, data) {
 
         return writeSvc.writeFile(fileName, data, { dirName: groupId })
-            .then(function(ret) {
-                return userSvc.addFile(userName, fileName, groupId, {}, ret);
+            .then(function() {
+                return global.Promise(fileName);
             })
             .fail(global.errSvc.promiseError("Could not complete file output"),
                 { path: filePath, fileName: fileName });
@@ -30,10 +50,6 @@ function uploadFiles(filesFromRequest, options) {
                 .then(global._.partial(fileOutputComplete, filePath, fileName, groupId))
                 .fail(global.errSvc.promiseError("Could not complete file upload process",
                         { path: filePath, fileName: fileName } ));
-
-        } else {
-            global.errSvc.error('Upload requires a valid file path and name',
-                { fileName: fileName, filePath: filePath});
         }
 
     };
@@ -42,11 +58,17 @@ function uploadFiles(filesFromRequest, options) {
     var promiseArr = [];
     for (var fieldName in filesFromRequest) {
         if (filesFromRequest.hasOwnProperty(fieldName)) {
-            promiseArr.push(global.Promise.fcall(processFile,
-                filesFromRequest[fieldName].path, filesFromRequest[fieldName].name, groupId));
+            var fileName = filesFromRequest[fieldName].name;
+            var filePath = filesFromRequest[fieldName].path;
+            if (fileName && filePath)
+                promiseArr.push(global.Promise.fcall(processFile,
+                    filePath, fileName, groupId));
         }
     }
-    return global.Promise.all(promiseArr);
+    return global.Promise.all(promiseArr)
+        .then(function(fileArr) {
+            return userSvc.addFiles(userName, fileArr, groupId, {});
+        });
 
 }
 
@@ -64,6 +86,7 @@ function _setFs(stub) {
 
 module.exports = {
     uploadFiles: uploadFiles,
+    getFileGroups: getFileGroups,
     _setWriteService: _setWriteService,
     _setUserService: _setUserService,
     _setFs: _setFs

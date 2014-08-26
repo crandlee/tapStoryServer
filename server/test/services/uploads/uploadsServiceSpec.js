@@ -1,5 +1,5 @@
 "use strict";
-require('require-enhanced')({ test: true });
+require('require-enhanced')({ test: true, withDatabase: true });
 var uuid = require('node-uuid');
 
 describe('services/uploads/uploadServiceSpec.js', function () {
@@ -15,7 +15,7 @@ describe('services/uploads/uploadServiceSpec.js', function () {
             readFile: function(filePath) {}
         };
         var writeSvc = { writeFile: function() {}};
-        var userSvc = { addFile: function() {}};
+        var userSvc = global.rootRequire('svc-user');//{ addFile: function() {}};
         global.errSvc.bypassLogger(true);
 
         uploadSvc = global.proxyquire(global.getRoutePathFromKey('svc-uploads'),
@@ -189,6 +189,28 @@ describe('services/uploads/uploadServiceSpec.js', function () {
         });
 
 
+    });
+
+    describe('getFileGroups', function() {
+
+        it.only('returns the results of the userService get file groups', function(done) {
+
+            global.waitUntilReady(function() {
+
+//                uploadSvc.getFileGroups('admin@gmail.com')
+//                    .then(function(ret) {
+//                        console.log(ret);
+//                    })
+//                    .fail(function(err) { throw err; })
+//                    .fin(done)
+//                    .done()
+
+            });
+
+        });
+        it('fails when an error is produced in the chain', function() {
+           throw new Error('Unimplemented');
+        });
     });
 
     afterEach(function() {

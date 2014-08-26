@@ -35,6 +35,41 @@ function writeFile(destFile, data, options) {
 
 }
 
+function verifyFileGroups(groupIdArray) {
+
+    return global.Promise.all(global._.map(groupIdArray, function(groupId) {
+        return verifyFileGroup(groupId);
+    }))
+        .then(function(statArr) {
+            return global._.chain(statArr)
+                .filter('valid')
+                .map('groupId')
+                .value();
+        })
+        .fail(global.errSvc.promiseError("Error verifying file groups",
+            { groupIdArray: groupIdArray }));
+
+    //fs.stat(d, function (er, s) { cb(!er && s.isDirectory()) })
+
+}
+
+function verifyFileGroup(groupId) {
+
+    function buildFileGroupStruct(valid) {
+        return { groupId: groupId, valid: valid };
+    }
+    return global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + groupId)
+        .then(function(stat) {
+            return buildFileGroupStruct(stat && stat.isDirectory());
+        })
+        .fail(function() {
+            return buildFileGroupStruct(false);
+        });
+
+    //fs.stat(d, function (er, s) { cb(!er && s.isDirectory()) })
+
+}
+
 function _setMkdirp(stub) {
     mkdirp = stub;
 }
@@ -44,6 +79,7 @@ function _setFs(stub) {
 
 module.exports = {
     writeFile: global.Promise.fbind(writeFile),
+    verifyFileGroups: global.Promise.fbind(verifyFileGroups),
     _setMkdirp: _setMkdirp,
     _setFs: _setFs
 };

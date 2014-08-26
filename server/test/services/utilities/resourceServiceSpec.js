@@ -87,7 +87,7 @@ describe('services/utilities/resourceService', function () {
             opts.model = { findOne: function() {
                 return {
                     exec: global.promiseUtils.getResolveExactlyPromiseStub(testRes)
-                }
+                };
             }
 
             };
@@ -110,7 +110,7 @@ describe('services/utilities/resourceService', function () {
             opts.model = { findOne: function() {
                 return {
                     exec: global.promiseUtils.getRejectingPromiseStub(testError)
-                }
+                };
             }
 
             };

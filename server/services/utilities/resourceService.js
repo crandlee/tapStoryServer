@@ -80,7 +80,7 @@ function save(opts) {
                     if (err) global.errSvc.error('Could not update resource',
                         { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
                     dfr.resolve(resource);
-                })
+                });
             } else {
                global.errSvc.error('No resource to be updated', {});
             }
@@ -144,8 +144,7 @@ function getSingle(opts) {
 
         return global.Promise(opts.model.findOne(opts.query, opts.select || '').exec())
             .then(function(resource) {
-                if (!resource) global.errSvc.error('No resource was returned',
-                    { modelName: opts.model.modelName, select: opts.select, query: opts.query });
+                if (!resource) throw new Error('No resource was returned');
                 return resource;
             })
             .fail(function (err) {
@@ -217,7 +216,8 @@ function getModelFromOptions(options) {
         }
         return model;
     } catch(err) {
-        global.errSvc.error("Unable to set the model for the resource", { modelName: modelName });
+        global.errSvc.error("Unable to set the model for the resource",
+            { error: err.message, modelName: modelName });
     }
 
 

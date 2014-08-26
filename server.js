@@ -18,10 +18,13 @@ authSvc.initialize(serverSvc);
 routes.initialize(serverSvc, fileSystemSvc);
 
 //Database
-dbSvc.initialize(config);
+dbSvc.initialize(config).on('open', function() {
 
-//Begin server
-serverSvc.beginListen(config.port, function(ret) {
-    console.log('%s listening at %s', ret.name || "Server", ret.url || "Unknown Url");
+    //Begin server
+    serverSvc.beginListen(config.port, function(ret) {
+        console.log('%s listening at %s', ret.name || "Server", ret.url || "Unknown Url");
+    });
+
 });
+
 

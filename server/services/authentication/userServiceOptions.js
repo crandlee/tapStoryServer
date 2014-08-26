@@ -48,7 +48,7 @@ function setFileOptions(addOrRemove, opts) {
         if (addOrRemove && addOrRemove === 'remove') {
             resource.removeFile(opts.groupId, opts.file);
         } else {
-            resource.addFile(opts.file, opts.groupId);
+            resource.addFiles(opts.file, opts.groupId);
         }
         return resource;
     });

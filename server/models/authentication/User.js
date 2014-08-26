@@ -33,33 +33,27 @@ var schema = mongoose.Schema({
 //Instance methods
 schema.methods = {
 
-    addFile: function (fileName, groupId) {
+    addFiles: function (fileNames, groupId) {
 
-        if (!fileName)
-            global.errSvc.error("Attempted to add a file with empty file name", { userName: this.userName });
+        var getFileGroup = function(groupId, existing) {
+            return existing || { groupId: groupId, files: [] };
+        };
 
-        var newFile = buildTestFile(groupId, fileName);
-        var existingFileGroup = global._.find(this.fileGroup, function (fg) {
-            return fg.groupId === newFile.groupId;
+        if (fileNames && !Array.isArray(fileNames)) fileNames = [fileNames];
+        if (!fileNames) fileNames = [];
+        groupId = groupId || uuid.v4();
+
+        var existingGroup = global._.find(this.fileGroup, function (fg) {
+            return fg.groupId === groupId;
         });
-        if (fileExistingIndex(existingFileGroup, newFile) === -1) {
+        var editingGroup = getFileGroup( groupId, existingGroup);
+        editingGroup.files = global._
+            .chain((editingGroup.files || []).concat(fileNames))
+            .uniq()
+            .sortBy(function(name) { return name; })
+            .value();
 
-            //Add group/file
-            newFile.groupId = groupId || uuid.v4();
-            if (!existingFileGroup) {
-                existingFileGroup = addFileToGroup({ groupId: newFile.groupId, files: []}, newFile);
-                this.fileGroup.splice(groupIndexToAdd.call(this, newFile.groupId), 0, existingFileGroup);
-            } else {
-                addFileToGroup(existingFileGroup, newFile);
-            }
-            return newFile.groupId;
-
-        } else {
-
-            global.errSvc.warn("File already exists for this user",
-                { userName: this.userName, fileGroup: newFile }, "User.addFile");
-            return null;
-        }
+        if (!existingGroup) this.fileGroup.push(editingGroup);
 
     },
 
@@ -126,6 +120,7 @@ schema.methods = {
 
 //Create model
 var User = mongoose.model('User', schema);
+console.log('Loaded model: User');
 createDefaultUsers();
 
 //Private functions
@@ -156,33 +151,12 @@ function buildTestFile(groupId, fileName) {
 function fileExistingIndex(existingGroup, file) {
 
     if (existingGroup && existingGroup.files)
-        return existingGroup.files.indexOf(file.fileName.toLowerCase());
+        return existingGroup.files.indexOf(file.fileName);
     else
         return -1;
 
 }
 
 
-function groupIndexToAdd(groupId) {
-
-    var testGroup = { groupId: groupId };
-    /* jshint validthis:true */
-    return global._.sortedIndex(this.fileGroup, testGroup, function (fileGroupToTest) {
-        return fileGroupToTest.groupId;
-    });
-
-}
-
-function fileIndexToAdd(fileArray, newFile) {
-
-    return global._.sortedIndex(fileArray, newFile.fileName);
-
-}
-
-function addFileToGroup(existingFileGroup, newFile) {
-
-    existingFileGroup.files.splice(fileIndexToAdd(existingFileGroup.files, newFile), 0, newFile.fileName.toLowerCase());
-    return existingFileGroup;
 
 
-}
