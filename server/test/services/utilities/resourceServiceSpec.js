@@ -83,12 +83,19 @@ describe('services/utilities/resourceService', function () {
         it('calls findOne on the model to check for existing resource', function(done) {
 
             var opts = getServiceOptionsStub();
+            var testRes = global.testUtils.getRandomString(10);
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(testRes)
+                }
+            }
 
-            opts.model = { findOne: global.promiseUtils.getNoopPromiseStub() };
+            };
+
             opts.addResourceStub = function(opts) {};
             opts.updateResourceStub = function(opts, resource) { return resource; };
             resSvc.save(opts).fin(done).then(function(ret) {
-                ret.args[0].should.equal(opts.singleSearch);
+                ret.should.equal(testRes);
             }).fail(function(err) {
                 throw err;
             })
@@ -100,8 +107,13 @@ describe('services/utilities/resourceService', function () {
 
             var opts = getServiceOptionsStub();
             var testError = global.testUtils.getRandomString(20);
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getRejectingPromiseStub(testError)
+                }
+            }
 
-            opts.model = { findOne: global.promiseUtils.getRejectingPromiseStub(testError) };
+            };
             resSvc.save(opts).fin(done).then(function() {
                 throw new Error('Resolved when it should have rejected');
             }).fail(function(err) {
@@ -113,8 +125,12 @@ describe('services/utilities/resourceService', function () {
         it('it rejects when trying to add with updateOnly option', function(done) {
 
             var opts = getServiceOptionsStub();
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveNullPromiseStub()
+                };
+            }};
 
-            opts.model = { findOne: global.promiseUtils.getResolveNullPromiseStub() };
             opts.updateOnly = true;
 
             resSvc.save(opts).fin(done).then(function() {
@@ -129,8 +145,11 @@ describe('services/utilities/resourceService', function () {
 
             var opts = getServiceOptionsStub();
             var testError = global.testUtils.getRandomString(10);
-            opts.model = {
-                findOne: global.promiseUtils.getResolveNullPromiseStub(),
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveNullPromiseStub()
+                };
+            },
                 create: global.promiseUtils.getRejectExactlyPromiseStub(testError)
             };
             resSvc.save(opts).fin(done).then(function() {
@@ -144,9 +163,11 @@ describe('services/utilities/resourceService', function () {
         it('returns a resource when the return value from model.create is valid and has in _id', function(done) {
 
             var opts = getServiceOptionsStub();
-
-            opts.model = {
-                findOne: global.promiseUtils.getResolveNullPromiseStub(),
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveNullPromiseStub()
+                };
+            },
                 create: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
             };
             resSvc.save(opts).fin(done).then(function(ret) {
@@ -161,8 +182,11 @@ describe('services/utilities/resourceService', function () {
         it('it rejects when trying to update with addOnly option', function(done) {
 
             var opts = getServiceOptionsStub();
-
-            opts.model = { findOne: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew) };
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
+                };
+            }};
             opts.addOnly = true;
 
             resSvc.save(opts).fin(done).then(function() {
@@ -173,14 +197,19 @@ describe('services/utilities/resourceService', function () {
 
         });
 
-        it.only('throws an error when model.save fails', function(done) {
+        it('throws an error when model.save fails', function(done) {
 
             var opts = getServiceOptionsStub();
             var testError = global.testUtils.getRandomString(10);
-            opts.onNew.save = global.promiseUtils.getRejectExactlyPromiseStub(testError);
-            opts.model = {
-                findOne: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
+            //opts.onNew.save = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            opts.testResource = {
+              save: function(cb) { cb(new Error(testError)); }
             };
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
+                };
+            }};
             resSvc.save(opts).fin(done).then(function() {
                 throw new Error('Resolved when it should have rejected');
             }).fail(function(err) {
@@ -189,16 +218,22 @@ describe('services/utilities/resourceService', function () {
 
         });
 
-        it('returns a resource when the call to model.save returns a resource', function(done) {
+        it('returns a resource when the call to model.save does not err', function(done) {
 
             var opts = getServiceOptionsStub();
 
-            opts.onNew.save = global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew);
-            opts.model = {
-                findOne: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
+            //opts.onNew.save = global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew);
+            opts.testResource = {
+                save: function(cb) { cb(null); }
             };
+            opts.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(opts.onNew)
+                };
+            }};
+
             resSvc.save(opts).fin(done).then(function(ret) {
-                ret.should.equal(opts.onNew);
+                ret.should.equal(opts.testResource);
             }).fail(function(err) {
                 throw err;
             }).done();
@@ -228,31 +263,22 @@ describe('services/utilities/resourceService', function () {
                 query: global.testUtils.getRandomString(10),
                 select: global.testUtils.getRandomString(10)
             };
-
-            options.model = { findOne: global.promiseUtils.getNoopPromiseStub() };
+            var testRes = global.testUtils.getRandomString(10);
+            options.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(testRes)
+                };
+            }};
             resSvc.getSingle(options).fin(done).then(function(ret) {
-                ret.args[0].should.equal(options.query);
-                ret.args[1].should.equal(options.select);
+                ret.should.equal(testRes);
+                //ret.args[0].should.equal(options.query);
+                //ret.args[1].should.equal(options.select);
             }).fail(function(err) {
                 throw err;
             }).done();
 
         });
 
-        it('returns a promise that resolves to a resource when found', function (done) {
-            var testResource = { id: global.testUtils.getRandomString(10)};
-            var options = {
-                query: 'anything',
-                select: 'anything'
-            };
-            options.model = { findOne: global.promiseUtils.getResolvingPromiseStub(testResource)};
-            resSvc.getSingle(options).fin(done).done(function (resource) {
-                resource.returned.should.equal(testResource);
-            }, function () {
-                throw new Error('Rejected but should have resolved');
-            });
-
-        });
 
         it('rejects when err returned from model.findOne', function (done) {
             var options = {
@@ -260,11 +286,16 @@ describe('services/utilities/resourceService', function () {
                 select: 'anything'
             };
             var randomErrString = global.testUtils.getRandomString(10);
-            options.model = { findOne: global.promiseUtils.getRejectingPromiseStub(randomErrString)};
+            options.model = { findOne: function() {
+                return {
+                    exec: global.promiseUtils.getRejectExactlyPromiseStub(randomErrString)
+                };
+            }};
+
             resSvc.getSingle(options).fin(done).done(function () {
                 throw new Error('Resolved but should have rejected');
             }, function (err) {
-                err.toString().should.contain(randomErrString);
+                err.message.should.contain(randomErrString);
             });
 
 
@@ -304,34 +335,24 @@ describe('services/utilities/resourceService', function () {
 
 
         it('calls model.find with query and select', function (done) {
-
+            var testRes = global.testUtils.getRandomString(10);
             var options = {
                 query: global.testUtils.getRandomString(10),
                 select: global.testUtils.getRandomString(10)
             };
 
-            options.model = { find: global.promiseUtils.getNoopPromiseStub() };
+            options.model = { find: function() {
+                return {
+                    exec: global.promiseUtils.getResolveExactlyPromiseStub(testRes)
+                };
+            }};
             resSvc.getList(options).fin(done).then(function(ret) {
-                ret.args[0].should.equal(options.query);
-                ret.args[1].should.equal(options.select);
+                //ret.args[0].should.equal(options.query);
+                //ret.args[1].should.equal(options.select);
+                ret.should.equal(testRes);
             }).fail(function(err) {
                 throw err;
             }).done();
-        });
-
-        it('returns a promise that resolves to a an array of resources when found', function (done) {
-            var testResources = [{ id: global.testUtils.getRandomString(10)}];
-            var options = {
-                query: 'anything',
-                select: 'anything'
-            };
-            options.model = { find: global.promiseUtils.getResolvingPromiseStub(testResources)};
-            resSvc.getList(options).fin(done).done(function (resource) {
-                resource.returned.should.equal(testResources);
-            }, function () {
-                throw new Error('Rejected but should have resolved');
-            });
-
         });
 
         it('rejects when err returned from model.find', function (done) {
@@ -340,7 +361,12 @@ describe('services/utilities/resourceService', function () {
                 select: 'anything'
             };
             var randomErrString = global.testUtils.getRandomString(10);
-            options.model = { find: global.promiseUtils.getRejectingPromiseStub(randomErrString)};
+            options.model = { find: function() {
+                return {
+                    exec: global.promiseUtils.getRejectExactlyPromiseStub(randomErrString)
+                };
+            }};
+
             resSvc.getList(options).fin(done).done(function () {
                 throw new Error('Resolved but should have rejected');
             }, function (err) {

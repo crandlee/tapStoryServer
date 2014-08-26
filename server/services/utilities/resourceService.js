@@ -50,7 +50,7 @@ function save(opts) {
         var returnResource = function(resource) {
             if (resource && resource._id) return resource;
         };
-        return global.promiseUtils.deNodeify(opts.model.create, opts.model)(resource)
+        return global.Promise(opts.model.create(resource))
             .then(returnResource)
             .fail(function(err) {
                 if (err) global.errSvc.error('Could not create new resource',
@@ -70,29 +70,33 @@ function save(opts) {
 
     var saveUpdatedResource = opts.saveUpdatedResourceStub || function(opts, resource) {
 
-//        var dfr = global.Promise.defer();
-//        try {
-//            if (resource) {
-//                resource.save(function(err) {
-//                    if (err) global.errSvc.error('Could not update resource',
-//                        { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
-//
-//                })
-//            } else {
-//               global.errSvc.error('No resource to be updated', {});
-//            }
-//            dfr.resolve(resource);
-//        } catch(err) {
-//            dfr.reject(err);
-//        }
-//        return dfr.promise;
+        //No promise support for resource.save in mongoose yet. Will replace this
+        //when that becomes available.
+        resource = opts.testResource || resource;
+        var dfr = global.Promise.defer();
+        try {
+            if (resource) {
+                resource.save(function(err) {
+                    if (err) global.errSvc.error('Could not update resource',
+                        { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
+                    dfr.resolve(resource);
+                })
+            } else {
+               global.errSvc.error('No resource to be updated', {});
+            }
+        } catch(err) {
+            dfr.reject(err);
+        }
+        return dfr.promise;
 
-        return global.promiseUtils.deNodeify(resource.save, resource)()
-            .then(function(resource) { return resource; })
-            .fail(function(err) {
-                if (err) global.errSvc.error('Could not update resource',
-                    { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
-            });
+//        return global.Promise(resource.save())
+//            .then(function(resource) {
+//                return resource;
+//            })
+//            .fail(function(err) {
+//                if (err) global.errSvc.error('Could not update resource',
+//                    { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
+//            });
 
     };
 
@@ -106,7 +110,7 @@ function save(opts) {
 
     var saveResource = opts.saveResourceStub || function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.findOne, opts.model)(opts.singleSearch)
+        return global.Promise(opts.model.findOne(opts.singleSearch,'').exec())
             .then(function(resource) {
                 return !resource ? addResource(opts) : updateResource(opts, resource);
             })
@@ -138,7 +142,7 @@ function getSingle(opts) {
 
     var getResource = function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.findOne, opts.model)(opts.query, opts.select || '')
+        return global.Promise(opts.model.findOne(opts.query, opts.select || '').exec())
             .then(function(resource) {
                 if (!resource) global.errSvc.error('No resource was returned',
                     { modelName: opts.model.modelName, select: opts.select, query: opts.query });
@@ -170,7 +174,7 @@ function getList(opts) {
 
     var getResources = function(opts) {
 
-        return global.promiseUtils.deNodeify(opts.model.find, opts.model)(opts.query, opts.select || '')
+        return global.Promise(opts.model.find(opts.query, opts.select || '').exec())
             .then(function(resources) {
                 if (!resources || resources.length === 0)
                     global.errSvc.error('No resources were returned',
