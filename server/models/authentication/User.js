@@ -90,7 +90,7 @@ schema.methods = {
         return (this.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
     },
 
-    viewModel: function (type) {
+    viewModel: function (type, path) {
         var obj = {
             id: this.id,
             firstName: this.firstName,
@@ -98,17 +98,19 @@ schema.methods = {
             userName: this.userName,
             roles: this.roles
         };
+        var path = path || '';
         switch (type) {
             case 'users':
                 obj = linkSvc.attachLinksToObject(obj, [
-                    { uri: '/user/' + this.userName, rel: 'user', isSelf: true}
-                ]);
+                    { uri: '/' + this.userName, rel: 'user', isSelf: true}
+                ], path);
                 break;
             case 'user':
                 obj = linkSvc.attachLinksToObject(obj, [
-                    { uri: '/../../users', rel: 'users', isRelative: true },
-                    { uri: '/roles', rel: 'roles', isRelative: true }
-                ]);
+                    { uri: '/roles', rel: 'roles' },
+                    { uri: '/fileGroups', rel: 'fileGroups' },
+                    { uri: '/fileHelper', rel: 'fileHelper' }
+                ], path);
                 break;
             default:
         }

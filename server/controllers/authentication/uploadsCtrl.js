@@ -3,6 +3,7 @@ require('require-enhanced')();
 
 var uploads =  global.rootRequire('svc-uploads');
 var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
+var linkSvc = global.rootRequire('svc-link');
 
 function upload(req, res, next) {
 
@@ -11,9 +12,8 @@ function upload(req, res, next) {
     var groupId = (req.params && req.params.groupId);
     if (userName) {
         uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
-            .then(function () {
-                res.status(200);
-                res.end();
+            .then(function (groups) {
+                res.send(200, groups);
             })
             .fail(function (err) {
                 res.status(500);
@@ -46,10 +46,15 @@ function getFileGroups(req, res, next) {
 
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
+    var path = req.path();
     if (userName) {
         uploads.getFileGroups(userName, { groupId: groupId })
             .then(function(fileGroups) {
-                res.send(200, fileGroups);
+                res.send(200, global._.map(fileGroups, function(fileGroup) {
+                    return linkSvc.attachLinksToObject(fileGroup,
+                        [ { uri: groupId ? '' : '/' + fileGroup.groupId , rel: 'fileGroup', isSelf: !groupId }]
+                    , path);
+                }));
             })
             .fail(function(err) {
                 res.status(500);

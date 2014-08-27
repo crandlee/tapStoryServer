@@ -48,6 +48,7 @@ function save(opts) {
 
         if (opts.onNew) resource = global.extend(resource, opts.onNew);
         var returnResource = function(resource) {
+            postOperationCleanup(opts);
             if (resource && resource._id) return resource;
         };
         return global.Promise(opts.model.create(resource))
@@ -79,12 +80,14 @@ function save(opts) {
                 resource.save(function(err) {
                     if (err) global.errSvc.error('Could not update resource',
                         { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
+                    postOperationCleanup(opts);
                     dfr.resolve(resource);
                 });
             } else {
                global.errSvc.error('No resource to be updated', {});
             }
         } catch(err) {
+            postOperationCleanup(opts);
             dfr.reject(err);
         }
         return dfr.promise;
@@ -145,6 +148,8 @@ function getSingle(opts) {
         return global.Promise(opts.model.findOne(opts.query, opts.select || '').exec())
             .then(function(resource) {
                 if (!resource) throw new Error('No resource was returned');
+                //Clean up and keep going
+                postOperationCleanup(opts);
                 return resource;
             })
             .fail(function (err) {
@@ -178,6 +183,8 @@ function getList(opts) {
                 if (!resources || resources.length === 0)
                     global.errSvc.error('No resources were returned',
                     { modelName: opts.model.modelName, select: opts.select, query: opts.query });
+                //Clean up and keep going
+                postOperationCleanup(opts);
                 return resources;
             })
             .fail(function (err) {
@@ -221,6 +228,10 @@ function getModelFromOptions(options) {
     }
 
 
+}
+
+function postOperationCleanup(opts) {
+    delete opts.model;
 }
 
 module.exports = {

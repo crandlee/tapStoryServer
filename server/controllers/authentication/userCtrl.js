@@ -17,7 +17,7 @@ function saveUser(options) {
         } else {
             userSvc.save({addOnly: addOnly}, req.body)
                 .then(function (user) {
-                    res.send((addOnly ? 201 : 200), user.viewModel('user'));
+                    res.send((addOnly ? 201 : 200), user.viewModel('user', req.path()));
                 })
                 .fail(function (err) {
                     res.status(global.errSvc.checkErrorCode(err, "E1000") ? 405 : 500);
@@ -39,7 +39,7 @@ function getUser(req, res, next) {
     } else {
         userSvc.getSingle(req.params.userName)
             .then(function (user) {
-                res.send(200, user.viewModel('user'));
+                res.send(200, user.viewModel('user', req.path()));
             })
             .fail(function (err) {
                 res.status(global.errSvc.checkErrorCode(err, "E1001") ? 404 : 500);
@@ -58,7 +58,7 @@ function getUsers(req, res, next) {
     userSvc.getList({})
         .then(function (users) {
             res.send(200, global._.map(users, function (user) {
-                return user.viewModel('users');
+                return user.viewModel('users', req.path());
             }));
             return next();
         })
@@ -82,9 +82,7 @@ function addRole(req, res, next) {
     if (req.params.userName && req.body.role) {
         userSvc.addRole(req.params.userName, req.body.role)
             .then(function (user) {
-                res.send(201, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                    { uri: '/../' + user.userName, rel: 'user', isRelative: true}
-                ]));
+                res.send(201, { roles: user.roles });
             })
             .fail(function (err) {
                 res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
@@ -103,9 +101,7 @@ function removeRole(req, res, next) {
     if (req.params.userName && req.body.role) {
         userSvc.removeRole(req.params.userName, req.body.role)
             .then(function (user) {
-                res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                    { uri: '/../' + user.userName, rel: 'user', isRelative: true}
-                ]));
+                res.send(200, { roles: user.roles });
             })
             .fail(function (err) {
                 res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
@@ -124,9 +120,7 @@ function getRoles(req, res, next) {
     if (req.params.userName) {
         userSvc.getSingle(req.params.userName)
             .then(function (user) {
-                res.send(200, linkSvc.attachLinksToObject({ roles: user.roles }, [
-                    { uri: '/../' + user.userName, rel: 'user', isRelative: true}
-                ]));
+                res.send(200, { roles: user.roles });
             })
             .fail(function (err) {
                 res.status(global.errSvc.checkErrorCode(err, "E1001") ? 404 : 500);

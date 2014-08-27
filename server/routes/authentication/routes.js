@@ -18,11 +18,11 @@ module.exports = function (serverSvc) {
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod('admin'),
         userCtrl.saveUser({addOnly: false}));
-    serverSvc.addRoute('PUT', '/user/:userName',
+    serverSvc.addRoute('PUT', '/users/:userName',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod('admin'),
         userCtrl.saveUser({addOnly: false}));
-    serverSvc.addRoute('GET', '/user/:userName',
+    serverSvc.addRoute('GET', '/users/:userName',
         authCtrl.authenticateMethod(),
         userCtrl.getUser);
     serverSvc.addRoute('GET', '/users',
@@ -31,13 +31,13 @@ module.exports = function (serverSvc) {
         userCtrl.getUsers);
 
     //Roles
-    serverSvc.addRoute('POST', '/user/:userName/role',
+    serverSvc.addRoute('POST', '/users/:userName/role',
         authCtrl.authenticateMethod(),
         userCtrl.addRole);
-    serverSvc.addRoute('DEL', '/user/:userName/role',
+    serverSvc.addRoute('DEL', '/users/:userName/role',
         authCtrl.authenticateMethod(),
         userCtrl.removeRole);
-    serverSvc.addRoute('GET', '/user/:userName/roles',
+    serverSvc.addRoute('GET', '/users/:userName/roles',
         authCtrl.authenticateMethod(),
         userCtrl.getRoles);
 
