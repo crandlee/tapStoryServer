@@ -24,16 +24,18 @@ function removeRole(userName, existRole, options) {
 
 }
 
-function addFiles(userName, fileNames, groupId, options) {
+function addFiles(userName, fileNames, groupId, groupName, options) {
 
-    return resourceSvc.processResourceSave({ userName: userName, file: fileNames, groupId: groupId},
+    return resourceSvc.processResourceSave(
+        { userName: userName, file: fileNames, groupId: groupId, groupName: groupName },
         userSvcOptions.setAddFileOptions, options);
 
 }
 
 function removeFile(userName, fileName, groupId, options) {
 
-    return resourceSvc.processResourceSave({ userName: userName, file: fileName, groupId: groupId},
+    return resourceSvc.processResourceSave(
+        { userName: userName, file: fileName, groupId: groupId},
         userSvcOptions.setRemoveFileOptions, options);
 
 }
@@ -53,12 +55,19 @@ function getSingle(userName, options) {
 
 function getFileGroups(userName, options) {
 
-    function getFileGroupsFromUserResource(user) {
-        return user.fileGroup || [];
+    function getFileGroupsFromUserResource(options, user) {
+        var groups = user.fileGroups || [];
+        if (options.groupId) {
+            groups = (global._.find(groups, function(fileGroup) {
+                return fileGroup.groupId === options.groupId;
+            }));
+            groups = groups ? [groups] : [];
+        }
+        return groups;
     }
 
     return getSingle(userName, options)
-        .then(getFileGroupsFromUserResource)
+        .then(global._.partial(getFileGroupsFromUserResource, options))
         .fail(global.errSvc.promiseError("Could not retrieve file groups from user",
             { userName: userName } ));
 }

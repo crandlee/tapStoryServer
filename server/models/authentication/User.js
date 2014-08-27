@@ -18,9 +18,10 @@ var schema = mongoose.Schema({
     },
     userSecret: {type: String, required: '{PATH} is required!'},
     roles: [String],
-    fileGroup: [
+    fileGroups: [
         {
             groupId: { type: String, default: uuid.v4() },
+            groupName: { type: String },
             files: [
                 { type: String }
             ]
@@ -33,27 +34,30 @@ var schema = mongoose.Schema({
 //Instance methods
 schema.methods = {
 
-    addFiles: function (fileNames, groupId) {
+    addFiles: function (fileNames, groupId, groupName) {
 
-        var getFileGroup = function(groupId, existing) {
-            return existing || { groupId: groupId, files: [] };
+        var getFileGroup = function(groupId, groupName, existing) {
+            if (existing && groupName) existing.groupName = groupName;
+            if (!existing && !groupName)
+                throw new Error('Must provide a group name if file group is not an existing one');
+            return existing || { groupId: groupId, groupName: groupName, files: [] };
         };
 
         if (fileNames && !Array.isArray(fileNames)) fileNames = [fileNames];
         if (!fileNames) fileNames = [];
         groupId = groupId || uuid.v4();
 
-        var existingGroup = global._.find(this.fileGroup, function (fg) {
+        var existingGroup = global._.find(this.fileGroups, function (fg) {
             return fg.groupId === groupId;
         });
-        var editingGroup = getFileGroup( groupId, existingGroup);
+        var editingGroup = getFileGroup( groupId, groupName, existingGroup);
         editingGroup.files = global._
             .chain((editingGroup.files || []).concat(fileNames))
             .uniq()
             .sortBy(function(name) { return name; })
             .value();
 
-        if (!existingGroup) this.fileGroup.push(editingGroup);
+        if (!existingGroup) this.fileGroups.push(editingGroup);
 
     },
 
@@ -61,16 +65,16 @@ schema.methods = {
 
         var removeFile = buildTestFile(groupId, fileName);
         /* jshint validthis:true */
-        var targetGroupIndex = global._.findIndex(this.fileGroup, function (fg) {
+        var targetGroupIndex = global._.findIndex(this.fileGroups, function (fg) {
             return fg.groupId === removeFile.groupId;
         });
         if (targetGroupIndex > -1) {
-            var targetGroup = this.fileGroup[targetGroupIndex];
+            var targetGroup = this.fileGroups[targetGroupIndex];
             if (targetGroup) {
                 var targetFileIndex = fileExistingIndex(targetGroup, removeFile);
                 if (targetFileIndex > -1) {
                     targetGroup.files.splice(targetFileIndex, 1);
-                    if (targetGroup.files.length === 0) this.fileGroup.splice(targetGroupIndex, 1);
+                    if (targetGroup.files.length === 0) this.fileGroups.splice(targetGroupIndex, 1);
                 }
             }
         }

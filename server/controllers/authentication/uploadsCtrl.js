@@ -6,15 +6,13 @@ var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'developme
 
 function upload(req, res, next) {
 
-    if (!req.params || !req.params.userName) {
-        res.status(400);
-        res.end();
-        next();
-    } else {
-        uploads.uploadFiles(req.files, { userName: req.params.userName })
+    var groupName = (req.body && req.body.groupName);
+    var userName = (req.params && req.params.userName);
+    var groupId = (req.params && req.params.groupId);
+    if (userName) {
+        uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
             .then(function () {
-                res.header('Location', config.baseUri + '/users/' + encodeURIComponent(req.params.userName) + '/fileGroups');
-                res.status(302);
+                res.status(200);
                 res.end();
             })
             .fail(function (err) {
@@ -23,6 +21,11 @@ function upload(req, res, next) {
             })
             .fin(next)
             .done();
+    } else {
+        res.status(400);
+        res.end();
+        next();
+
     }
 }
 
@@ -41,12 +44,10 @@ function getUploadsScreen(req, res, next) {
 
 function getFileGroups(req, res, next) {
 
-    if (!req.params || !req.params.userName) {
-        res.status(400);
-        res.end();
-        return next();
-    } else {
-        uploads.getFileGroups(req.params.userName)
+    var userName = (req.params && req.params.userName);
+    var groupId = (req.params && req.params.groupId);
+    if (userName) {
+        uploads.getFileGroups(userName, { groupId: groupId })
             .then(function(fileGroups) {
                 res.send(200, fileGroups);
             })
@@ -57,15 +58,21 @@ function getFileGroups(req, res, next) {
             .done(function() {
                 return next();
             });
+    } else {
+        res.status(400);
+        res.end();
+        return next();
     }
 
 
 }
 
+
 var getUploadsHtml = function(userName, baseUri) {
     return '<html><head></head><body>' +
-        '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/files" enctype="multipart/form-data">' +
-        '<input type="text" name="textField"><br/>' +
+        '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/fileGroups" enctype="multipart/form-data">' +
+        '<input type="text" name="groupName"><br/>' +
+        '<input type="text" name="groupId"><br/>' +
         '<input type="file" name="fileField"><br/>' +
         '<input type="file" name="fileField2"><br/>' +
         '<input type="file" name="fileField3"><br/>' +

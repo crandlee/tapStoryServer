@@ -35,38 +35,68 @@ function writeFile(destFile, data, options) {
 
 }
 
-function verifyFileGroups(groupIdArray) {
+function verifyFileGroups(fileGroups) {
 
-    return global.Promise.all(global._.map(groupIdArray, function(groupId) {
-        return verifyFileGroup(groupId);
+    return global.Promise.all(global._.map(fileGroups, function(fileGroup) {
+        return verifyFileGroup(fileGroup)
+            .then(verifyFiles);
     }))
-        .then(function(statArr) {
-            return global._.chain(statArr)
+        .then(function(fg) {
+            //Return only valid
+            return global._.chain(fg)
                 .filter('valid')
-                .map('groupId')
+                .map(function(fg) { delete fg.valid; return fg; })
                 .value();
         })
         .fail(global.errSvc.promiseError("Error verifying file groups",
-            { groupIdArray: groupIdArray }));
+            { groupIds: global._.map(fileGroups, 'groupId') }));
 
     //fs.stat(d, function (er, s) { cb(!er && s.isDirectory()) })
 
 }
 
-function verifyFileGroup(groupId) {
+function verifyFileGroup(fileGroup) {
 
-    function buildFileGroupStruct(valid) {
-        return { groupId: groupId, valid: valid };
+    function addValidityToFileGroup(valid) {
+        if (fileGroup) fileGroup.valid = valid;
+        return fileGroup;
     }
-    return global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + groupId)
+    return global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId)
         .then(function(stat) {
-            return buildFileGroupStruct(stat && stat.isDirectory());
+            return addValidityToFileGroup(stat && stat.isDirectory());
         })
         .fail(function() {
-            return buildFileGroupStruct(false);
+            return addValidityToFileGroup(false);
         });
 
     //fs.stat(d, function (er, s) { cb(!er && s.isDirectory()) })
+
+}
+
+function verifyFiles(fileGroup) {
+
+    if (fileGroup.files) {
+
+        var filePromises = [];
+        fileGroup.files.forEach(function(fileName) {
+            filePromises.push(global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId + '/' + fileName)
+                .then(function(stat) {
+                    return stat ? fileName : null;
+                })
+                .fail(function() {
+                    return null;
+                }));
+        });
+        return global.Promise.all(filePromises)
+            .then(function(fileArr) {
+                var files = global._.filter(fileArr, function(fileName) { return fileName; });
+                fileGroup.files = files;
+                return fileGroup;
+            });
+
+    } else {
+        return fileGroup;
+    }
 
 }
 

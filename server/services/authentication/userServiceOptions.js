@@ -37,9 +37,10 @@ function setFileOptions(addOrRemove, opts) {
 
     opts.updateOnly = true;
     opts.preValidation = global.Promise.fbind(function(opts) {
-        if (!opts.userName) global.errSvc.error('User Name must be valid');
-        if (!opts.groupId) global.errSvc.error('User file group id must be valid');
-        if (!opts.file) global.errSvc.error('Upload file for user must be valid');
+        if (!opts.userName) global.errSvc.error('User Name must be valid', {});
+        if (!opts.groupId) global.errSvc.error('User file group id must be valid', {});
+        if (!opts.groupName && !opts.existing) global.errSvc.error('User file group name must be valid', {});
+        if (!opts.file) global.errSvc.error('Upload file for user must be valid', {});
         return opts;
     });
     opts.modelName = 'User';
@@ -48,7 +49,7 @@ function setFileOptions(addOrRemove, opts) {
         if (addOrRemove && addOrRemove === 'remove') {
             resource.removeFile(opts.groupId, opts.file);
         } else {
-            resource.addFiles(opts.file, opts.groupId);
+            resource.addFiles(opts.file, opts.groupId, opts.groupName);
         }
         return resource;
     });

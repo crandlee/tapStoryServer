@@ -12,25 +12,30 @@ function getFileGroups(userName, options) {
     //Get file groups from user object then verify with storage service
     //that file group actually exists.
     return userSvc.getFileGroups(userName, options)
-        .then(userFileGroupsToArray)
+        .then(global._.partialRight(getFileGroupViewModel, options))
         .then(writeSvc.verifyFileGroups)
         .fail(global.errSvc.promiseError("Could not get file groups",
             { userName: userName } ));
 
 }
 
-function userFileGroupsToArray(userFileGroups) {
+function getFileGroupViewModel(userFileGroups, options) {
 
     return global.Promise(global._.map(userFileGroups, function(userFileGroup) {
-        return userFileGroup.groupId;
+        var baseGroup = { groupId: userFileGroup.groupId, groupName: userFileGroup.groupName };
+        if (options.groupId) {
+            baseGroup.files = userFileGroup.files;
+        }
+        return baseGroup;
     }));
 
 }
 
-function uploadFiles(filesFromRequest, options) {
+function uploadFiles(groupName, filesFromRequest, options) {
 
     //Set up info needed for user saving
     var userName = (options && options.userName) || null;
+    if (options.groupId) options.existing = true;
     var groupId = options.groupId || uuid.v4();
 
     var fileOutputComplete = options.fileOutputComplete || function(filePath, fileName, groupId, data) {
@@ -58,16 +63,15 @@ function uploadFiles(filesFromRequest, options) {
     var promiseArr = [];
     for (var fieldName in filesFromRequest) {
         if (filesFromRequest.hasOwnProperty(fieldName)) {
-            var fileName = filesFromRequest[fieldName].name;
-            var filePath = filesFromRequest[fieldName].path;
-            if (fileName && filePath)
+            var field = filesFromRequest[fieldName];
+            if (field.name && field.path)
                 promiseArr.push(global.Promise.fcall(processFile,
-                    filePath, fileName, groupId));
+                    field.path, field.name, groupId));
         }
     }
     return global.Promise.all(promiseArr)
         .then(function(fileArr) {
-            return userSvc.addFiles(userName, fileArr, groupId, {});
+            return userSvc.addFiles(userName, fileArr, groupId, groupName, options);
         });
 
 }
