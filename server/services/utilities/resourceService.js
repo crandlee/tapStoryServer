@@ -74,23 +74,8 @@ function save(opts) {
         //No promise support for resource.save in mongoose yet. Will replace this
         //when that becomes available.
         resource = opts.testResource || resource;
-        var dfr = global.Promise.defer();
-        try {
-            if (resource) {
-                resource.save(function(err) {
-                    if (err) global.errSvc.error('Could not update resource',
-                        { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
-                    postOperationCleanup(opts);
-                    dfr.resolve(resource);
-                });
-            } else {
-               global.errSvc.error('No resource to be updated', {});
-            }
-        } catch(err) {
-            postOperationCleanup(opts);
-            dfr.reject(err);
-        }
-        return dfr.promise;
+        postOperationCleanup(opts);
+        return saveResource(resource);
 
 //        return global.Promise(resource.save())
 //            .then(function(resource) {
@@ -107,27 +92,32 @@ function save(opts) {
         if (opts.addOnly) global.errSvc.error('Can only create new resource with this method',
             { modelName: opts.model.modelName }, { internalCode: "E1000"});
 
-        return opts.mapPropertiesToResource(resource, opts).then(global._.partial(saveUpdatedResource, opts));
+        return opts.mapPropertiesToResource(resource, opts)
+            .then(global._.partial(saveUpdatedResource, opts));
 
     };
 
-    var saveResource = opts.saveResourceStub || function(opts) {
+    var saveTheResource = opts.saveTheResourceStub || function(opts) {
 
         return global.Promise(opts.model.findOne(opts.singleSearch,'').exec())
             .then(function(resource) {
-                return !resource ? addResource(opts) : updateResource(opts, resource);
+                if (opts.manualSave && (typeof opts.manualSave === 'function'))
+                    return global.Promise(opts.manualSave(resource, opts))
+                        .fail(global.errSvc.promiseError('Could not update resource',
+                            { options: opts }));
+                else
+                    return !resource ? addResource(opts) : updateResource(opts, resource);
             })
-            .fail(function (err) {
-                if (err) global.errSvc.error('Could not get resource model for add/update',
-                    { error: err.message, modelName: opts.model.modelName });
-            });
+            .fin(global._.partial(postOperationCleanup, opts))
+            .fail(global.errSvc.promiseError('Could not get resource model for add/update',
+                    { }));
 
 
     };
 
     setupOptions(opts);
     return validateOptions(opts)
-        .then(saveResource);
+        .then(saveTheResource);
 
 }
 
@@ -162,6 +152,26 @@ function getSingle(opts) {
     setupOptions(opts);
 
     return getResource(opts);
+
+}
+
+function saveResource(resource) {
+
+    var dfr = global.Promise.defer();
+    try {
+        if (resource) {
+            resource.save(function(err) {
+                if (err) global.errSvc.error('Could not save resource',
+                    { resource: JSON.stringify(resource), error: err.message });
+                dfr.resolve(resource);
+            });
+        } else {
+            global.errSvc.error('No resource to be updated', {});
+        }
+    } catch(err) {
+        dfr.reject(err);
+    }
+    return dfr.promise;
 
 }
 
@@ -230,6 +240,22 @@ function getModelFromOptions(options) {
 
 }
 
+function modelUpdate(model, find, update, options) {
+
+    var dfr = global.Promise.defer();
+    try {
+        model.update(find, update, options, function(err, num, obj) {
+            if (err) throw err;
+            dfr.resolve(obj);
+        });
+    } catch(e) {
+        dfr.reject(e);
+    }
+    return dfr.promise;
+
+
+}
+
 function postOperationCleanup(opts) {
     delete opts.model;
 }
@@ -238,6 +264,8 @@ module.exports = {
     save: global.Promise.fbind(save),
     getSingle: global.Promise.fbind(getSingle),
     getList: global.Promise.fbind(getList),
+    saveResource: saveResource,
+    modelUpdate: modelUpdate,
     processResourceSave: global.Promise.fbind(processResourceSave),
     _getModelFromOptions: getModelFromOptions
 };

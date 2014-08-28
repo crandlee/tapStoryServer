@@ -40,6 +40,13 @@ function removeFile(userName, fileName, groupId, options) {
 
 }
 
+function removeFileGroup(userName, groupId, options) {
+
+    return resourceSvc.processResourceSave(
+        { userName: userName, groupId: groupId},
+        userSvcOptions.setRemoveFileGroupOptions, options);
+
+}
 
 function getList(query, options) {
 
@@ -79,6 +86,7 @@ module.exports = {
     addRole: addRole,
     removeRole: removeRole,
     addFiles: addFiles,
+    removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     getFileGroups: getFileGroups,
     optionsBuilder: userSvcOptions

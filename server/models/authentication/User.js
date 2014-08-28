@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var encryptionUtility = global.rootRequire('util-encryption');
 var authorizeSvc = global.rootRequire('svc-auth');
 var linkSvc = global.rootRequire('svc-link');
-var uuid = require('node-uuid');
+var uuid = require('node-uuid');;
 
 //Schema setup
 var schema = mongoose.Schema({
@@ -61,24 +61,16 @@ schema.methods = {
 
     },
 
-    removeFile: function (groupId, fileName) {
+    removeFile: function(fileName, groupId) {
 
-        var removeFile = buildTestFile(groupId, fileName);
-        /* jshint validthis:true */
-        var targetGroupIndex = global._.findIndex(this.fileGroups, function (fg) {
-            return fg.groupId === removeFile.groupId;
+        var fileGroup = global._.find(this.fileGroups, function(fg) {
+                return fg.groupId === groupId;
+            });
+
+        if (fileGroup) global._.remove(fileGroup.files, function(name) {
+            return name.toLowerCase() === fileName.toLowerCase();
         });
-        if (targetGroupIndex > -1) {
-            var targetGroup = this.fileGroups[targetGroupIndex];
-            if (targetGroup) {
-                var targetFileIndex = fileExistingIndex(targetGroup, removeFile);
-                if (targetFileIndex > -1) {
-                    targetGroup.files.splice(targetFileIndex, 1);
-                    if (targetGroup.files.length === 0) this.fileGroups.splice(targetGroupIndex, 1);
-                }
-            }
-        }
-        return true;
+
     },
 
     authenticate: function (passwordToMatch) {
@@ -109,6 +101,7 @@ schema.methods = {
                 obj = linkSvc.attachLinksToObject(obj, [
                     { uri: '/roles', rel: 'roles' },
                     { uri: '/fileGroups', rel: 'fileGroups' },
+                    { uri: '/fileGroups', rel: 'fileGroup', method: 'DELETE' },
                     { uri: '/fileHelper', rel: 'fileHelper' }
                 ], path);
                 break;
@@ -145,24 +138,6 @@ function createDefaultUsers() {
     });
 
 }
-
-function buildTestFile(groupId, fileName) {
-
-    return {
-        groupId: groupId,
-        fileName: fileName
-    };
-}
-
-function fileExistingIndex(existingGroup, file) {
-
-    if (existingGroup && existingGroup.files)
-        return existingGroup.files.indexOf(file.fileName);
-    else
-        return -1;
-
-}
-
 
 
 

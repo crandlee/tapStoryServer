@@ -22,13 +22,26 @@ module.exports = function (serverSvc) {
         authCtrl.authenticateMethod(),
         uploadsCtrl.upload);
 
+    serverSvc.addRoute('DEL', '/users/:userName/fileGroups',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.removeFileGroup);
+
     serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId',
         authCtrl.authenticateMethod(),
         uploadsCtrl.getFileGroups);
+
 
     serverSvc.addRoute('POST', '/users/:userName/fileGroups/:groupId',
         authCtrl.authenticateMethod(),
         uploadsCtrl.upload);
 
+    serverSvc.addRoute('DEL', '/users/:userName/fileGroups/:groupId',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.removeFile);
+
+
+    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/fileHelper',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.getUploadsScreen);
 
 };

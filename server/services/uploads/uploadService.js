@@ -76,6 +76,25 @@ function uploadFiles(groupName, filesFromRequest, options) {
 
 }
 
+function removeFileGroup(userName, groupId, options) {
+
+    options = options || {};
+    return userSvc.removeFileGroup(userName, groupId, options)
+        .then(global._.partial(writeSvc.removeFileGroup, groupId))
+        .fail(global.errSvc.promiseError("Could not remove file group",
+            { userName: userName, groupId: groupId } ));
+}
+
+function removeFile(userName, groupId, fileName, options) {
+
+    options = options || {};
+    return userSvc.removeFile(userName, fileName, groupId, options)
+        .then(global._.partial(writeSvc.removeFile, groupId, fileName))
+        .fail(global.errSvc.promiseError("Could not remove file",
+            { userName: userName, fileName: fileName } ));
+
+}
+
 function _setWriteService(service) {
     writeSvc = service;
 }
@@ -91,6 +110,8 @@ function _setFs(stub) {
 module.exports = {
     uploadFiles: uploadFiles,
     getFileGroups: getFileGroups,
+    removeFileGroup: removeFileGroup,
+    removeFile: removeFile,
     _setWriteService: _setWriteService,
     _setUserService: _setUserService,
     _setFs: _setFs

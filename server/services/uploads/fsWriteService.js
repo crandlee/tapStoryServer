@@ -3,7 +3,29 @@ require('require-enhanced')();
 
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
+var logSvc = global.rootRequire('svc-logging');
 
+function removeFileGroup(groupId) {
+
+    var destPath = global.config.uploadPath + groupId;
+    return global.promiseUtils.deNodeify(rimraf)(destPath)
+        .fail(global.errSvc.promiseError("Could not remove file group from system",
+            { groupId: groupId }))
+
+
+}
+
+function removeFile(groupId, fileName) {
+
+    var destPath = global.config.uploadPath + groupId + '/' + fileName;
+    return global.promiseUtils.deNodeify(fs.unlink)(destPath)
+        .fail(function(err) {
+            logSvc.logWarning("An error message was returned trying to remove a file"
+                , { error: err, groupId: groupId, fileName: fileName  });
+        });
+
+}
 
 function writeFile(destFile, data, options) {
 
@@ -110,6 +132,8 @@ function _setFs(stub) {
 module.exports = {
     writeFile: global.Promise.fbind(writeFile),
     verifyFileGroups: global.Promise.fbind(verifyFileGroups),
+    removeFileGroup: global.Promise.fbind(removeFileGroup),
+    removeFile: removeFile,
     _setMkdirp: _setMkdirp,
     _setFs: _setFs
 };
