@@ -5,7 +5,8 @@ var fs = require('fs');
 var writeSvc = global.rootRequire('svc-fswrite');
 var userSvc = global.rootRequire('svc-user');
 var uuid = require('node-uuid');
-
+var archiver = require('archiver');
+var concat = require('concat-stream');
 
 function getFileGroups(userName, options) {
 
@@ -95,6 +96,48 @@ function removeFile(userName, groupId, fileName, options) {
 
 }
 
+function downloadFiles(currentUser, groupId, fileName, callbackForData) {
+
+    var archiveStreams = function (streamContainerArr) {
+
+        var archive = archiver('zip');
+        var writer = concat(callbackForData);
+
+        if (streamContainerArr && Array.isArray(streamContainerArr)) {
+
+            archive.pipe(writer);
+
+            streamContainerArr.forEach(function (s) {
+                archive.append(s.stream, { name: s.name });
+            });
+            archive.finalize();
+
+        }
+
+    };
+
+    var routeDownloadsToArchiver = function(files, groupId) {
+
+        if (files && Array.isArray(files)) {
+            return global.Promise.all(global._.map(files, function (file) {
+                return global.Promise.fcall(writeSvc.downloadFile, file, groupId);
+            })).then(function (streamArr) {
+                return global.Promise.fcall(archiveStreams, streamArr);
+            });
+        } else {
+            throw new Error('No files available to route to archiver');
+        }
+
+    };
+
+    return userSvc.getPermittedFiles(currentUser, groupId, fileName)
+        .then(global._.partialRight(routeDownloadsToArchiver, groupId))
+        .fail(global.errSvc.promiseError("Could not download files",
+            { userName: currentUser.userName, groupId: groupId, files: fileName } ));
+
+}
+
+
 function _setWriteService(service) {
     writeSvc = service;
 }
@@ -107,11 +150,13 @@ function _setFs(stub) {
     fs = stub;
 }
 
+
 module.exports = {
     uploadFiles: uploadFiles,
     getFileGroups: getFileGroups,
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
+    downloadFiles: downloadFiles,
     _setWriteService: _setWriteService,
     _setUserService: _setUserService,
     _setFs: _setFs

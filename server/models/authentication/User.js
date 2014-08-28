@@ -36,7 +36,7 @@ schema.methods = {
 
     addFiles: function (fileNames, groupId, groupName) {
 
-        var getFileGroup = function(groupId, groupName, existing) {
+        var buildEditingFileGroup = function(groupId, groupName, existing) {
             if (existing && groupName) existing.groupName = groupName;
             if (!existing && !groupName)
                 throw new Error('Must provide a group name if file group is not an existing one');
@@ -47,10 +47,9 @@ schema.methods = {
         if (!fileNames) fileNames = [];
         groupId = groupId || uuid.v4();
 
-        var existingGroup = global._.find(this.fileGroups, function (fg) {
-            return fg.groupId === groupId;
-        });
-        var editingGroup = getFileGroup( groupId, groupName, existingGroup);
+        var existingGroup = this.getFileGroup(groupId);
+
+        var editingGroup = buildEditingFileGroup( groupId, groupName, existingGroup);
         editingGroup.files = global._
             .chain((editingGroup.files || []).concat(fileNames))
             .uniq()
@@ -63,12 +62,18 @@ schema.methods = {
 
     removeFile: function(fileName, groupId) {
 
-        var fileGroup = global._.find(this.fileGroups, function(fg) {
-                return fg.groupId === groupId;
-            });
+        var fileGroup = this.getFileGroup(groupId);
 
         if (fileGroup) global._.remove(fileGroup.files, function(name) {
             return name.toLowerCase() === fileName.toLowerCase();
+        });
+
+    },
+
+    getFileGroup: function(groupId) {
+
+        return global._.find(this.fileGroups, function(fg) {
+            return fg.groupId === groupId;
         });
 
     },

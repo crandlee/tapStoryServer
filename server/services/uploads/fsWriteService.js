@@ -6,6 +6,7 @@ var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var logSvc = global.rootRequire('svc-logging');
 
+
 function removeFileGroup(groupId) {
 
     var destPath = global.config.uploadPath + groupId;
@@ -13,14 +14,13 @@ function removeFileGroup(groupId) {
         .fail(global.errSvc.promiseError("Could not remove file group from system",
             { groupId: groupId }))
 
-
 }
 
 function removeFile(groupId, fileName) {
 
     var destPath = global.config.uploadPath + groupId + '/' + fileName;
     return global.promiseUtils.deNodeify(fs.unlink)(destPath)
-        .fail(function(err) {
+        .fail(function (err) {
             logSvc.logWarning("An error message was returned trying to remove a file"
                 , { error: err, groupId: groupId, fileName: fileName  });
         });
@@ -29,7 +29,7 @@ function removeFile(groupId, fileName) {
 
 function writeFile(destFile, data, options) {
 
-    var finalizeFile = options.finalizeFile || function(destPath, data) {
+    var finalizeFile = options.finalizeFile || function (destPath, data) {
 
         return global.promiseUtils.deNodeify(fs.writeFile)(destPath, data)
             .fail(global.errSvc.promiseError("Could not write upload file to file system",
@@ -44,7 +44,7 @@ function writeFile(destFile, data, options) {
     if (optionalDir) {
         var projectedPath = global.config.uploadPath + optionalDir;
         return global.promiseUtils.deNodeify(mkdirp)(projectedPath)
-            .then(function(ret) {
+            .then(function (ret) {
                 //Sending return value of this to finalizeFile for unit testing results
                 //verifying the call to mkdirp.  Not sure of a better way to do this.
                 return finalizeFile(projectedPath + '/' + destFile, data, ret);
@@ -59,15 +59,18 @@ function writeFile(destFile, data, options) {
 
 function verifyFileGroups(fileGroups) {
 
-    return global.Promise.all(global._.map(fileGroups, function(fileGroup) {
+    return global.Promise.all(global._.map(fileGroups, function (fileGroup) {
         return verifyFileGroup(fileGroup)
             .then(verifyFiles);
     }))
-        .then(function(fg) {
+        .then(function (fg) {
             //Return only valid
             return global._.chain(fg)
                 .filter('valid')
-                .map(function(fg) { delete fg.valid; return fg; })
+                .map(function (fg) {
+                    delete fg.valid;
+                    return fg;
+                })
                 .value();
         })
         .fail(global.errSvc.promiseError("Error verifying file groups",
@@ -83,11 +86,12 @@ function verifyFileGroup(fileGroup) {
         if (fileGroup) fileGroup.valid = valid;
         return fileGroup;
     }
+
     return global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId)
-        .then(function(stat) {
+        .then(function (stat) {
             return addValidityToFileGroup(stat && stat.isDirectory());
         })
-        .fail(function() {
+        .fail(function () {
             return addValidityToFileGroup(false);
         });
 
@@ -100,18 +104,20 @@ function verifyFiles(fileGroup) {
     if (fileGroup.files) {
 
         var filePromises = [];
-        fileGroup.files.forEach(function(fileName) {
+        fileGroup.files.forEach(function (fileName) {
             filePromises.push(global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId + '/' + fileName)
-                .then(function(stat) {
+                .then(function (stat) {
                     return stat ? fileName : null;
                 })
-                .fail(function() {
+                .fail(function () {
                     return null;
                 }));
         });
         return global.Promise.all(filePromises)
-            .then(function(fileArr) {
-                var files = global._.filter(fileArr, function(fileName) { return fileName; });
+            .then(function (fileArr) {
+                var files = global._.filter(fileArr, function (fileName) {
+                    return fileName;
+                });
                 fileGroup.files = files;
                 return fileGroup;
             });
@@ -119,6 +125,16 @@ function verifyFiles(fileGroup) {
     } else {
         return fileGroup;
     }
+
+}
+
+function downloadFile(file, groupId) {
+
+    var fullPath = global.config.uploadPath + groupId + '/' + file;
+    return global.promiseUtils.deNodeify(fs.stat)(fullPath)
+        .then(function (s) {
+            if (s.isFile()) return global.Promise({ name: file, stream: fs.createReadStream(fullPath) });
+        });
 
 }
 
@@ -134,6 +150,7 @@ module.exports = {
     verifyFileGroups: global.Promise.fbind(verifyFileGroups),
     removeFileGroup: global.Promise.fbind(removeFileGroup),
     removeFile: removeFile,
+    downloadFile: downloadFile,
     _setMkdirp: _setMkdirp,
     _setFs: _setFs
 };

@@ -44,4 +44,14 @@ module.exports = function (serverSvc) {
         authCtrl.authenticateMethod(),
         uploadsCtrl.getUploadsScreen);
 
+
+    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/files',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.downloadFiles);
+
+    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/:fileName',
+        authCtrl.authenticateMethod(),
+        uploadsCtrl.downloadFiles);
+
+
 };

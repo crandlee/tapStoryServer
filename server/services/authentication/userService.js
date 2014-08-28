@@ -79,6 +79,51 @@ function getFileGroups(userName, options) {
             { userName: userName } ));
 }
 
+function getPermittedFiles(currentUser, groupId, file) {
+
+    var checkGroupOwnership = global.Promise.fbind(function(resource, groupId) {
+        var fg = resource.getFileGroup(groupId);
+        fg = fg || { files: [] };
+        if (file)
+            return { user: resource, files: [global._.find(fg.files, function(testFile) {
+                return testFile.toLowerCase() === file.toLowerCase();
+            })] || [] };
+        else
+            return { user: resource, files: fg.files || []};
+    });
+
+    var checkCurrentUserRole = global.Promise.fbind(function(resFileStruct, currentUser) {
+
+        if (resFileStruct.files.length === 0 && currentUser.hasRole('super-admin')) {
+            return getSingle({ "fileGroups.groupId" : groupId })
+                .then(function(resource) {
+                    if (resource) {
+                        var fg = resource.getFileGroup(groupId);
+                        resFileStruct.files = (fg && fg.files);
+                    } else {
+                        resFileStruct.files =  [];
+                    }
+                    return resFileStruct;
+                })
+                .fail(global.errSvc.promiseError("Could not locate user for file group"),
+                    { groupId: groupId });
+        } else {
+            return resFileStruct;
+        }
+
+    });
+
+    return getSingle(currentUser.userName)
+        .then(global._.partialRight(checkGroupOwnership, groupId))
+        .then(global._.partialRight(checkCurrentUserRole, currentUser))
+        .then(function(userFileStruct) {
+            if (userFileStruct.files.length === 0) throw new Error('Unable to authorize user for download');
+            delete userFileStruct.resource;
+            return global.Promise(userFileStruct.files);
+        })
+
+}
+
 module.exports = {
     save: save,
     getSingle: getSingle,
@@ -89,5 +134,6 @@ module.exports = {
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     getFileGroups: getFileGroups,
+    getPermittedFiles:getPermittedFiles,
     optionsBuilder: userSvcOptions
 };

@@ -2,10 +2,8 @@
 require('require-enhanced')();
 
 var uploads =  global.rootRequire('svc-uploads');
-var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
 var linkSvc = global.rootRequire('svc-link');
 var Encoder = require('node-html-encoder').Encoder;
-
 
 
 function upload(req, res, next) {
@@ -39,7 +37,7 @@ function getUploadsScreen(req, res, next) {
     var multiple = !fileGroup;
 
     if (userName) {
-        res.end(getUploadsHtml(userName, config.baseUri, multiple, fileGroup));
+        res.end(getUploadsHtml(userName, global.config.baseUri, multiple, fileGroup));
     } else {
         res.status(400);
         res.end();
@@ -164,6 +162,37 @@ function removeFile(req, res, next) {
 
 }
 
+
+function downloadFiles(req, res, next) {
+
+    var userName = (req.params && req.params.userName);
+    var groupId = (req.params && req.params.groupId);
+    var fileName = (req.params && req.params.fileName);
+
+    var sendDownload = function(data) {
+        res.setHeader('Content-disposition', 'attachment; filename=' + groupId + '.zip');
+        res.setHeader('Content-type', 'application/zip');
+        res.write(data);
+        res.end();
+    };
+    var currentUser = req.user;
+
+    if (userName && groupId && currentUser) {
+        uploads.downloadFiles(currentUser, groupId, fileName, sendDownload)
+            .fail(function (err) {
+                res.status(500);
+                res.end(err.message);
+            })
+            .fin(next)
+            .done();
+    } else {
+        res.status(400);
+        res.end();
+        next();
+    }
+
+}
+
 function _setUploadsService(service) {
     uploads = service;
 }
@@ -175,5 +204,6 @@ module.exports = {
     getFileGroups: getFileGroups,
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
+    downloadFiles: downloadFiles,
     _setUploadsService: _setUploadsService
 };
