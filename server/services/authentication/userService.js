@@ -86,7 +86,7 @@ function getPermittedFiles(currentUser, groupId, file) {
         fg = fg || { files: [] };
         if (file)
             return { user: resource, files: [global._.find(fg.files, function(testFile) {
-                return testFile.toLowerCase() === file.toLowerCase();
+                return testFile.fileName.toLowerCase() === file.toLowerCase();
             })] || [] };
         else
             return { user: resource, files: fg.files || []};

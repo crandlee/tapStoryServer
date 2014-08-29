@@ -4,8 +4,8 @@ require('require-enhanced')();
 var mongoose = require('mongoose');
 var encryptionUtility = global.rootRequire('util-encryption');
 var authorizeSvc = global.rootRequire('svc-auth');
-var linkSvc = global.rootRequire('svc-link');
-var uuid = require('node-uuid');;
+var uuid = require('node-uuid');
+var viewModels = global.rootRequire('vm-user');
 
 //Schema setup
 var schema = mongoose.Schema({
@@ -23,7 +23,7 @@ var schema = mongoose.Schema({
             groupId: { type: String, default: uuid.v4() },
             groupName: { type: String },
             files: [
-                { type: String }
+                { fileName: { type: String } }
             ]
         }
     ]
@@ -50,6 +50,10 @@ schema.methods = {
         var existingGroup = this.getFileGroup(groupId);
 
         var editingGroup = buildEditingFileGroup( groupId, groupName, existingGroup);
+        fileNames = fileNames.map(function(fileName) {
+            return { fileName: fileName };
+        });
+
         editingGroup.files = global._
             .chain((editingGroup.files || []).concat(fileNames))
             .uniq()
@@ -64,8 +68,8 @@ schema.methods = {
 
         var fileGroup = this.getFileGroup(groupId);
 
-        if (fileGroup) global._.remove(fileGroup.files, function(name) {
-            return name.toLowerCase() === fileName.toLowerCase();
+        if (fileGroup) global._.remove(fileGroup.files, function(file) {
+            return file.fileName.toLowerCase() === fileName.toLowerCase();
         });
 
     },
@@ -87,33 +91,9 @@ schema.methods = {
         return (this.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
     },
 
-    viewModel: function (type, path) {
-        var obj = {
-            id: this.id,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            userName: this.userName,
-            roles: this.roles
-        };
-        var path = path || '';
-        switch (type) {
-            case 'users':
-                obj = linkSvc.attachLinksToObject(obj, [
-                    { uri: '/' + this.userName, rel: 'user', isSelf: true}
-                ], path);
-                break;
-            case 'user':
-                obj = linkSvc.attachLinksToObject(obj, [
-                    { uri: '/roles', rel: 'roles' },
-                    { uri: '/fileGroups', rel: 'fileGroups' },
-                    { uri: '/fileGroups', rel: 'fileGroup', method: 'DELETE' },
-                    { uri: '/fileHelper', rel: 'fileHelper' }
-                ], path);
-                break;
-            default:
-        }
-        return obj;
-
+    viewModel: function (type, apiPath, doc) {
+        //If no doc passed in, then use the base (User) doc
+        return viewModels[type](doc || this, apiPath);
     }
 };
 

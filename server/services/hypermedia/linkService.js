@@ -23,7 +23,8 @@ function addLink(uri, rel, method, isSelf, path) {
     isSelf = isSelf || false;
     method = method || 'GET';
 
-    links[isSelf ? 'self' : rel] = (getLinkObject(uri, method, path));
+    var keyName = isSelf ? 'self' : rel + '-' + (method || 'get').toLowerCase();
+    links[keyName] = (getLinkObject(uri, method, path));
 }
 
 function getLinkObject(uri, method, path) {

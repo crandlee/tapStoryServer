@@ -52,21 +52,12 @@ function getFileGroups(req, res, next) {
 
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    var path = req.path();
+    var apiPath = req.path();
     if (userName) {
-        uploads.getFileGroups(userName, { groupId: groupId })
+        uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
-                res.send(200, global._.map(fileGroups, function(fileGroup) {
-                    var linkSetupArr = [];
-                    if (groupId)
-                        linkSetupArr.push({ uri: '/fileHelper' , rel: 'fileHelper' });
-                    else {
-                        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', isSelf:true });
-                        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'POST' });
-                        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'DELETE' });
-                    }
-                    return linkSvc.attachLinksToObject(fileGroup, linkSetupArr, path);
-                }));
+                res.send(200, global._.map(fileGroups,
+                    global._.partial(getFileGroupTopLevelLinks, groupId, apiPath)));
             })
             .fail(function(err) {
                 res.status(500);
@@ -84,6 +75,23 @@ function getFileGroups(req, res, next) {
 
 }
 
+function getFileGroupTopLevelLinks(groupId, apiPath, fileGroup) {
+
+    var linkSetupArr = [];
+    if (groupId) {
+        //For single file group
+        linkSetupArr.push({ uri: '/fileHelper', rel: 'fileHelper' });
+        linkSetupArr.push({ uri: '/files', rel: 'filePackage', method: 'GET' });
+    } else {
+        //For multiple file groups
+        delete fileGroup.files;  //Do not show files for multiple file groups
+        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', isSelf:true });
+        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'POST' });
+        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'DELETE' });
+    }
+    return linkSvc.attachLinksToObject(fileGroup, linkSetupArr, apiPath);
+
+}
 
 var getUploadsHtml = function(userName, baseUri, multiple, fileGroup) {
 

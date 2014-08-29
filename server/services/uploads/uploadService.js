@@ -13,21 +13,17 @@ function getFileGroups(userName, options) {
     //Get file groups from user object then verify with storage service
     //that file group actually exists.
     return userSvc.getFileGroups(userName, options)
-        .then(global._.partialRight(getFileGroupViewModel, options))
+        .then(global._.partialRight(transformFileGroupsViewModel, options))
         .then(writeSvc.verifyFileGroups)
         .fail(global.errSvc.promiseError("Could not get file groups",
             { userName: userName } ));
 
 }
 
-function getFileGroupViewModel(userFileGroups, options) {
+function transformFileGroupsViewModel(userFileGroups, options) {
 
     return global.Promise(global._.map(userFileGroups, function(userFileGroup) {
-        var baseGroup = { groupId: userFileGroup.groupId, groupName: userFileGroup.groupName };
-        if (options.groupId) {
-            baseGroup.files = userFileGroup.files;
-        }
-        return baseGroup;
+        return userFileGroup.parent().viewModel('fileGroup', options.apiPath, userFileGroup);
     }));
 
 }
@@ -120,7 +116,7 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
 
         if (files && Array.isArray(files)) {
             return global.Promise.all(global._.map(files, function (file) {
-                return global.Promise.fcall(writeSvc.downloadFile, file, groupId);
+                return global.Promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
             })).then(function (streamArr) {
                 return global.Promise.fcall(archiveStreams, streamArr);
             });

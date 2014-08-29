@@ -56,7 +56,7 @@ function setFileOptions(addOrRemove, opts) {
         if (addOrRemove === 'remove') {
             return resSvc.modelUpdate(opts.model,
                   { "userName": opts.userName, "fileGroups.groupId" : opts.groupId }
-                , { $pull: { "fileGroups.$.files": opts.file } });
+                , { $pull: { "fileGroups.$.files": { fileName: opts.file } } });
         } else {
             resource.addFiles(opts.file, opts.groupId, opts.groupName);
             return resSvc.saveResource(resource);

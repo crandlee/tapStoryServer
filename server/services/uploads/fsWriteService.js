@@ -104,10 +104,10 @@ function verifyFiles(fileGroup) {
     if (fileGroup.files) {
 
         var filePromises = [];
-        fileGroup.files.forEach(function (fileName) {
-            filePromises.push(global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId + '/' + fileName)
+        fileGroup.files.forEach(function (file) {
+            filePromises.push(global.promiseUtils.deNodeify(fs.stat)(global.config.uploadPath + fileGroup.groupId + '/' + file.fileName)
                 .then(function (stat) {
-                    return stat ? fileName : null;
+                    return stat ? file : null;
                 })
                 .fail(function () {
                     return null;
@@ -115,8 +115,10 @@ function verifyFiles(fileGroup) {
         });
         return global.Promise.all(filePromises)
             .then(function (fileArr) {
-                var files = global._.filter(fileArr, function (fileName) {
-                    return fileName;
+                //Return only non-null names, meaning they passed the stat check
+                //from the previous step
+                var files = global._.filter(fileArr, function (file) {
+                    return !!file.fileName;
                 });
                 fileGroup.files = files;
                 return fileGroup;
