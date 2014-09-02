@@ -28,8 +28,8 @@ describe('services/authentication/userServiceOptions', function() {
         opts.preValidation.should.be.a('function');
         opts.modelName.should.equal('User');
         global.should.exist(opts.singleSearch);
-        global.should.exist(opts.mapPropertiesToResource);
-        opts.mapPropertiesToResource.should.be.a('function');
+        global.should.exist(opts.mapOptionsToDocument);
+        opts.mapOptionsToDocument.should.be.a('function');
 
         return opts;
     }

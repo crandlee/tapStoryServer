@@ -87,7 +87,7 @@ function getFileGroupTopLevelLinks(groupId, apiPath, fileGroup) {
         delete fileGroup.files;  //Do not show files for multiple file groups
         linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', isSelf:true });
         linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'POST' });
-        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'DELETE' });
+        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'file', method: 'DELETE' });
     }
     return linkSvc.attachLinksToObject(fileGroup, linkSetupArr, apiPath);
 

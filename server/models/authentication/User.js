@@ -50,29 +50,21 @@ schema.methods = {
         var existingGroup = this.getFileGroup(groupId);
 
         var editingGroup = buildEditingFileGroup( groupId, groupName, existingGroup);
-        fileNames = fileNames.map(function(fileName) {
-            return { fileName: fileName };
+
+        //Remove any files that are duplicates
+        global._.remove(fileNames, function(fileName) {
+            return (!!global._.find(editingGroup.files, function(file) {
+                return file.fileName.toLowerCase() === fileName.toLowerCase();
+            }));
         });
-
-        editingGroup.files = global._
-            .chain((editingGroup.files || []).concat(fileNames))
-            .uniq()
-            .sortBy(function(name) { return name; })
-            .value();
-
+        fileNames = fileNames.map(function(fileName) {
+           return { fileName: fileName };
+        });
+        editingGroup.files = editingGroup.files.concat(fileNames);
         if (!existingGroup) this.fileGroups.push(editingGroup);
 
     },
 
-    removeFile: function(fileName, groupId) {
-
-        var fileGroup = this.getFileGroup(groupId);
-
-        if (fileGroup) global._.remove(fileGroup.files, function(file) {
-            return file.fileName.toLowerCase() === fileName.toLowerCase();
-        });
-
-    },
 
     getFileGroup: function(groupId) {
 

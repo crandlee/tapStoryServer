@@ -48,7 +48,7 @@ function getFileGroupVm(fgDoc, apiPath) {
     var vm = getBaseFileGroupVm(fgDoc);
     vm.files = vm.files.map(function(file) {
         return linkSvc.attachLinksToObject(file ,[
-            { uri: '/' + file.fileName, rel: 'filePackage' }
+            { uri: '/' + file.fileName, rel: 'filePackage' },
         ], apiPath);
     });
     return vm;

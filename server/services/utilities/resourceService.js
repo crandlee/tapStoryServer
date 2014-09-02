@@ -2,25 +2,33 @@
 require('require-enhanced')();
 
 var mongoose = require('mongoose');
+
 function save(opts) {
 
+    opts = opts || {};
+
+    /**
+     *     <p>Builds complete list of options for saving.</p>
+     *     <p>The following are some of the options that this function builds/extends</p>
+     *     <p><ul>
+     *         <li>addOnly / updateOnly : Indicates whether the resource can only be new / only updated.
+     *              Without these options, the save will do either depending on the existence of the resource</li>
+     *         <li>model : Either pass in an existing mongoose model or one will be built with getModelFromOptions</li>
+     *         <li>find : MongoDb styled search criteria to be used to find an existing resource to update</li>
+     *         <li>mapPropertiesToUpdateDoc : A function that takes an options object and an initial resource and returns the object used for the MongoDb update parameter.</li>
+     *         <li>preValidation: A function that takes an options object and does some simple validation of the options, throwing an error if something is wrong. This occurs before an attempted save.</li>
+     *     </ul></p>
+     * @params {Object} opts Any initial options for save that will be extended
+     * @function
+     */
     var setupOptions = opts.setupOptionsStub || function(opts) {
 
-        //Options to restrict whether a resource can be added/updated
         opts.addOnly = opts.addOnly || false;
         opts.updateOnly = opts.updateOnly || false;
-
-        //Allow model to be set externally for testing purposes
         opts.model = opts.model || getModelFromOptions(opts);
+        opts.find = opts.find || null;
+        opts.save = opts.save || null;
 
-        //Get the search criteria for a single resource
-        opts.singleSearch = opts.singleSearch || null;
-        if (opts.addOnly) opts.singleSearch = opts.singleSearch || { _id: 0 };
-
-        //Get the map function for properties to a resource
-        opts.mapPropertiesToResource = opts.mapPropertiesToResource || null;
-
-        //Allow for some pre-validation and rejection via promise
         opts.preValidation = opts.preValidation || null;
 
         return opts;
@@ -29,89 +37,30 @@ function save(opts) {
 
     var validateOptions = opts.validateOptionsStub || global.Promise.fbind(function(opts) {
 
-        if (!opts.singleSearch)
-            global.errSvc.error('No search criteria set for a single instance of the model',
+        if (!opts.find)
+            global.errSvc.error('No search criteria set for save',
                 { modelName: (opts.model && opts.model.modelName) });
-        if (!opts.mapPropertiesToResource || typeof opts.mapPropertiesToResource !== 'function')
-            global.errSvc.error('Missing map function',
+        if ((!opts.save || typeof opts.save !== 'function')
+            && (!opts.manualSave || typeof opts.manualSave !== 'function'))
+            global.errSvc.error('Resource options must have either a save function or a manualSave function',
                 { modelName: (opts.model && opts.model.modelName) });
 
         //Other validation published in the options
         if (opts.preValidation && typeof opts.preValidation === 'function')
-            return opts.preValidation(opts);
+            return global.Promise.fcall(opts.preValidation, opts);
         else
             return opts;
 
     });
 
-    var saveAddedResource = opts.saveAddedResourceStub || function(opts, resource) {
-
-        if (opts.onNew) resource = global.extend(resource, opts.onNew);
-        var returnResource = function(resource) {
-            postOperationCleanup(opts);
-            if (resource && resource._id) return resource;
-        };
-        return global.Promise(opts.model.create(resource))
-            .then(returnResource)
-            .fail(function(err) {
-                if (err) global.errSvc.error('Could not create new resource',
-                    { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
-            });
-
-    };
-
-    var addResource = opts.addResourceStub || function(opts) {
-        if (opts.updateOnly)
-            global.errSvc.error('Can only update existing resource with this method',
-                { modelName: opts.model.modelName }, { internalCode: "E1002"});
-
-        return opts.mapPropertiesToResource({}, opts).then(global._.partial(saveAddedResource, opts));
-
-    };
-
-    var saveUpdatedResource = opts.saveUpdatedResourceStub || function(opts, resource) {
-
-        //No promise support for resource.save in mongoose yet. Will replace this
-        //when that becomes available.
-        resource = opts.testResource || resource;
-        postOperationCleanup(opts);
-        return saveResource(resource);
-
-//        return global.Promise(resource.save())
-//            .then(function(resource) {
-//                return resource;
-//            })
-//            .fail(function(err) {
-//                if (err) global.errSvc.error('Could not update resource',
-//                    { resource: JSON.stringify(resource), error: err.message, modelName: opts.model.modelName });
-//            });
-
-    };
-
-    var updateResource = opts.updateResourceStub || function(opts, resource) {
-        if (opts.addOnly) global.errSvc.error('Can only create new resource with this method',
-            { modelName: opts.model.modelName }, { internalCode: "E1000"});
-
-        return opts.mapPropertiesToResource(resource, opts)
-            .then(global._.partial(saveUpdatedResource, opts));
-
-    };
 
     var saveTheResource = opts.saveTheResourceStub || function(opts) {
 
-        return global.Promise(opts.model.findOne(opts.singleSearch,'').exec())
-            .then(function(resource) {
-                if (opts.manualSave && (typeof opts.manualSave === 'function'))
-                    return global.Promise(opts.manualSave(resource, opts))
-                        .fail(global.errSvc.promiseError('Could not update resource',
-                            { options: opts }));
-                else
-                    return !resource ? addResource(opts) : updateResource(opts, resource);
-            })
-            .fin(global._.partial(postOperationCleanup, opts))
-            .fail(global.errSvc.promiseError('Could not get resource model for add/update',
-                    { }));
-
+        opts = opts || {};
+        if (opts.manualSave && (typeof opts.manualSave === 'function'))
+            return global.Promise.fcall(opts.manualSave, opts);
+        else
+            return global.Promise.fcall(opts.save, opts);
 
     };
 
@@ -137,7 +86,6 @@ function getSingle(opts) {
 
         return global.Promise(opts.model.findOne(opts.query, opts.select || '').exec())
             .then(function(resource) {
-                if (!resource) throw new Error('No resource was returned');
                 //Clean up and keep going
                 postOperationCleanup(opts);
                 return resource;
@@ -240,24 +188,80 @@ function getModelFromOptions(options) {
 
 }
 
-function modelUpdate(model, find, update, options) {
+/**
+ * Calls update on a mongoose model with all the expected parameters
+ * @param {Object} model A mongoose model object
+ * @param {Object} documents A MongoDb style update criteria
+ * @param {Object} options MongoDb update options
+ * @returns {adapter.deferred.promise|*|promise|Q.promise}
+ * @throws MongoDb error if update fails
+ */
+function modelUpdate(model, find, documents, options) {
 
     var dfr = global.Promise.defer();
     try {
-        model.update(find, update, options, function(err, num, obj) {
+        options = options || {};
+        if (!find)
+            throw new Error('No search criteria provided for model update');
+        options.updateOptions = global.extend({ upsert: !options.updateOnly, new: true }, options.updateOptions);
+        documents = global.extend(documents, { $setOnInsert: options.onNew });
+        model.findOneAndUpdate(find, documents, options.updateOptions, function(err, obj) {
             if (err) throw err;
             dfr.resolve(obj);
         });
+
     } catch(e) {
         dfr.reject(e);
     }
+
+    dfr.promise.fin(function() {
+        if (options.modelCleanup !== false) postOperationCleanup(options);
+    });
+
     return dfr.promise;
 
 
 }
 
+function modelCreate(model, documents, options) {
+
+    var dfr = global.Promise.defer();
+    try {
+        documents = global.extend(documents, options.onNew);
+        model.create(documents, function(err, obj) {
+            if (err) throw err;
+            if (arguments.length > 3) {
+                //Case where more than one document was added return an array
+                obj = Array.prototype.slice.call(arguments, 2);
+            }
+            dfr.resolve(obj);
+        });
+    } catch(e) {
+        dfr.reject(e);
+    }
+
+    dfr.promise.fin(function() {
+        if (options.modelCleanup !== false) postOperationCleanup(options);
+    });
+
+    return dfr.promise;
+
+
+}
+
+
+function modelSave(model, documents, options) {
+
+    if (options.addOnly) {
+        return modelCreate(model, documents, options);
+    } else {
+        return modelUpdate(model, options.find, documents, options);
+    }
+
+}
+
 function postOperationCleanup(opts) {
-    delete opts.model;
+    opts.model = null;
 }
 
 module.exports = {
@@ -266,6 +270,8 @@ module.exports = {
     getList: global.Promise.fbind(getList),
     saveResource: saveResource,
     modelUpdate: modelUpdate,
+    modelCreate: modelCreate,
+    modelSave: modelSave,
     processResourceSave: global.Promise.fbind(processResourceSave),
     _getModelFromOptions: getModelFromOptions
 };

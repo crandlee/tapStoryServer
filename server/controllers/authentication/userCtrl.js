@@ -2,13 +2,10 @@
 require('require-enhanced')();
 
 var userSvc = global.rootRequire('svc-user');
-var linkSvc = global.rootRequire('svc-link');
 
 function saveUser(options) {
 
-
     var addOnly = (options && options.addOnly) || false;
-
     return function (req, res, next) {
 
         if (!req.body || Object.getOwnPropertyNames(req.body).length === 0) {

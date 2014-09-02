@@ -50,14 +50,14 @@ describe('services/utilities/resourceService', function () {
                 onNew: { roles: 'user', _id: global.testUtils.getRandomString(10) },
                 modelName: 'User',
                 singleSearch: { userName: 'test' },
-                mapPropertiesToResource: global.Promise.fbind(function(resource) { return resource; })
+                mapOptionsToDocument: global.Promise.fbind(function(resource) { return resource; })
             };
         }
 
         it('fails when singleSearch is not set on the options input', function(done) {
             var options = {
                 singleSearch: null,
-                mapPropertiesToResource: function() {},
+                mapOptionsToDocument: function() {},
                 model: {}
             };
             var checkRejection = function(err) {
@@ -67,10 +67,10 @@ describe('services/utilities/resourceService', function () {
             resSvc.save(options).fail(checkRejection).fin(done).done();
         });
 
-        it('fails when mapPropertiesToResource is not set on the options input', function(done) {
+        it('fails when mapOptionsToDocument is not set on the options input', function(done) {
             var options = {
                 singleSearch: {},
-                mapPropertiesToResource: null,
+                mapOptionsToDocument: null,
                 model: {}
             };
             var checkRejection = function(err) {
