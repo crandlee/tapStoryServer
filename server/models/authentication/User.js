@@ -17,7 +17,7 @@ var schema = mongoose.Schema({
         unique: true
     },
     userSecret: {type: String, required: '{PATH} is required!'},
-    roles: [String],
+    roles: [{ type: String, lowercase: true}],
     fileGroups: [
         {
             groupId: { type: String, default: uuid.v4() },
@@ -29,7 +29,10 @@ var schema = mongoose.Schema({
     ]
 });
 
-//TODO-Randy Add unique index to fileGroup
+schema.index({ "userName" : 1, "fileGroups.groupId": 1 }, { unique: true });
+schema.index({ "userName" : 1, "fileGroups.groupName": 1 }, { unique: true });
+schema.index({ "userName" : 1, "fileGroups.groupName": 1, "fileGroups.files.fileName": 1 }, { unique: true });
+
 
 //Instance methods
 schema.methods = {
@@ -97,9 +100,11 @@ schema.methods = {
 //Create model
 var User = mongoose.model('User', schema);
 console.log('Loaded model: User');
+
 createDefaultUsers();
 
 //Private functions
+
 function createDefaultUsers() {
     User.find({}).exec(function (err, collection) {
         if (collection.length === 0) {

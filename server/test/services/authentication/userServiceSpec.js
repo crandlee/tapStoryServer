@@ -19,12 +19,12 @@ describe('services/authentication/userService', function () {
 
 
     describe('save', function() {
-        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+        it('calls processDocumentSave on the resource service with the proper parameters', function(done) {
 
             var updateProperties = { testMe: global.testUtils.getRandomString(10) };
             var options = { myOption: global.testUtils.getRandomString(10) };
             userSvc.save(updateProperties, options);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave, null,
+            sinon.assert.calledWithExactly(resourceSvcStub.processDocumentSave, null,
                 userSvcOptions.setSaveUserOptions, global.extend(options, updateProperties) );
             done();
 
@@ -32,13 +32,13 @@ describe('services/authentication/userService', function () {
     });
 
     describe('addRole', function() {
-        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+        it('calls processDocumentSave on the resource service with the proper parameters', function(done) {
 
             var userName = global.testUtils.getRandomString(10);
             var newRole = global.testUtils.getRandomString(10);
             var opts = { opt1: global.testUtils.getRandomString(10) };
             userSvc.addRole(userName, newRole, opts);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+            sinon.assert.calledWithExactly(resourceSvcStub.processDocumentSave,
                 { userName: userName, role: newRole }, userSvcOptions.setAddRoleOptions, opts);
             done();
 
@@ -47,13 +47,13 @@ describe('services/authentication/userService', function () {
     });
 
     describe('removeRole', function() {
-        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+        it('calls processDocumentSave on the resource service with the proper parameters', function(done) {
 
             var userName = global.testUtils.getRandomString(10);
             var existRole = global.testUtils.getRandomString(10);
             var opts = { opt1: global.testUtils.getRandomString(10) };
             userSvc.removeRole(userName, existRole, opts);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+            sinon.assert.calledWithExactly(resourceSvcStub.processDocumentSave,
                 { userName: userName, role: existRole }, userSvcOptions.setRemoveRoleOptions, opts);
             done();
 
@@ -62,14 +62,14 @@ describe('services/authentication/userService', function () {
     });
 
     describe('addFile', function() {
-        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+        it('calls processDocumentSave on the resource service with the proper parameters', function(done) {
 
             var userName = global.testUtils.getRandomString(10);
             var fileName = global.testUtils.getRandomString(10);
             var groupId = global.testUtils.getRandomString(10);
             var opts = { opt1: global.testUtils.getRandomString(10) };
             userSvc.addFile(userName, fileName, groupId, opts);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+            sinon.assert.calledWithExactly(resourceSvcStub.processDocumentSave,
                 { userName: userName, file: fileName, groupId: groupId },
                 userSvcOptions.setAddFileOptions, opts);
             done();
@@ -78,14 +78,14 @@ describe('services/authentication/userService', function () {
     });
 
     describe('removeFile', function() {
-        it('calls processResourceSave on the resource service with the proper parameters', function(done) {
+        it('calls processDocumentSave on the resource service with the proper parameters', function(done) {
 
             var userName = global.testUtils.getRandomString(10);
             var fileName = global.testUtils.getRandomString(10);
             var groupId = global.testUtils.getRandomString(10);
             var opts = { opt1: global.testUtils.getRandomString(10) };
             userSvc.removeFile(userName, fileName, groupId, opts);
-            sinon.assert.calledWithExactly(resourceSvcStub.processResourceSave,
+            sinon.assert.calledWithExactly(resourceSvcStub.processDocumentSave,
                 { userName: userName, file: fileName, groupId: groupId },
                 userSvcOptions.setRemoveFileOptions, opts);
             done();

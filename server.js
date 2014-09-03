@@ -14,11 +14,11 @@ var routes = global.rootRequire('route-root');
 //Authentication Configuration
 authSvc.initialize(serverSvc);
 
-//Routes
-routes.initialize(serverSvc, fileSystemSvc);
-
 //Database
 dbSvc.initialize(config).on('open', function() {
+
+    //Routes
+    routes.initialize(serverSvc, fileSystemSvc);
 
     //Begin server
     serverSvc.beginListen(config.port, function(ret) {

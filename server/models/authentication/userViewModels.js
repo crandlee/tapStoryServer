@@ -35,9 +35,9 @@ function getUsersVm(userDoc, apiPath) {
 function getUserVm(userDoc, apiPath) {
 
     return linkSvc.attachLinksToObject(getBaseUserVm(userDoc), [
+        { uri: '', method:'PUT', rel: 'user' },
         { uri: '/roles', rel: 'roles' },
         { uri: '/fileGroups', rel: 'fileGroups' },
-        { uri: '/fileGroups', rel: 'fileGroup', method: 'DELETE' },
         { uri: '/fileHelper', rel: 'fileHelper' }
     ], apiPath);
 
@@ -46,9 +46,10 @@ function getUserVm(userDoc, apiPath) {
 function getFileGroupVm(fgDoc, apiPath) {
 
     var vm = getBaseFileGroupVm(fgDoc);
+
     vm.files = vm.files.map(function(file) {
         return linkSvc.attachLinksToObject(file ,[
-            { uri: '/' + file.fileName, rel: 'filePackage' },
+            { uri: '/' + file.fileName, rel: 'filePackage' }
         ], apiPath);
     });
     return vm;

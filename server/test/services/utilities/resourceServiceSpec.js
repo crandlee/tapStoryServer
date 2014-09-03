@@ -393,7 +393,7 @@ describe('services/utilities/resourceService', function () {
 
     });
 
-    describe('processResourceSave', function() {
+    describe('processDocumentSave', function() {
 
         it('builds the proper options list and calls save with it', function(done) {
 
@@ -401,7 +401,7 @@ describe('services/utilities/resourceService', function () {
             var fn = function(opts) { opts.modded = 'modded'; return opts; };
             var options = { 'opt1' : global.testUtils.getRandomString(10) };
             resSvc.save = global.promiseUtils.getNoopPromiseStub();
-            resSvc.processResourceSave(params, fn, options).fin(done).then(function(ret) {
+            resSvc.processDocumentSave(params, fn, options).fin(done).then(function(ret) {
                 var testObj = global.extend(params, options);
                 testObj.modded = 'modded';
                 ret.args[0].opt1.should.equal(testObj.opt1);

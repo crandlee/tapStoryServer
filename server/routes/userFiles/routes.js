@@ -31,11 +31,11 @@ module.exports = function (serverSvc) {
         uploadsCtrl.getFileGroups);
 
 
-    serverSvc.addRoute('POST', '/users/:userName/fileGroups/:groupId',
+    serverSvc.addRoute('POST', '/users/:userName/fileGroups/:groupId/files',
         authCtrl.authenticateMethod(),
         uploadsCtrl.upload);
 
-    serverSvc.addRoute('DEL', '/users/:userName/fileGroups/:groupId',
+    serverSvc.addRoute('DEL', '/users/:userName/fileGroups/:groupId/files',
         authCtrl.authenticateMethod(),
         uploadsCtrl.removeFile);
 

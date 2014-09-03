@@ -7,9 +7,11 @@ var resSvc = global.rootRequire('svc-resource');
 
 function saveUserOptions(opts) {
 
-    opts.preValidation = function(opts) {
-        if (!opts.userName)
-            global.errSvc.error('User Name must be valid');
+    opts.preValidation = function(opts, document) {
+        if (!(!!document)) {
+            if (!opts.userName) global.errSvc.error('User Name must be valid');
+            if (!opts.password) global.errSvc.error('Password must be valid');
+        }
         return opts;
     };
     opts.onNew = {
@@ -17,21 +19,19 @@ function saveUserOptions(opts) {
     };
     opts.modelName = 'User';
     opts.find = { userName: opts.userName };
-    opts.save = function(opts) {
+    opts.buildDocument = function(opts, doc) {
 
-        var doc = {};
         if (opts.firstName) doc.firstName = opts.firstName;
         if (opts.lastName) doc.lastName = opts.lastName;
-        if (opts.userName) doc.userName = opts.userName;
+        doc.userName = opts.userName;
         if (opts.password && opts.password.length > 0) {
             return encryptionSvc.saltAndHash(opts.password).then(function (token) {
                 doc.userSecret = token;
-                return resSvc.modelSave(opts.model, doc, opts);
+                return doc;
             });
         } else {
-            return resSvc.modelSave(opts.model, doc, opts);
+            return doc;
         }
-
 
     };
 
@@ -42,11 +42,11 @@ function setFileOptions(addOrRemove, opts) {
 
     opts.updateOnly = true;
     opts.preValidation = global.Promise.fbind(function(opts) {
-        if (!opts.userName) global.errSvc.error('User Name must be valid', {});
-        if (!opts.groupId) global.errSvc.error('User file group id must be valid', {});
+        if (!opts.userName) global.errSvc.error('User Name must be valid');
+        if (!opts.groupId) global.errSvc.error('User file group id must be valid');
         if (!opts.groupName && !opts.existing && addOrRemove !== 'remove')
-            global.errSvc.error('User file group name must be valid', {});
-        if (!opts.file) global.errSvc.error('Upload files for user must be valid', {});
+            global.errSvc.error('User file group name must be valid');
+        if (!opts.file) global.errSvc.error('Upload files for user must be valid');
         return opts;
     });
     opts.modelName = 'User';
@@ -55,46 +55,17 @@ function setFileOptions(addOrRemove, opts) {
 
         if (addOrRemove === 'remove') {
             //Remove file
-            return resSvc.modelUpdate(opts.model,
-                  { "userName": opts.userName, "fileGroups.groupId" : opts.groupId }
-                , { $pull: { "fileGroups.$.files": { fileName: opts.file } } });
+            return resSvc.modelUpdate({ "userName": opts.userName, "fileGroups.groupId" : opts.groupId },
+                    { $pull: { "fileGroups.$.files": { fileName: opts.file } } }, opts);
         } else {
             //Add files
-            return resSvc.getSingle({ model: opts.model, query: { userName: opts.userName } })
+            return resSvc.getSingle(opts)
                 .then(function(user) {
                     user.addFiles(opts.file, opts.groupId, opts.groupName);
-                    return resSvc.saveResource(user);
+                    return resSvc.saveDocument(user);
                 });
         }
     };
-
-
-
-//    function addFiles(opts) {
-//
-//        function addFileGroup(opts) {
-//            return resSvc.modelUpdate(opts.model,
-//                {"userName" : opts.userName , "fileGroups.groupId": { "$ne": opts.groupId }},
-//                { $push: { fileGroups: {  groupId: opts.groupId, groupName: opts.groupName }}})
-//        }
-//
-//        function addFilesToGroup(opts, user) {
-//
-//            console.log(user.fileGroups);
-//            var files = opts.file.map(function(fileName) {
-//                return { fileName: fileName };
-//            });
-//            return resSvc.modelUpdate(opts.model,
-//                { "userName": opts.userName, "fileGroups.groupId" : opts.groupId },
-//                { $push: { "fileGroups.$.files": { $each: files } }});
-//
-//        }
-//
-//
-//        return addFileGroup(opts).then(global._.partial(addFilesToGroup, opts));
-//
-//
-//    }
 
     return opts;
 }
@@ -110,8 +81,8 @@ function setRemoveFileGroupOptions(opts) {
     opts.find = { userName: opts.userName };
     opts.manualSave = function(opts) {
 
-        return resSvc.modelUpdate(opts.model, { "userName" : opts.userName }
-            , { $pull : { "fileGroups" : { "groupId": opts.groupId } } });
+        return resSvc.modelUpdate({ "userName" : opts.userName }
+            , { $pull : { "fileGroups" : { "groupId": opts.groupId } } }, opts);
 
     };
     return opts;
@@ -133,8 +104,8 @@ function setAddRoleOptions(opts) {
         if (opts.role) {
             if (!authorizeSvc.isValidRole(opts.role))
                 global.errSvc.error('Not a valid role', { role: opts.role });
-            return resSvc.modelUpdate(opts.model, { "userName" : opts.userName }
-                , { $addToSet : { "roles" : opts.role } });
+            return resSvc.modelUpdate({ "userName" : opts.userName }
+                , { $addToSet : { "roles" : opts.role } }, opts);
         }
     };
     return opts;
@@ -151,10 +122,10 @@ function setRemoveRoleOptions(opts) {
     };
     opts.modelName = 'User';
     opts.find = { userName: opts.userName };
-    opts.mapOptionsToDocument = function(opts) {
+    opts.manualSave = function(opts) {
 
-        return resSvc.modelUpdate(opts.model, { "userName" : opts.userName }
-            , { $pull : { "roles" : opts.role } });
+        return resSvc.modelUpdate({ "userName" : opts.userName }
+            , { $pull : { "roles" : opts.role } }, opts);
 
     };
     return opts;

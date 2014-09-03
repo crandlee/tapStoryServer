@@ -1,32 +1,32 @@
 "use strict";
 require('require-enhanced')();
 
-var resourceSvc = global.rootRequire('svc-resource');
+var resSvc = global.rootRequire('svc-resource');
 var userSvcOptions = global.rootRequire('svc-opts-user');
 
 function save(updateProperties, options) {
 
     options = global.extend(options, updateProperties);
-    return resourceSvc.processResourceSave(null, userSvcOptions.setSaveUserOptions, options);
+    return resSvc.processDocumentSave(null, userSvcOptions.setSaveUserOptions, options);
 
 }
 
 function addRole(userName, newRole, options) {
 
-    return resourceSvc.processResourceSave({ userName: userName, role: newRole},
+    return resSvc.processDocumentSave({ userName: userName, role: newRole},
         userSvcOptions.setAddRoleOptions, options);
 }
 
 function removeRole(userName, existRole, options) {
 
-    return resourceSvc.processResourceSave({ userName: userName, role: existRole},
+    return resSvc.processDocumentSave({ userName: userName, role: existRole},
         userSvcOptions.setRemoveRoleOptions, options);
 
 }
 
 function addFiles(userName, fileNames, groupId, groupName, options) {
 
-    return resourceSvc.processResourceSave(
+    return resSvc.processDocumentSave(
         { userName: userName, file: fileNames, groupId: groupId, groupName: groupName },
         userSvcOptions.setAddFileOptions, options);
 
@@ -34,7 +34,7 @@ function addFiles(userName, fileNames, groupId, groupName, options) {
 
 function removeFile(userName, fileName, groupId, options) {
 
-    return resourceSvc.processResourceSave(
+    return resSvc.processDocumentSave(
         { userName: userName, file: fileName, groupId: groupId},
         userSvcOptions.setRemoveFileOptions, options);
 
@@ -42,21 +42,21 @@ function removeFile(userName, fileName, groupId, options) {
 
 function removeFileGroup(userName, groupId, options) {
 
-    return resourceSvc.processResourceSave(
+    return resSvc.processDocumentSave(
         { userName: userName, groupId: groupId},
         userSvcOptions.setRemoveFileGroupOptions, options);
 
 }
 
-function getList(query, options) {
+function getList(find, options) {
 
-    return resourceSvc.getList(global.extend(options, { modelName: 'User', query: query }));
+    return resSvc.getList(global.extend(options, { modelName: 'User', find: find }));
 
 }
 
 function getSingle(userName, options) {
 
-    return resourceSvc.getSingle(global.extend(options, { modelName: 'User', query: {userName: userName} }));
+    return resSvc.getSingle(global.extend(options, { modelName: 'User', find: {userName: userName} }));
 
 }
 

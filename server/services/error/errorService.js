@@ -7,6 +7,7 @@ var loggingBypassed = false;
 function error(msg, props, opts) {
 
     opts = opts || {};
+    props = props || {};
     var internalCode = opts.internalCode || null;
     throw new Error(JSON.stringify(stripDetailsFromFinal(buildAndLogError(msg, props, internalCode))));
 
@@ -14,6 +15,7 @@ function error(msg, props, opts) {
 
 function promiseError(msg, props, opts) {
     return function(err) {
+        opts = opts || {};
         props = props || {};
         if (err && err.message) {
             props = global.extend(props, { error: err.message });
@@ -23,7 +25,7 @@ function promiseError(msg, props, opts) {
 }
 
 function warn(msg, props, method) {
-
+    props = props || {};
     return logSvc.logWarning(msg, props, method);
 
 }

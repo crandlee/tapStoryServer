@@ -7,7 +7,6 @@ module.exports = {
   //CORS handler does not seem to pick this up
   preflightHandler: function(req, res) {
 
-
         if (req.method.toLowerCase() == 'options') {
 
             var allowHeaders = ['authorization', 'accept', 'accept-version',

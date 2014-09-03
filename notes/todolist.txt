@@ -1,4 +1,3 @@
-1.  Add indexes to mongoose/mongo, in particular - userName and fileName.
-2.  Create some error for when a user name is replicated to sent back to client
-3.  Mongoose upsert
-4.  Subdirectories for file upload?
+  Add indexes to mongoose/mongo, in particular - userName and fileName.
+    - Make sure these end up in the package when the collection is built
+  Create some error for when a user name is replicated to sent back to client

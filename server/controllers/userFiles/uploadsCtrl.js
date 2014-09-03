@@ -56,8 +56,20 @@ function getFileGroups(req, res, next) {
     if (userName) {
         uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
-                res.send(200, global._.map(fileGroups,
-                    global._.partial(getFileGroupTopLevelLinks, groupId, apiPath)));
+                if (!fileGroups || fileGroups.length === 0) {
+                    res.status(404);
+                    res.end('No file groups found');
+                } else {
+                    var obj =  { fileGroups: fileGroups } ;
+                    obj.fileGroups = global._.map(obj.fileGroups,
+                        global._.partial(getFileGroupTopLevelLinks, groupId, apiPath));
+                    if (!groupId) {
+                        obj = linkSvc.attachLinksToObject(obj, [
+                            { uri: '', method: "DELETE", rel: "fileGroup"}
+                        ], req.path());
+                    }
+                    res.send(200, obj);
+                }
             })
             .fail(function(err) {
                 res.status(500);
@@ -82,12 +94,12 @@ function getFileGroupTopLevelLinks(groupId, apiPath, fileGroup) {
         //For single file group
         linkSetupArr.push({ uri: '/fileHelper', rel: 'fileHelper' });
         linkSetupArr.push({ uri: '/files', rel: 'filePackage', method: 'GET' });
+        linkSetupArr.push({ uri: '/files' , rel: 'file', method: 'POST' });
+        linkSetupArr.push({ uri: '/files' , rel: 'file', method: 'DELETE' });
     } else {
         //For multiple file groups
         delete fileGroup.files;  //Do not show files for multiple file groups
-        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', isSelf:true });
-        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', method: 'POST' });
-        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'file', method: 'DELETE' });
+        linkSetupArr.push({ uri: '/' + fileGroup.groupId , rel: 'fileGroup', isSelf: true });
     }
     return linkSvc.attachLinksToObject(fileGroup, linkSetupArr, apiPath);
 
@@ -98,9 +110,12 @@ var getUploadsHtml = function(userName, baseUri, multiple, fileGroup) {
     var encoder = new Encoder('entity');
     multiple = multiple || false;
     fileGroup = fileGroup || '';
-    var html = '<html><head></head><body>' +
-        '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/fileGroups" enctype="multipart/form-data">' +
-        '<input type="text" name="groupName"><br/>' +
+    var html = '<html><head></head><body>';
+        if (multiple)
+            html += '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/fileGroups" enctype="multipart/form-data">';
+        else
+            html += '<form method="POST" action="' + baseUri + '/users/' + encodeURIComponent(userName) + '/fileGroups/' + encoder.htmlEncode(fileGroup) + '/files" enctype="multipart/form-data">';
+        html += '<input type="text" name="groupName"><br/>' +
         '<input type="text" name="groupId" value="' + encoder.htmlEncode(fileGroup) + '"><br/>' +
         '<input type="file" name="fileField"><br/>';
         if (multiple) {

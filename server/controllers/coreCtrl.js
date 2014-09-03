@@ -7,8 +7,7 @@ function core(req, res, next) {
 
     //Add top level hypermedia
     var obj = linkSvc.attachLinksToObject({}, [
-        { uri: '/users', rel: 'users'},
-        { uri: '/users', rel: 'user', method: 'POST'}
+        { uri: '/users', rel: 'users'}
     ], req.path());
     res.send(200, obj);
 
