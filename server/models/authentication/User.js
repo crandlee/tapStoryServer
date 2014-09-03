@@ -29,6 +29,7 @@ var schema = mongoose.Schema({
     ]
 });
 
+//Indices
 schema.index({ "userName" : 1, "fileGroups.groupId": 1 }, { unique: true });
 schema.index({ "userName" : 1, "fileGroups.groupName": 1 }, { unique: true });
 schema.index({ "userName" : 1, "fileGroups.groupName": 1, "fileGroups.files.fileName": 1 }, { unique: true });

@@ -1,3 +1,6 @@
   Add indexes to mongoose/mongo, in particular - userName and fileName.
     - Make sure these end up in the package when the collection is built
-  Create some error for when a user name is replicated to sent back to client
+  Create some error for when a user name is replicated to send back to client
+  Add ability for resourceSvc to bubble up whether a resource was added/updated.
+  Add JsDoc markup for everything
+

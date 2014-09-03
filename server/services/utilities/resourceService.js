@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 function save(opts) {
 
     opts = opts || {};
+
     /**
      *     <p>Builds complete list of options for saving.</p>
      *     <p>The following are some of the options that this function builds/extends</p>
@@ -35,16 +36,17 @@ function save(opts) {
 
     var validateOptions = opts.validateOptionsStub || function(opts) {
 
-        function getValidatedOpts(opts, document) {
-            //Set document on options for later retrieval
-            opts.document = document;
+        function getCustomValidatedOpts(opts, documents) {
+            //Set documents on options for later retrieval
+            opts.document = documents;
             //Allow custom component to validate
             if (opts.preValidation && typeof opts.preValidation === 'function')
-                return global.Promise.fcall(opts.preValidation, opts, document);
+                return global.Promise.fcall(opts.preValidation, opts, documents);
             else
                 return opts;
         }
 
+        //Some global validation
         if (!opts.find && !opts.manualSave)
             global.errSvc.error('No search criteria set for save',
                 { modelName: (opts.model && opts.model.modelName) });
@@ -55,14 +57,16 @@ function save(opts) {
 
 
         //If not manual save, then get a previous document and
-        //pass that to the pre-validation routine (if it exists)
+        //pass that to the custom pre-validation routine (if it exists)
         //Otherwise, send in empty document
         if (!opts.manualSave) {
-            return getSingle(opts)
-                .then(global._.partial(getValidatedOpts, opts));
+            var retrieveFn = (opts.findType && opts.findType.toLowerCase() === 'list') ?
+                getList : getSingle;
+            return retrieveFn({ model: opts.model, find: opts.find })
+                .then(global._.partial(getCustomValidatedOpts, opts));
         } else {
             opts.document = null;
-            return getValidatedOpts(opts, null);
+            return getCustomValidatedOpts(opts, null);
         }
 
 
@@ -72,7 +76,7 @@ function save(opts) {
     var saveDocument = opts.saveDocument || function(opts) {
 
         //Get the document from the options object
-        var document = opts.document;
+        var existDocuments = opts.document;
         delete opts.document;
 
         function setAddUpdateState(opts, document) {
@@ -88,11 +92,11 @@ function save(opts) {
         if (opts.manualSave && (typeof opts.manualSave === 'function'))
             return global.Promise.fcall(opts.manualSave, opts);
         else
-            return global.Promise.fcall(opts.buildDocument, opts, document || {})
-                .then(function(document) {
-                    if (document) {
-                        opts = setAddUpdateState(opts, document);
-                        return modelSave(document, opts);
+            return global.Promise.fcall(opts.buildDocument, opts, existDocuments || {})
+                .then(function(saveDocument) {
+                    if (saveDocument) {
+                        opts = setAddUpdateState(opts, existDocuments);
+                        return modelSave(saveDocument, opts);
                     } else {
                         throw new Error('No document returned from buildDocument');
                     }
@@ -124,7 +128,14 @@ function getSingle(opts) {
 
     var getDocument = function(opts) {
 
-        return global.Promise(opts.model.findOne(opts.find, opts.select || '').exec())
+        var fn = opts.model.findOne(opts.find, opts.select || '');
+
+        //Allow populate option
+        if (opts.populate && Array.isArray(opts.populate)) {
+            fn = fn.populate.apply(fn, opts.populate);
+        }
+
+        return global.Promise(fn.exec())
             .then(function(document) {
                 return document;
             })
@@ -177,7 +188,14 @@ function getList(opts) {
 
     var getDocuments = function(opts) {
 
-        return global.Promise(opts.model.find(opts.find, opts.select || '').exec())
+        var fn = opts.model.find(opts.find, opts.select || '');
+
+        //Allow populate option
+        if (opts.populate && Array.isArray(opts.populate)) {
+            fn = fn.populate.apply(fn, opts.populate);
+        }
+
+        return global.Promise(fn.exec())
             .then(function(documents) {
                 return documents;
             })
@@ -201,12 +219,14 @@ function getList(opts) {
 function processDocumentSave(params, setupFunction, options) {
 
     var completeOptions = global.extend(options, params);
-    if (setupFunction && typeof setupFunction === 'function')
-        completeOptions = setupFunction(completeOptions);
-
-    //promise (call through 'this' to allow test stubbing)
-    /* jshint validthis:true */
-    return this.save(completeOptions);
+    if (setupFunction && typeof setupFunction === 'function') {
+        return global.Promise.fcall(setupFunction, completeOptions)
+            .then(save);
+    } else {
+        //promise (call through 'this' to allow test stubbing)
+        /* jshint validthis:true */
+        return save(completeOptions);
+    }
 
 }
 
@@ -312,6 +332,7 @@ function modelCreate(documents, options) {
 
 function modelSave(document, options) {
 
+    if (options.noSave) return global.Promise(document);
     if (options.addOnly) {
         return modelCreate(document, options);
     } else {

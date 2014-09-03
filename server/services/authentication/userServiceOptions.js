@@ -9,8 +9,8 @@ function saveUserOptions(opts) {
 
     opts.preValidation = function(opts, document) {
         if (!(!!document)) {
-            if (!opts.userName) global.errSvc.error('User Name must be valid');
-            if (!opts.password) global.errSvc.error('Password must be valid');
+            if (!opts.userName) global.errSvc.error('Adding a user requires userName');
+            if (!opts.password) global.errSvc.error('Adding a user requires a password');
         }
         return opts;
     };
@@ -42,11 +42,11 @@ function setFileOptions(addOrRemove, opts) {
 
     opts.updateOnly = true;
     opts.preValidation = global.Promise.fbind(function(opts) {
-        if (!opts.userName) global.errSvc.error('User Name must be valid');
-        if (!opts.groupId) global.errSvc.error('User file group id must be valid');
+        if (!opts.userName) global.errSvc.error('Adding/removing a file requires a userName');
+        if (!opts.groupId) global.errSvc.error('Adding/removing a file requires a groupId');
         if (!opts.groupName && !opts.existing && addOrRemove !== 'remove')
-            global.errSvc.error('User file group name must be valid');
-        if (!opts.file) global.errSvc.error('Upload files for user must be valid');
+            global.errSvc.error('Adding a file requires a groupName');
+        if (!opts.file) global.errSvc.error('Adding files requires files for upload');
         return opts;
     });
     opts.modelName = 'User';
@@ -73,8 +73,8 @@ function setFileOptions(addOrRemove, opts) {
 function setRemoveFileGroupOptions(opts) {
 
     opts.preValidation = global.Promise.fbind(function(opts) {
-        if (!opts.userName) global.errSvc.error('User Name must be valid', {});
-        if (!opts.groupId) global.errSvc.error('User file group id must be valid', {});
+        if (!opts.userName) global.errSvc.error('Removing a file group requires a userName', {});
+        if (!opts.groupId) global.errSvc.error('Removing a file group requires a groupId', {});
         return opts;
     });
     opts.modelName = 'User';
@@ -94,8 +94,8 @@ function setAddRoleOptions(opts) {
     opts.updateOnly = true;
     opts.role = (opts.role && opts.role.toLowerCase());
     opts.preValidation = global.Promise.fbind(function(opts) {
-        if (!opts.role) global.errSvc.error('New role must be valid');
-        if (!opts.userName) global.errSvc.error('User name must be valid');
+        if (!opts.role) global.errSvc.error('Adding a role requires a role');
+        if (!opts.userName) global.errSvc.error('Adding a role requires a userName');
         return opts;
     });
     opts.modelName = 'User';
@@ -116,8 +116,8 @@ function setRemoveRoleOptions(opts) {
     opts.updateOnly = true;
     opts.role = (opts.role && opts.role.toLowerCase());
     opts.preValidation = function(opts) {
-        if (!opts.role) global.errSvc.error('Role must be valid');
-        if (!opts.userName) global.errSvc.error('User name must be valid');
+        if (!opts.role) global.errSvc.error('Removing a role requires a role');
+        if (!opts.userName) global.errSvc.error('Removing a role requires a userName');
         return opts;
     };
     opts.modelName = 'User';

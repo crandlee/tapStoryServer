@@ -11,7 +11,9 @@ function upload(req, res, next) {
     var groupName = (req.body && req.body.groupName);
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    if (userName) {
+    if (!userName) { res.status(400); res.end('Uploading a file requires a userName'); }
+    if (!groupId && !groupName) if (!userName) { res.status(400); res.end('Uploading a file/files requires either a groupName or a groupId'); }
+    if (userName && (groupId || groupName)) {
         uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
             .then(function () {
                 res.status(200);
@@ -21,12 +23,10 @@ function upload(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
     } else {
-        res.status(400);
-        res.end();
-        next();
+        return next();
     }
 }
 
@@ -36,14 +36,13 @@ function getUploadsScreen(req, res, next) {
     var fileGroup = (req.params && req.params.groupId);
     var multiple = !fileGroup;
 
+    if (!userName) { res.status(400); res.end('The fileHelper requires a userName'); }
+
     if (userName) {
         res.end(getUploadsHtml(userName, global.config.baseUri, multiple, fileGroup));
     } else {
-        res.status(400);
-        res.end();
-
+        return next();
     }
-    return next();
 
 }
 
@@ -53,6 +52,9 @@ function getFileGroups(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
     var apiPath = req.path();
+
+    if (!userName) { res.status(400); res.end('Getting fileGroups requires a userName'); }
+
     if (userName) {
         uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
@@ -75,12 +77,9 @@ function getFileGroups(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .done(function() {
-                return next();
-            });
+            .fin(function() { return next(); })
+            .done();
     } else {
-        res.status(400);
-        res.end();
         return next();
     }
 
@@ -141,6 +140,9 @@ function removeFileGroup(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.body && req.body.groupId);
     var options = {};
+    if (!userName) { res.status(400); res.end('Removing a fileGroup requires a userName'); }
+    if (!groupId) { res.status(400); res.end('Removing a fileGroup requires a groupId'); }
+
     if (userName && groupId) {
         uploads.removeFileGroup(userName, groupId, options)
             .then(function () {
@@ -151,12 +153,10 @@ function removeFileGroup(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
     } else {
-        res.status(400);
-        res.end(!groupId ? 'Must include a groupId in the body' : '');
-        next();
+        return next();
     }
 
 }
@@ -166,6 +166,10 @@ function removeFile(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
     var fileName = (req.body && req.body.fileName);
+    if (!userName) { res.status(400); res.end('Removing a file requires a userName'); }
+    if (!groupId) { res.status(400); res.end('Removing a file requires a groupId'); }
+    if (!fileName) { res.status(400); res.end('Removing a file requires a fileName'); }
+
     if (userName && groupId && fileName) {
         uploads.removeFile(userName, groupId, fileName)
             .then(function (groups) {
@@ -175,12 +179,10 @@ function removeFile(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
     } else {
-        res.status(400);
-        res.end(!fileName ? 'Must include a fileName in the body' : '');
-        next();
+        return next();
     }
 
 }
@@ -199,6 +201,9 @@ function downloadFiles(req, res, next) {
         res.end();
     };
     var currentUser = req.user;
+    if (!userName) { res.status(400); res.end('Downloading requires a userName'); }
+    if (!groupId) { res.status(400); res.end('Downloading requires a groupId'); }
+    if (!currentUser) { res.status(400); res.end('Downloading requires a currently logged in user'); }
 
     if (userName && groupId && currentUser) {
         uploads.downloadFiles(currentUser, groupId, fileName, sendDownload)
@@ -206,12 +211,10 @@ function downloadFiles(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
     } else {
-        res.status(400);
-        res.end();
-        next();
+        return next();
     }
 
 }

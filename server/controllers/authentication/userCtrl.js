@@ -12,16 +12,22 @@ function saveUser(options) {
         if (!req.body || Object.getOwnPropertyNames(req.body).length === 0) {
             res.status(400);
             res.end('No request body');
+            return next();
         } else {
             userSvc.save({addOnly: addOnly}, req.body)
                 .then(function (user) {
-                    res.send((addOnly ? 201 : 200), user.viewModel('user', req.path()));
+                    if (!user) {
+                        res.status(404);
+                        res.end('No user returned from operation');
+                    } else {
+                        res.send((addOnly ? 201 : 200), user.viewModel('user', req.path()));
+                    }
                 })
                 .fail(function (err) {
-                    res.status(global.errSvc.checkErrorCode(err, "E1000") ? 405 : 500);
+                    res.status(500);
                     res.end(err.message);
                 })
-                .fin(next)
+                .fin(function() { return next(); })
                 .done();
         }
     };
@@ -31,11 +37,11 @@ function saveUser(options) {
 
 function getUser(req, res, next) {
 
-    if (!req.params.userName) {
-        res.status(400);
-        res.end("Server expects user name to retrieve user");
-    } else {
-        userSvc.getSingle(req.params.userName)
+    var userName = (req.params && req.params.userName);
+    if (!userName) { res.status(400); res.end('Getting a user requires a userName'); }
+
+    if (userName) {
+        userSvc.getSingle(userName)
             .then(function (user) {
                 if (!user) {
                     res.status(404);
@@ -47,9 +53,11 @@ function getUser(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
 
+    } else {
+        return next();
     }
 
 
@@ -77,18 +85,21 @@ function getUsers(req, res, next) {
             res.status(500);
             res.end(err.message);
         })
-        .fin(next)
+        .fin(function() { return next(); })
         .done();
 
 }
 
 function addRole(req, res, next) {
 
-    if (!req.params.userName) { res.status(400); res.end('Server expects "userName" in query'); }
-    if (!req.body.role) { res.status(400); res.end('Server expects "role"'); }
+    var userName = (req.params && req.params.userName);
+    var role = (req.body && req.body.role);
 
-    if (req.params.userName && req.body.role) {
-        userSvc.addRole(req.params.userName, req.body.role)
+    if (!userName) { res.status(400); res.end('Adding a role requires a userName'); }
+    if (!role) { res.status(400); res.end('Adding a role requires a role'); }
+
+    if (userName && role) {
+        userSvc.addRole(userName, role)
             .then(function (user) {
                 res.send(201, { roles: user.roles });
             })
@@ -96,18 +107,23 @@ function addRole(req, res, next) {
                 res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
+    } else {
+        return next();
     }
 }
 
 function removeRole(req, res, next) {
 
-    if (!req.params.userName) { res.status(400); res.end('Server expects "userName" in query'); }
-    if (!req.body.role) { res.status(400); res.end('Server expects "role"'); }
+    var userName = (req.params && req.params.userName);
+    var role = (req.body && req.body.role);
 
-    if (req.params.userName && req.body.role) {
-        userSvc.removeRole(req.params.userName, req.body.role)
+    if (!userName) { res.status(400); res.end('Removing a role requires a userName'); }
+    if (!role) { res.status(400); res.end('Removing a role requires a role'); }
+
+    if (userName && role) {
+        userSvc.removeRole(userName, role)
             .then(function (user) {
                 res.send(200, { roles: user.roles });
             })
@@ -115,18 +131,20 @@ function removeRole(req, res, next) {
                 res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
+    } else {
+        return next();
     }
 
 }
 
 function getRoles(req, res, next) {
 
-    if (!req.params.userName) { res.status(400); res.end("Server expects user name to retrieve user"); }
-
-    if (req.params.userName) {
-        userSvc.getSingle(req.params.userName)
+    var userName = (req.params && req.params.userName);
+    if (!userName) { res.status(400); res.end("Getting roles requires a userName"); }
+    if (userName) {
+        userSvc.getSingle(userName)
             .then(function (user) {
                 if (!user) {
                     res.status(404);
@@ -142,9 +160,11 @@ function getRoles(req, res, next) {
                 res.status(500);
                 res.end(err.message);
             })
-            .fin(next)
+            .fin(function() { return next(); })
             .done();
 
+    } else {
+        return next();
     }
 
 }

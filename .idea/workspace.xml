@@ -2,11 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3b3e1fd-9cb5-4959-aaff-d59ea208a842" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" afterPath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/authentication/User.js" afterPath="$PROJECT_DIR$/server/models/authentication/User.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" afterPath="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/utilities/resourceService.js" afterPath="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/userRelationships/routes.js" afterPath="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notes/todolist.txt" afterPath="$PROJECT_DIR$/notes/todolist.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userService.js" afterPath="$PROJECT_DIR$/server/services/authentication/userService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" afterPath="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" afterPath="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" afterPath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="tapStoryServer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,53 +36,68 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="userService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
+      <file leaf-file-name="userRelService.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2079" max-vertical-offset="3024">
-              <caret line="122" column="11" selection-start-line="122" selection-start-column="11" selection-end-line="122" selection-end-column="11" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="668" max-vertical-offset="1449">
+              <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="userServiceOptions.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1743" max-vertical-offset="3108">
-              <caret line="108" column="9" selection-start-line="108" selection-start-column="9" selection-end-line="108" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fsWriteService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="63" max-vertical-offset="3423">
-              <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="resourceService.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="resourceService.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.60915494" vertical-offset="746" max-vertical-offset="7035">
-              <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="809" max-vertical-offset="3549">
+              <caret line="145" column="13" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
               <folding>
-                <element signature="e#3336#3633#0" expanded="false" />
+                <element signature="n#!!block;n#save#0" expanded="false" />
+                <element signature="e#134#1269#0" expanded="false" />
+                <element signature="e#1333#1663#0" expanded="false" />
+                <element signature="e#2730#2784#0" expanded="false" />
+                <element signature="e#3580#3635#0" expanded="false" />
+                <element signature="e#4377#4484#0" expanded="false" />
+                <element signature="e#5377#5425#0" expanded="false" />
+                <element signature="e#5460#5687#0" expanded="false" />
+                <element signature="e#5717#5776#0" expanded="false" />
+                <element signature="n#!!block;n#saveDocument#0" expanded="false" />
+                <element signature="e#5928#6302#0" expanded="false" />
+                <element signature="e#5952#6213#0" expanded="false" />
+                <element signature="e#5994#6201#0" expanded="false" />
+                <element signature="e#6219#6296#0" expanded="false" />
+                <element signature="e#6314#6346#0" expanded="false" />
+                <element signature="e#6439#6691#0" expanded="false" />
+                <element signature="e#7379#7438#0" expanded="false" />
+                <element signature="n#!!block;n#processDocumentSave#0" expanded="false" />
+                <element signature="e#7995#8058#0" expanded="false" />
+                <element signature="e#8137#8606#0" expanded="false" />
+                <element signature="e#8475#8578#0" expanded="false" />
+                <element signature="n#!!doc;n#modelUpdate#0" expanded="false" />
+                <element signature="e#10336#11087#0" expanded="false" />
+                <element signature="e#10812#11039#0" expanded="false" />
+                <element signature="e#10856#11025#0" expanded="false" />
+                <element signature="n#!!block;n#postOperationCleanup#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="userCtrl.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/controllers/authentication/userCtrl.js">
+      <file leaf-file-name="relCtrl.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2415" max-vertical-offset="3570">
-              <caret line="137" column="28" selection-start-line="137" selection-start-column="28" selection-end-line="137" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.7541806" vertical-offset="788" max-vertical-offset="1638">
+              <caret line="59" column="14" selection-start-line="59" selection-start-column="14" selection-end-line="59" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userService.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="756" max-vertical-offset="3024">
+              <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -123,28 +145,28 @@
         <option value="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
         <option value="$PROJECT_DIR$/server/services/hypermedia/linkService.js" />
         <option value="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
-        <option value="$PROJECT_DIR$/notes/todolist.txt" />
-        <option value="$PROJECT_DIR$/server/models/authentication/User.js" />
         <option value="$PROJECT_DIR$/server/config/require-shortcuts.json" />
-        <option value="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
         <option value="$PROJECT_DIR$/server/services/database/databaseService.js" />
-        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" />
-        <option value="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
         <option value="$PROJECT_DIR$/server.js" />
-        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
         <option value="$PROJECT_DIR$/server/services/error/errorService.js" />
-        <option value="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
         <option value="$PROJECT_DIR$/server/routes/userFiles/routes.js" />
         <option value="$PROJECT_DIR$/server/controllers/coreCtrl.js" />
         <option value="$PROJECT_DIR$/server/routes/authentication/routes.js" />
         <option value="$PROJECT_DIR$/server/models/authentication/userViewModels.js" />
-        <option value="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
         <option value="$PROJECT_DIR$/server/config/CORS.js" />
-        <option value="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
         <option value="$PROJECT_DIR$/server/services/authentication/userService.js" />
-        <option value="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
         <option value="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
+        <option value="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
+        <option value="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
+        <option value="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
+        <option value="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
+        <option value="$PROJECT_DIR$/notes/todolist.txt" />
+        <option value="$PROJECT_DIR$/server/models/authentication/User.js" />
+        <option value="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
+        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
         <option value="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
+        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" />
+        <option value="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
       </list>
     </option>
   </component>
@@ -245,46 +267,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="uploads" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="uploads" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="b3432be1-0558-468e-ac46-5612fa0e4fd1" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="services" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -329,7 +311,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="uploads" />
+              <option name="myItemId" value="userRelationships" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -369,6 +351,46 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="routes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="routes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="userRelationships" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="controllers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -391,7 +413,21 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="authentication" />
+              <option name="myItemId" value="userRelationships" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tapStoryServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="notes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -563,9 +599,9 @@
     <frame x="149" y="-4" width="1215" height="1028" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31661093" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31661093" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2831661" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2831661" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32818073" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3478261" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -838,26 +874,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/notes/todolist.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="189">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/services/logging/logService.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="11" max-vertical-offset="2352">
           <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="840">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -882,38 +902,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="756">
           <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="441">
-          <caret line="9" column="48" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/routes/userRelationships/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378">
-          <caret line="10" column="32" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="672">
-          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1038" max-vertical-offset="1764">
-          <caret line="60" column="51" selection-start-line="60" selection-start-column="51" selection-end-line="60" selection-end-column="51" />
           <folding />
         </state>
       </provider>
@@ -958,22 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.4414716" vertical-offset="0" max-vertical-offset="4977">
-          <caret line="98" column="12" selection-start-line="98" selection-start-column="12" selection-end-line="98" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/authentication/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="756" max-vertical-offset="2751">
-          <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/controllers/coreCtrl.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37806875" vertical-offset="0" max-vertical-offset="611">
@@ -1006,45 +978,138 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/authentication/userCtrl.js">
+    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2415" max-vertical-offset="3570">
-          <caret line="137" column="28" selection-start-line="137" selection-start-column="28" selection-end-line="137" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2079" max-vertical-offset="3024">
-          <caret line="122" column="11" selection-start-line="122" selection-start-column="11" selection-end-line="122" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.73745817" vertical-offset="63" max-vertical-offset="3423">
+          <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1743" max-vertical-offset="3108">
-          <caret line="108" column="9" selection-start-line="108" selection-start-column="9" selection-end-line="108" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.035117056" vertical-offset="1680" max-vertical-offset="3108">
+          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
+    <entry file="file://$PROJECT_DIR$/notes/todolist.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="63" max-vertical-offset="3423">
-          <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="252">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1050">
+          <caret line="18" column="14" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="1218">
+          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding>
+            <element signature="e#1247#1508#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/controllers/authentication/userCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2999" max-vertical-offset="3990">
+          <caret line="168" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/routes/userRelationships/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="462">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/authentication/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="2772">
+          <caret line="33" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="756" max-vertical-offset="3024">
+          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.035117056" vertical-offset="273" max-vertical-offset="4935">
+          <caret line="14" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#7119#7318#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.60915494" vertical-offset="746" max-vertical-offset="7035">
-          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="116" max-vertical-offset="3549">
+          <caret line="145" column="13" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
           <folding>
-            <element signature="e#3336#3633#0" expanded="false" />
+            <element signature="n#!!block;n#save#0" expanded="false" />
+            <element signature="e#134#1269#0" expanded="false" />
+            <element signature="e#1333#1663#0" expanded="false" />
+            <element signature="e#2730#2784#0" expanded="false" />
+            <element signature="e#3580#3635#0" expanded="false" />
+            <element signature="e#4377#4484#0" expanded="false" />
+            <element signature="e#5377#5425#0" expanded="false" />
+            <element signature="e#5460#5687#0" expanded="false" />
+            <element signature="e#5717#5776#0" expanded="false" />
+            <element signature="n#!!block;n#saveDocument#0" expanded="false" />
+            <element signature="e#5928#6302#0" expanded="false" />
+            <element signature="e#5952#6213#0" expanded="false" />
+            <element signature="e#5994#6201#0" expanded="false" />
+            <element signature="e#6219#6296#0" expanded="false" />
+            <element signature="e#6314#6346#0" expanded="false" />
+            <element signature="e#6439#6691#0" expanded="false" />
+            <element signature="e#7379#7438#0" expanded="false" />
+            <element signature="n#!!block;n#processDocumentSave#0" expanded="false" />
+            <element signature="e#7995#8058#0" expanded="false" />
+            <element signature="e#8137#8606#0" expanded="false" />
+            <element signature="e#8475#8578#0" expanded="false" />
+            <element signature="n#!!doc;n#modelUpdate#0" expanded="false" />
+            <element signature="e#10336#11087#0" expanded="false" />
+            <element signature="e#10812#11039#0" expanded="false" />
+            <element signature="e#10856#11025#0" expanded="false" />
+            <element signature="n#!!block;n#postOperationCleanup#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="668" max-vertical-offset="1449">
+          <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7541806" vertical-offset="788" max-vertical-offset="1638">
+          <caret line="59" column="14" selection-start-line="59" selection-start-column="14" selection-end-line="59" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -6,8 +6,12 @@ var relCtrl = global.rootRequire('ctrl-rel');
 
 module.exports = function (serverSvc) {
 
-    serverSvc.addRoute('POST', '/users/:userName/relationship',
+    serverSvc.addRoute('POST', '/users/:userName/relationships',
         authCtrl.authenticateMethod(),
         relCtrl.saveRelationship);
+
+    serverSvc.addRoute('GET', '/users/:userName/relationships',
+        authCtrl.authenticateMethod(),
+        relCtrl.getRelationships);
 
 };
