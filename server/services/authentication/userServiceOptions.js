@@ -81,8 +81,8 @@ function setRemoveFileGroupOptions(opts) {
     opts.find = { userName: opts.userName };
     opts.manualSave = function(opts) {
 
-        return resSvc.modelUpdate({ "userName" : opts.userName }
-            , { $pull : { "fileGroups" : { "groupId": opts.groupId } } }, opts);
+        return resSvc.modelUpdate({ "userName" : opts.userName },
+            { $pull : { "fileGroups" : { "groupId": opts.groupId } } }, opts);
 
     };
     return opts;
@@ -104,8 +104,8 @@ function setAddRoleOptions(opts) {
         if (opts.role) {
             if (!authorizeSvc.isValidRole(opts.role))
                 global.errSvc.error('Not a valid role', { role: opts.role });
-            return resSvc.modelUpdate({ "userName" : opts.userName }
-                , { $addToSet : { "roles" : opts.role } }, opts);
+            return resSvc.modelUpdate({ "userName" : opts.userName },
+                { $addToSet : { "roles" : opts.role } }, opts);
         }
     };
     return opts;
@@ -124,8 +124,8 @@ function setRemoveRoleOptions(opts) {
     opts.find = { userName: opts.userName };
     opts.manualSave = function(opts) {
 
-        return resSvc.modelUpdate({ "userName" : opts.userName }
-            , { $pull : { "roles" : opts.role } }, opts);
+        return resSvc.modelUpdate({ "userName" : opts.userName },
+            { $pull : { "roles" : opts.role } }, opts);
 
     };
     return opts;

@@ -120,7 +120,7 @@ function getPermittedFiles(currentUser, groupId, file) {
             if (userFileStruct.files.length === 0) throw new Error('Unable to authorize user for download');
             delete userFileStruct.resource;
             return global.Promise(userFileStruct.files);
-        })
+        });
 
 }
 

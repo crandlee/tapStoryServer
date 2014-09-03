@@ -12,7 +12,7 @@ function removeFileGroup(groupId) {
     var destPath = global.config.uploadPath + groupId;
     return global.promiseUtils.deNodeify(rimraf)(destPath)
         .fail(global.errSvc.promiseError("Could not remove file group from system",
-            { groupId: groupId }))
+            { groupId: groupId }));
 
 }
 
@@ -21,8 +21,8 @@ function removeFile(groupId, fileName) {
     var destPath = global.config.uploadPath + groupId + '/' + fileName;
     return global.promiseUtils.deNodeify(fs.unlink)(destPath)
         .fail(function (err) {
-            logSvc.logWarning("An error message was returned trying to remove a file"
-                , { error: err, groupId: groupId, fileName: fileName  });
+            logSvc.logWarning("An error message was returned trying to remove a file",
+                { error: err, groupId: groupId, fileName: fileName  });
         });
 
 }

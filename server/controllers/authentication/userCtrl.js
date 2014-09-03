@@ -133,8 +133,8 @@ function getRoles(req, res, next) {
                     res.end('Cannot find requested user');
                 } else {
                     var roles = linkSvc.attachLinksToObject({ roles: user.roles },
-                        [{ uri: '', rel: 'role', method: 'POST'}, { uri: '', rel: 'role', method: 'DELETE'}]
-                        , req.path());
+                        [{ uri: '', rel: 'role', method: 'POST'}, { uri: '', rel: 'role', method: 'DELETE'}],
+                            req.path());
                     res.send(200, roles);
                 }
             })

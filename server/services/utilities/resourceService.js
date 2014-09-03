@@ -48,8 +48,8 @@ function save(opts) {
         if (!opts.find && !opts.manualSave)
             global.errSvc.error('No search criteria set for save',
                 { modelName: (opts.model && opts.model.modelName) });
-        if ((!opts.buildDocument || typeof opts.buildDocument !== 'function')
-            && (!opts.manualSave || typeof opts.manualSave !== 'function'))
+        if ((!opts.buildDocument || typeof opts.buildDocument !== 'function') &&
+            (!opts.manualSave || typeof opts.manualSave !== 'function'))
             global.errSvc.error('Document options must have either a buildDocument function or a manualSave function',
                 { modelName: (opts.model && opts.model.modelName) });
 
