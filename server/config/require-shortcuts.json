@@ -33,6 +33,7 @@
     { "k":"util-filesystem", "v": "utilities/fileSystemUtility" },
     { "k":"util-function", "v": "utilities/functionUtilities" },
     { "k":"util-test", "v": "test/utilities/testUtilities"},
-    { "k":"vm-user", "v": "models/authentication/userViewModels"}
+    { "k":"vm-user", "v": "models/authentication/userViewModels"},
+    { "k":"vm-rel", "v": "models/userRelationships/userRelViewModels"}
 
 ]

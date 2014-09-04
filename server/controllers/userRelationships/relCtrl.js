@@ -5,8 +5,6 @@ var userRelSvc = global.rootRequire('svc-rel');
 
 function saveRelationship(req, res, next) {
 
-    //TODO-Randy: How to authorize this action?
-
     var sourceUserName = (req.params && req.params.userName);
     var relUserName = (req.body && req.body.relUser);
     var relationship = (req.body && req.body.relationship);
@@ -38,20 +36,22 @@ function getRelationships(req, res, next) {
     //TODO-Randy: How to authorize this action?
 
     var userName = (req.params && req.params.userName);
-    if (!userName) { res.status(400); res.end("Getting relationships requires a userName"); }
+    if (!userName) { res.status(400); res.end('Getting relationships requires a userName'); }
     if (userName) {
         userRelSvc.getRelationships(userName)
             .then(function (rels) {
-                console.log(rels);
                 if (!rels) {
                     res.status(404);
                     res.end('Cannot find relationships for this user');
                 } else {
+                    var relsVm = rels.map(function(rel) {
+                       return rel.viewModel('relationship', req.path());
+                    });
 //                    var roles = linkSvc.attachLinksToObject({ roles: user.roles },
 //                        [{ uri: '', rel: 'role', method: 'POST'}, { uri: '', rel: 'role', method: 'DELETE'}],
 //                        req.path());
                     //TODO-Randy: ViewModels/Links
-                    res.send(200, { relationships: rels });
+                    res.send(200, { relationships: relsVm });
                 }
             })
             .fail(function (err) {

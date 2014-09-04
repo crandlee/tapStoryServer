@@ -8,18 +8,38 @@ function authenticateMethod() {
     return authSvc.authenticateMethod();
 }
 
-function authorizeMethod(role) {
+function authorizeMethod(opts) {
+
+    opts = opts || {};
+
     return function(req, res, next) {
-        if (req.user && req.user.hasRole(role)) {
+
+        var user = req.user;
+        if (!req.user) return authSvc.authenticateMethod(req, res, next);
+
+        var requestedUser = (req.params && req.params.userName);
+        var authByRole = !opts.role || (user.hasRole(opts.role));
+        var authByUser = !opts.currentUser || (user.userName.toLowerCase() === requestedUser.toLowerCase());
+        var authorized = ((opts.op || 'and') === 'or')
+            ? (authByRole || authByUser)
+            : (authByRole && authByUser);
+
+        if (authorized) {
             return next();
         } else {
             res.status(403);
-            res.end();
+            res.end('Current user is not authorized to view this resource');
         }
     };
 }
 
+//Also exports some common role configurations for use in setup
+//on the routers
 module.exports = {
     authenticateMethod: authenticateMethod,
-    authorizeMethod: authorizeMethod
+    authorizeMethod: authorizeMethod,
+    adminRoles: { role: ['admin', 'super-admin']},
+    superAdmin: { role: ['super-admin']},
+    adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], op: 'or' },
+    currentUser: { currentUser: true }
 };

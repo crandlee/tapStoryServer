@@ -4,6 +4,8 @@ require('require-enhanced')();
 var mongoose = require('mongoose');
 var validRelationships = ['friend', 'guardian', 'child', 'surrogate'];
 var validStatuses = ['pending', 'active', 'inactive'];
+var viewModels = global.rootRequire('vm-rel');
+
 
 var schema = mongoose.Schema({
     sourceUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: '{PATH} is required!' },
@@ -18,6 +20,11 @@ schema.index({ "sourceUser" : 1, "relUser": 1 }, { unique: true });
 //Instance methods
 schema.methods = {
 
+    viewModel: function (type, apiPath, doc) {
+        //If no doc passed in, then use the base doc
+        return viewModels[type](doc || this, apiPath);
+    }
+
 };
 
 //Statics
@@ -29,7 +36,6 @@ schema.statics = {
     isValidRelationship: function (rel) {
         return validRelationships.indexOf(rel.toLowerCase()) > -1;
     }
-
 };
 
 //Virtual Getters

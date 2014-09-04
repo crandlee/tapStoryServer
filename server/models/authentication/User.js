@@ -83,14 +83,26 @@ schema.methods = {
         return encryptionUtility.checkEqualToken(passwordToMatch, this.userSecret);
     },
 
-    hasRole: function (role) {
-        return (this.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
+    hasRole: function (roles) {
+
+        var that = this;
+        if (!Array.isArray(roles)) roles = [roles];
+        global._.chain(roles)
+            .map(function(role) {
+                return (that.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
+            })
+            .reduce(function(allRolesValid, roleValid) {
+               return allRolesValid && roleValid;
+            })
+            .value();
+
     },
 
     viewModel: function (type, apiPath, doc) {
         //If no doc passed in, then use the base (User) doc
         return viewModels[type](doc || this, apiPath);
     }
+
 };
 
 
@@ -107,14 +119,27 @@ createDefaultUsers();
 //Private functions
 
 function createDefaultUsers() {
+
+    function createUser(firstName, lastName, userName, password, roles) {
+        return encryptionUtility.saltAndHash(password)
+            .then(function(token) {
+                return global.Promise(User.create({ firstName: firstName, lastName: lastName, userName: userName, userSecret: token, roles: roles }))
+                    .then(function(ret) {
+                        return global.Promise(ret);
+                    });
+            })
+    }
+
     User.find({}).exec(function (err, collection) {
         if (collection.length === 0) {
-            encryptionUtility.saltAndHash('admin1234')
-                .then(function (token) {
-                    User.create({ firstName: 'Starter', lastName: 'Admin', userName: 'admin@gmail.com', userSecret: token, roles: ['admin'] });
-                })
+
+            var promiseArr = [];
+            promiseArr.push(createUser('Starter', 'Admin', 'starterAdmin', 'admin1234', ['admin']));
+            promiseArr.push(createUser('Starter', 'SuperAdmin', 'starterSuperAdmin', 'superadmin1234', ['super-admin']));
+            promiseArr.push(createUser('Starter', 'User', 'starterUser', 'user1234', ['user']));
+            global.Promise.all(promiseArr)
                 .fail(function () {
-                    console.log('Could not create default user.');
+                    console.log('Could not create default users.');
                 })
                 .done();
         }
