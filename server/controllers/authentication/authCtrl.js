@@ -28,7 +28,7 @@ function authorizeMethod(opts) {
             return next();
         } else {
             res.status(403);
-            res.end('Current user is not authorized to view this resource');
+            res.end('Current user is not authorized to view or operate on this resource');
         }
     };
 }

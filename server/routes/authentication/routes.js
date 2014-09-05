@@ -18,13 +18,9 @@ module.exports = function (serverSvc) {
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRoles),
         userCtrl.saveUser({addOnly: true}));
-    serverSvc.addRoute('PUT', '/users',
-        authCtrl.authenticateMethod(),
-        authCtrl.authorizeMethod(authCtrl.adminRoles),
-        userCtrl.saveUser({addOnly: false}));
     serverSvc.addRoute('GET', '/users/:userName',
         authCtrl.authenticateMethod(),
-        authCtrl.authorizeMethod(authCtrl.currentUser),
+        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         userCtrl.getUser);
     serverSvc.addRoute('PUT', '/users/:userName',
         authCtrl.authenticateMethod(),

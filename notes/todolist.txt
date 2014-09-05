@@ -3,4 +3,4 @@
   Create some error for when a user name is replicated to send back to client
   Add ability for resourceSvc to bubble up whether a resource was added/updated.
   Add JsDoc markup for everything
-
+  API Versioning

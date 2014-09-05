@@ -3,26 +3,31 @@ require('require-enhanced')();
 
 var mongoose = require('mongoose');
 var validRelationships = ['friend', 'guardian', 'child', 'surrogate'];
-var validStatuses = ['pending', 'active', 'inactive'];
+var validStatuses = ['pending', 'pendingack', 'active', 'inactive'];
 var viewModels = global.rootRequire('vm-rel');
 
 
 var schema = mongoose.Schema({
-    sourceUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: '{PATH} is required!' },
-    relUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: '{PATH} is required!' },
-    relationship: {type: String, enum: validRelationships, lowercase: true, required: '{PATH} is required!' },
-    relStatus: { type: String, enum: validStatuses, default: 'pending', lowercase: true, required: '{PATH} is required!' }
+    relKey: { type: "String", required: '{PATH} is required!'},
+    participants: [
+        {
+            user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: '{PATH} is required!'},
+            rel: {type: String, enum: validRelationships, lowercase: true, required: '{PATH} is required!' },
+            status: { type: String, enum: validStatuses, default: 'pending', lowercase: true, required: '{PATH} is required!' }
+        }
+    ]
+
 }, { collection: "userRelationships"});
 
 //Indices
-schema.index({ "sourceUser" : 1, "relUser": 1 }, { unique: true });
+schema.index({ "relKey" : 1 });
 
 //Instance methods
 schema.methods = {
 
-    viewModel: function (type, apiPath, doc) {
-        //If no doc passed in, then use the base doc
-        return viewModels[type](doc || this, apiPath);
+    viewModel: function (type, apiPath, options) {
+        options = options || {};
+        return viewModels[type](options.doc || this, apiPath, options);
     }
 
 };

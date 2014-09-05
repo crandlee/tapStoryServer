@@ -2,20 +2,26 @@
 require('require-enhanced')();
 
 var userRelSvc = global.rootRequire('svc-rel');
+var linkSvc = global.rootRequire('svc-link');
 
-function saveRelationship(req, res, next) {
+function saveRelationship(srcRel, targetRel, options, req, res, next) {
 
     var sourceUserName = (req.params && req.params.userName);
-    var relUserName = (req.body && req.body.relUser);
-    var relationship = (req.body && req.body.relationship);
-    var relStatus = (req.body && req.body.relStatus);
+    var targetUserName = (req.body && req.body.userName);
 
-    if (!sourceUserName) { res.status(400); res.end('Adding a relationship requires a sourceUser'); }
-    if (!relUserName) { res.status(400); res.end('Adding a relationship requires a relUser'); }
-    if (!relationship) { res.status(400); res.end('Adding a relationship requires a relationship'); }
+    if (!sourceUserName) { res.status(400); res.end('Adding a relationship requires a source userName'); }
+    if (!targetUserName) { res.status(400); res.end('Adding a relationship requires a target userName'); }
+    if (!srcRel || typeof srcRel !== 'object')
+        { res.status(400); res.end('Adding a relationship requires a source relationship'); }
+    if (!targetRel || typeof targetRel !== 'object')
+        { res.status(400); res.end('Adding a relationship requires a target relationship'); }
 
-    if (sourceUserName && relUserName && relationship) {
-        userRelSvc.saveRelationship(sourceUserName, relUserName, relationship, { relStatus: relStatus })
+    if (sourceUserName && targetUserName && srcRel && targetRel) {
+
+        srcRel.user = sourceUserName;
+        targetRel.user = targetUserName;
+
+        userRelSvc.saveRelationship(srcRel, targetRel, options)
             .then(function () {
                 res.status(200);
                 res.end();
@@ -31,28 +37,26 @@ function saveRelationship(req, res, next) {
     }
 }
 
-function getRelationships(req, res, next) {
-
-    //TODO-Randy: How to authorize this action?
+function getRelationships(relationship, req, res, next) {
 
     var userName = (req.params && req.params.userName);
     if (!userName) { res.status(400); res.end('Getting relationships requires a userName'); }
+
     if (userName) {
-        userRelSvc.getRelationships(userName)
+        userRelSvc.getRelationships(userName, relationship, ['pending', 'pendingack', 'active'])
             .then(function (rels) {
-                if (!rels) {
-                    res.status(404);
-                    res.end('Cannot find relationships for this user');
-                } else {
-                    var relsVm = rels.map(function(rel) {
-                       return rel.viewModel('relationship', req.path());
-                    });
-//                    var roles = linkSvc.attachLinksToObject({ roles: user.roles },
-//                        [{ uri: '', rel: 'role', method: 'POST'}, { uri: '', rel: 'role', method: 'DELETE'}],
-//                        req.path());
-                    //TODO-Randy: ViewModels/Links
-                    res.send(200, { relationships: relsVm });
-                }
+                rels = rels || [];
+                var relsVm = rels.map(function(rel) {
+                   return rel.viewModel('relationship', req.path(), { sourceName: userName });
+                });
+                relsVm = linkSvc.attachLinksToObject({ relationships: relsVm },
+                        [
+                            { uri: '', method: 'POST', rel: 'friendship' },
+                            { uri: '', method: 'DELETE', rel: 'friendship' },
+                            { uri: '/acknowledgement', method: 'POST', rel: 'acknowledgement' }
+                        ],
+                        req.path());
+                res.send(200, relsVm );
             })
             .fail(function (err) {
                 res.status(500);

@@ -23,7 +23,7 @@ function getFileGroups(userName, options) {
 function transformFileGroupsViewModel(userFileGroups, options) {
 
     return global.Promise(global._.map(userFileGroups, function(userFileGroup) {
-        return userFileGroup.parent().viewModel('fileGroup', options.apiPath, userFileGroup);
+        return userFileGroup.parent().viewModel('fileGroup', options.apiPath, {doc :userFileGroup } );
     }));
 
 }

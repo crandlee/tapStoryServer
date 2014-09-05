@@ -58,20 +58,15 @@ function getFileGroups(req, res, next) {
     if (userName) {
         uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
-                if (!fileGroups || fileGroups.length === 0) {
-                    res.status(404);
-                    res.end('No file groups found');
-                } else {
-                    var obj =  { fileGroups: fileGroups } ;
-                    obj.fileGroups = global._.map(obj.fileGroups,
-                        global._.partial(getFileGroupTopLevelLinks, groupId, apiPath));
-                    if (!groupId) {
-                        obj = linkSvc.attachLinksToObject(obj, [
-                            { uri: '', method: "DELETE", rel: "fileGroup"}
-                        ], req.path());
-                    }
-                    res.send(200, obj);
+                var obj =  { fileGroups: fileGroups } ;
+                obj.fileGroups = global._.map(obj.fileGroups,
+                    global._.partial(getFileGroupTopLevelLinks, groupId, apiPath));
+                if (!groupId) {
+                    obj = linkSvc.attachLinksToObject(obj, [
+                        { uri: '', method: "DELETE", rel: "fileGroup"}
+                    ], req.path());
                 }
+                res.send(200, obj);
             })
             .fail(function(err) {
                 res.status(500);

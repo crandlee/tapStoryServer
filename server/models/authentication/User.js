@@ -87,20 +87,20 @@ schema.methods = {
 
         var that = this;
         if (!Array.isArray(roles)) roles = [roles];
-        global._.chain(roles)
+        return global._.chain(roles)
             .map(function(role) {
                 return (that.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
             })
-            .reduce(function(allRolesValid, roleValid) {
-               return allRolesValid && roleValid;
+            .reduce(function(currentValid, roleValid) {
+               return currentValid || roleValid;
             })
             .value();
 
     },
 
-    viewModel: function (type, apiPath, doc) {
-        //If no doc passed in, then use the base (User) doc
-        return viewModels[type](doc || this, apiPath);
+    viewModel: function (type, apiPath, options) {
+        options = options || {};
+        return viewModels[type](options.doc || this, apiPath, options);
     }
 
 };

@@ -2,6 +2,8 @@
 require('require-enhanced')();
 
 var userSvc = global.rootRequire('svc-user');
+var userRelSvc = global.rootRequire('svc-rel');
+
 var linkSvc = global.rootRequire('svc-link');
 
 function saveUser(options) {
@@ -37,29 +39,53 @@ function saveUser(options) {
 
 function getUser(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    if (!userName) { res.status(400); res.end('Getting a user requires a userName'); }
+    //May be a relUser being requested, check it first
+    // (from a relationship route for instance)
+    var relUser = (req.params && req.params.relUser);
+    var userName = (req.params && (req.params.userName));
+    var shouldHideLinks = !!relUser;
 
-    if (userName) {
-        userSvc.getSingle(userName)
-            .then(function (user) {
-                if (!user) {
-                    res.status(404);
-                    res.end('No user found for this criteria');
-                }
-                res.send(200, user.viewModel('user', req.path()));
-            })
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
-            .done();
+    function retrieveUserAndHandleResult(userName, shouldHideLinks, res, next) {
 
-    } else {
-        return next();
+        //If this came in as a target user, verify against the target user through
+        if (!userName) { res.status(400); res.end('Getting a user requires a userName'); }
+        if (userName) {
+            userSvc.getSingle(userName)
+                .then(function (user) {
+                    if (!user) {
+                        res.status(404);
+                        res.end('No user found for this criteria');
+                    }
+                    res.send(200, user.viewModel('user', req.path(), { hideLinks: shouldHideLinks }));
+                })
+                .fail(function (err) {
+                    res.status(500);
+                    res.end(err.message);
+                })
+                .fin(function() { return next(); })
+                .done();
+
+        } else {
+            return next();
+        }
+
     }
 
+    if (relUser) {
+        return userRelSvc.canViewRelationshipUser(userName, relUser)
+            .then(function(canView) {
+                if (canView) {
+                    return retrieveUserAndHandleResult
+                        (relUser, shouldHideLinks, res, next);
+                } else {
+                    res.status(403);
+                    res.end('Cannot view a user with which you have no active relationship');
+                }
+            })
+    } else {
+        return retrieveUserAndHandleResult
+            (userName, shouldHideLinks, res, next);
+    }
 
 }
 
@@ -75,8 +101,7 @@ function getUsers(req, res, next) {
                     return user.viewModel('users', req.path());
                 }) };
                 users = linkSvc.attachLinksToObject(users, [
-                    { uri: '', rel: 'user', method: 'POST'},
-                    { uri: '', rel: 'user', method: 'PUT'}
+                    { uri: '', rel: 'user', method: 'POST'}
                 ], req.path());
                 res.send(200, users);
             }

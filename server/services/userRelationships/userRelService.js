@@ -5,60 +5,77 @@ var resSvc = global.rootRequire('svc-resource');
 var relSvcOptions = global.rootRequire('svc-opts-rel');
 var userSvc = global.rootRequire('svc-user');
 
-function saveRelationship(sourceUserName, relUserName, relationship, options) {
+function saveRelationship(sourceRel, targetRel, options) {
 
-    //Create a clone of options so they can be reset between savings
-    var initOptions = global.extend({}, options);
-
-    function getComplementRelationship(rel) {
-        var relTest = (rel && rel.toLowerCase());
-        if (relTest) {
-            if (relTest === 'friend') return 'friend';
-            if (relTest === 'guardian') return 'child';
-            if (relTest === 'surrogate') return 'child';
-        }
-        return null;
-    }
-    //Any relationship is a two-way.
-    //Possible options: friend-friend, guardian-child, surrogate-child
-    var complementRel = getComplementRelationship(relationship);
-    if (complementRel) {
-
-        return resSvc.processDocumentSave({ sourceUser: sourceUserName, relUser: relUserName, relationship: relationship },
-            relSvcOptions.setSaveRelationshipOptions, options)
-            .then(function () {
-                options = initOptions;
-                return resSvc.processDocumentSave({ relUser: sourceUserName, sourceUser: relUserName, relationship: complementRel },
-                    relSvcOptions.setSaveRelationshipOptions, options)
-                        .then(function() {
-                            return [
-                                { sourceUser: sourceUserName, relUser: relUserName, relationship: relationship },
-                                { relUser: sourceUserName, sourceUser: relUserName, relationship: complementRel }
-                            ];
-                        });
-            });
-
-    } else {
-        global.errSvc.error('Could not find a relationship match for requested relationship', { rel: relationship });
-    }
+    return resSvc.processDocumentSave({ participants: [sourceRel, targetRel] },
+        relSvcOptions.setSaveRelationshipOptions, options);
 
 }
 
-function getRelationships(sourceUser) {
+function getRelationships(sourceUser, relationship, statuses) {
 
     return userSvc.getSingle(sourceUser)
         .then(function(user) {
             if (!user) global.errSvc.error('Could not find user to get relationships', { userName: sourceUser });
-            return resSvc.getList({ find: {sourceUser: user._id}, populate: ['relUser'], model: 'UserRelationship'  })
+            var find = { "participants.user" : user._id };
+            if (relationship) find = global.extend(find, { "participants.rel" : relationship });
+            if (statuses && !Array.isArray(statuses)) statuses = [statuses];
+            if (statuses) find = global.extend(find, { "participants.status" : { $in: statuses }});
+            return resSvc.getList({ find: find, populate: ['participants.user'], model: 'UserRelationship'  })
                 .then(function(relationships) {
+                    //TODO-Randy: filter out records where the relationship string is
+                    //"on the other side" of the relationship
                     return relationships;
                 });
         });
 
 }
 
+function getRelationship(userNames) {
+
+    var getUser = function (userName) {
+        return userSvc.getSingle(userName);
+    };
+
+    if (userNames && Array.isArray(userNames) && userNames.length === 2 && userNames[0] && userNames[1]) {
+
+        return global.Promise.all([getUser(userNames[0]), getUser(userNames[1])])
+            .then(function (users) {
+                if (users && Array.isArray(users) && users.length === 2 && users[0] && users[1]) {
+                    var find = { "participants.user" : { $all : [ users[0]._id, users[1]._id] } };
+                    return resSvc.getSingle({ find: find, model: 'UserRelationship'  });
+                } else {
+                    global.errSvc.error('Unable to retrieve users for relationship', { userNames: userNames });
+                }
+            })
+    } else {
+        global.errSvc.error('Expected array of userNames', { userNames: userNames });
+    }
+}
+
+function getRelKey(userNames) {
+
+    if (!userNames || !Array.isArray(userNames) || userNames.length !== 2)
+        global.errSvc.error('Must include two user names for this operation', { userNames: userNames });
+
+    return global._.chain(userNames)
+        .map(function(str) { return str.toLowerCase() })
+        .sortBy(function(str) { return str })
+        .reduce(function(existing, single) { return existing + '||' + single.toLowerCase() })
+        .value();
+
+}
+
+function canViewRelationshipUser(sourceUserName, relUserName) {
+    return getRelationship([sourceUserName, relUserName])
+        .then(function(relationship) {
+            return (relationship && relationship.participants[0].status === 'active' && relationship.participants[1].status === 'active');
+        });
+}
 
 module.exports = {
     saveRelationship: global.Promise.fbind(saveRelationship),
-    getRelationships: getRelationships
+    getRelationships: getRelationships,
+    canViewRelationshipUser: canViewRelationshipUser,
+    getRelKey: getRelKey
 };
