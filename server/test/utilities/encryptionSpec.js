@@ -1,7 +1,11 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var promiseUtils = cb.promiseUtils;
 
-var enc = global.rootRequire('util-encryption');
+var enc = cb.rootRequire('util-encryption');
 
 describe('utilities/encryptionUtility.js', function () {
 
@@ -13,7 +17,7 @@ describe('utilities/encryptionUtility.js', function () {
         it('creates a valid salt', function (done) {
 
             enc.createSalt().fin(done).done(function (salt) {
-                global.should.exist(salt);
+                should.exist(salt);
             });
 
         });
@@ -23,7 +27,7 @@ describe('utilities/encryptionUtility.js', function () {
 
         it('properly hashes a password', function (done) {
             enc.hashPwd(testSecret, testSalt).fin(done).done(function (token) {
-                global.should.exist(token);
+                should.exist(token);
             });
         });
 
@@ -36,10 +40,10 @@ describe('utilities/encryptionUtility.js', function () {
                 return enc.hashPwd(testSecret, testSalt);
             }
 
-            global.Promise.all([enc1(), enc2()])
+            cb.Promise.all([enc1(), enc2()])
                 .spread(function (token1, token2) {
-                    global.should.exist(token1);
-                    global.should.exist(token2);
+                    should.exist(token1);
+                    should.exist(token2);
                     token1.should.equal(token2);
                 })
                 .fin(done).done();
@@ -53,7 +57,7 @@ describe('utilities/encryptionUtility.js', function () {
 
             enc.saltAndHash(testSecret).should.be.fulfilled
                 .then(function (hash) {
-                    global.should.exist(hash);
+                    should.exist(hash);
                 }).should.notify(done);
 
 
@@ -68,10 +72,10 @@ describe('utilities/encryptionUtility.js', function () {
                 return enc.saltAndHash(testSecret);
             }
 
-            global.Promise.all([enc1(), enc2()])
+            cb.Promise.all([enc1(), enc2()])
                 .spread(function (token1, token2) {
-                    global.should.exist(token1);
-                    global.should.exist(token2);
+                    should.exist(token1);
+                    should.exist(token2);
                     token1.should.not.equal(token2);
                 })
                 .fin(done).done();
@@ -83,9 +87,9 @@ describe('utilities/encryptionUtility.js', function () {
 
             enc.saltAndHash(testSecret)
                 .then(function (token1) {
-                    global.should.exist(token1);
+                    should.exist(token1);
                     enc.checkEqualToken(testSecret, token1).then(function (isMatch) {
-                        global.should.exist(isMatch);
+                        should.exist(isMatch);
                         isMatch.should.equal(true);
                     }).should.notify(done);
                 });
@@ -94,9 +98,9 @@ describe('utilities/encryptionUtility.js', function () {
         it('not match different token with hashed token', function (done) {
             enc.saltAndHash(testSecret)
                 .then(function (token1) {
-                    global.should.exist(token1);
+                    should.exist(token1);
                     enc.checkEqualToken('Some other secret', token1).then(function (isMatch) {
-                        global.should.exist(isMatch);
+                        should.exist(isMatch);
                         isMatch.should.equal(false);
                     }).should.notify(done);
                 });

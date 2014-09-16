@@ -1,9 +1,10 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var promise = cb.Promise;
 
 var mongoose = require('mongoose');
-var fileSystemUtility = global.rootRequire('util-filesystem');
-var _ = require('lodash');
+var fileSystemUtility = cb.rootRequire('util-filesystem');
 
 function connectDb(config) {
 
@@ -15,8 +16,8 @@ function connectDb(config) {
         console.log('Loading models');
         loadModels()
             .then(function(){
-                if (global.canBeginTest === null)
-                    global.canBeginTest = true;
+                if (cb.canBeginTest === null)
+                    cb.canBeginTest = true;
             })
             .fail(function(err) { throw err; })
             .done();
@@ -28,9 +29,9 @@ function connectDb(config) {
 }
 function loadModels() {
 
-    return fileSystemUtility.getFilesRecursive(global.rootPath + 'server/models')
+    return fileSystemUtility.getFilesRecursive(cb.rootPath + 'server/models')
         .then(function(files) {
-            return global.Promise(_.map(files, function(fileName) {
+            return promise(_.map(files, function(fileName) {
                 require(fileName.replace('.js',''));
             }));
         });

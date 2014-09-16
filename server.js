@@ -1,15 +1,14 @@
 'use strict';
 
 //Load the enhanced require functionality
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
-var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = global.rootRequire('cfg-config')[env];
-var serverSvc = global.rootRequire('svc-restify');
-var fileSystemSvc = global.rootRequire('svc-filesystem');
-var authSvc = global.rootRequire('svc-passport');
-var dbSvc = global.rootRequire('svc-database');
-var routes = global.rootRequire('route-root');
+var config = cb.config;
+var serverSvc = cb.rootRequire('svc-restify');
+var fileSystemSvc = cb.rootRequire('svc-filesystem');
+var authSvc = cb.rootRequire('svc-passport');
+var dbSvc = cb.rootRequire('svc-database');
+var routes = cb.rootRequire('route-root');
 
 //Authentication Configuration
 authSvc.initialize(serverSvc);

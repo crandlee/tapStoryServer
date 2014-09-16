@@ -1,11 +1,11 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
 var restify = require('restify');
 var server = null;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = global.rootRequire('cfg-config')[env];
-var cors = global.rootRequire('cfg-cors');
+var config = cb.rootRequire('cfg-config')[env];
+var cors = cb.rootRequire('cfg-cors');
 
 function beginListen(port, next) {
 

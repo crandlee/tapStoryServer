@@ -1,12 +1,11 @@
 "use strict";
-require('require-enhanced')();
-
-var should = require('chai').should();
-var proxyquire = require('proxyquire');
+var cb = require('common-bundle')( { test: true });
+var should = cb.should;
+var sinon = cb.sinon;
 
 describe("config/config.js", function () {
     it("creates both the development and server object", function () {
-        var config = proxyquire(global.getRoutePathFromKey('cfg-config'), {  });
+        var config = cb.proxyquire(cb.getRoutePathFromKey('cfg-config'), {  });
         should.exist(config.development);
         should.exist(config.production);
     });

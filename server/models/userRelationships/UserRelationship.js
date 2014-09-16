@@ -1,10 +1,10 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
 var mongoose = require('mongoose');
 var validRelationships = ['friend', 'guardian', 'child', 'surrogate'];
 var validStatuses = ['pending', 'pendingack', 'active', 'inactive'];
-var viewModels = global.rootRequire('vm-rel');
+var viewModels = cb.rootRequire('vm-rel');
 
 
 var schema = mongoose.Schema({

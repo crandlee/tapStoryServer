@@ -1,12 +1,15 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var promise = cb.Promise;
 
-var resSvc = global.rootRequire('svc-resource');
-var userSvcOptions = global.rootRequire('svc-opts-user');
+var resSvc = cb.rootRequire('svc-resource');
+var userSvcOptions = cb.rootRequire('svc-opts-user');
 
 function save(updateProperties, options) {
 
-    options = global.extend(options, updateProperties);
+    options = cb.extend(options, updateProperties);
     return resSvc.processDocumentSave(null, userSvcOptions.setSaveUserOptions, options);
 
 }
@@ -50,13 +53,13 @@ function removeFileGroup(userName, groupId, options) {
 
 function getList(find, options) {
 
-    return resSvc.getList(global.extend(options, { modelName: 'User', find: find }));
+    return resSvc.getList(cb.extend(options, { modelName: 'User', find: find }));
 
 }
 
 function getSingle(userName, options) {
 
-    return resSvc.getSingle(global.extend(options, { modelName: 'User', find: {userName: userName} }));
+    return resSvc.getSingle(cb.extend(options, { modelName: 'User', find: {userName: userName} }));
 
 }
 
@@ -65,7 +68,7 @@ function getFileGroups(userName, options) {
     function getFileGroupsFromUserResource(options, user) {
         var groups = user.fileGroups || [];
         if (options.groupId) {
-            groups = (global._.find(groups, function(fileGroup) {
+            groups = (_.find(groups, function(fileGroup) {
                 return fileGroup.groupId === options.groupId;
             }));
             groups = groups ? [groups] : [];
@@ -74,25 +77,25 @@ function getFileGroups(userName, options) {
     }
 
     return getSingle(userName, options)
-        .then(global._.partial(getFileGroupsFromUserResource, options))
-        .fail(global.errSvc.promiseError("Could not retrieve file groups from user",
+        .then(_.partial(getFileGroupsFromUserResource, options))
+        .fail(errSvc.promiseError("Could not retrieve file groups from user",
             { userName: userName } ));
 }
 
 function getPermittedFiles(currentUser, groupId, file) {
 
-    var checkGroupOwnership = global.Promise.fbind(function(resource, groupId) {
+    var checkGroupOwnership = promise.fbind(function(resource, groupId) {
         var fg = resource.getFileGroup(groupId);
         fg = fg || { files: [] };
         if (file)
-            return { user: resource, files: [global._.find(fg.files, function(testFile) {
+            return { user: resource, files: [_.find(fg.files, function(testFile) {
                 return testFile.fileName.toLowerCase() === file.toLowerCase();
             })] || [] };
         else
             return { user: resource, files: fg.files || []};
     });
 
-    var checkCurrentUserRole = global.Promise.fbind(function(resFileStruct, currentUser) {
+    var checkCurrentUserRole = promise.fbind(function(resFileStruct, currentUser) {
 
         if (resFileStruct.files.length === 0 && currentUser.hasRole('super-admin')) {
             return getSingle({ "fileGroups.groupId" : groupId })
@@ -105,7 +108,7 @@ function getPermittedFiles(currentUser, groupId, file) {
                     }
                     return resFileStruct;
                 })
-                .fail(global.errSvc.promiseError("Could not locate user for file group"),
+                .fail(errSvc.promiseError("Could not locate user for file group"),
                     { groupId: groupId });
         } else {
             return resFileStruct;
@@ -114,12 +117,12 @@ function getPermittedFiles(currentUser, groupId, file) {
     });
 
     return getSingle(currentUser.userName)
-        .then(global._.partialRight(checkGroupOwnership, groupId))
-        .then(global._.partialRight(checkCurrentUserRole, currentUser))
+        .then(_.partialRight(checkGroupOwnership, groupId))
+        .then(_.partialRight(checkCurrentUserRole, currentUser))
         .then(function(userFileStruct) {
             if (userFileStruct.files.length === 0) throw new Error('Unable to authorize user for download');
             delete userFileStruct.resource;
-            return global.Promise(userFileStruct.files);
+            return promise(userFileStruct.files);
         });
 
 }

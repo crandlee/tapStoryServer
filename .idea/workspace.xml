@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3b3e1fd-9cb5-4959-aaff-d59ea208a842" name="Default" comment="">
+    <list default="true" id="654666d3-cc4c-4e54-bb95-08822f57a652" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/node_modules/common-bundle/index.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/node_modules/require-enhanced/index.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/authentication/User.js" afterPath="$PROJECT_DIR$/server/models/authentication/User.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" afterPath="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" afterPath="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/authentication/authCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/authentication/authCtrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authorization/authorizationService.js" afterPath="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/caching/cacheService.js" afterPath="$PROJECT_DIR$/server/services/caching/cacheService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/config/config.js" afterPath="$PROJECT_DIR$/server/config/config.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/config/configSpec.js" afterPath="$PROJECT_DIR$/server/test/config/configSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/coreCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/coreCtrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/database/databaseService.js" afterPath="$PROJECT_DIR$/server/services/database/databaseService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" afterPath="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/encryptionUtility.js" afterPath="$PROJECT_DIR$/server/utilities/encryptionUtility.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/error/errorService.js" afterPath="$PROJECT_DIR$/server/services/error/errorService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/utilities/fileSystemService.js" afterPath="$PROJECT_DIR$/server/services/utilities/fileSystemService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" afterPath="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" afterPath="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/hypermedia/linkService.js" afterPath="$PROJECT_DIR$/server/services/hypermedia/linkService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/logging/logService.js" afterPath="$PROJECT_DIR$/server/services/logging/logService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/passportService.js" afterPath="$PROJECT_DIR$/server/services/authentication/passportService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/promises/promiseService.js" afterPath="$PROJECT_DIR$/server/services/promises/promiseService.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/utilities/resourceService.js" afterPath="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/restifyService.js" afterPath="$PROJECT_DIR$/server/services/restifyService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/routes.js" afterPath="$PROJECT_DIR$/server/routes/routes.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/authentication/routes.js" afterPath="$PROJECT_DIR$/server/routes/authentication/routes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/userFiles/routes.js" afterPath="$PROJECT_DIR$/server/routes/userFiles/routes.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes/userRelationships/routes.js" afterPath="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/notes/todolist.txt" afterPath="$PROJECT_DIR$/notes/todolist.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/uploads/uploadService.js" afterPath="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" afterPath="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" afterPath="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" afterPath="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" afterPath="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js" afterPath="$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userService.js" afterPath="$PROJECT_DIR$/server/services/authentication/userService.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" afterPath="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" afterPath="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/authentication/userViewModels.js" afterPath="$PROJECT_DIR$/server/models/authentication/userViewModels.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -39,51 +75,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="userRelViewModels.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js">
+      <file leaf-file-name="errorService.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="798">
-              <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userViewModels.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/models/authentication/userViewModels.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1680">
-              <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="relCtrl.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.84375" vertical-offset="736" max-vertical-offset="1722">
-              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userCtrl.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/controllers/authentication/userCtrl.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="756" max-vertical-offset="4515">
-              <caret line="86" column="44" selection-start-line="86" selection-start-column="44" selection-end-line="86" selection-end-column="44" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="routes.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server/routes/userRelationships/routes.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.65630114" vertical-offset="502" max-vertical-offset="1197">
-              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="554" max-vertical-offset="1932">
+              <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -92,8 +88,88 @@
       <file leaf-file-name="userRelService.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="567" max-vertical-offset="1806">
-              <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1869">
+              <caret line="26" column="43" selection-start-line="26" selection-start-column="43" selection-end-line="26" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userRelServiceOptions.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1470" max-vertical-offset="3465">
+              <caret line="80" column="15" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resourceService.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="6237" max-vertical-offset="7686">
+              <caret line="307" column="30" selection-start-line="307" selection-start-column="30" selection-end-line="307" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userServiceOptionsSpec.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="395" max-vertical-offset="1911">
+              <caret line="29" column="17" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userServiceSpec.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2318" max-vertical-offset="2898">
+              <caret line="122" column="19" selection-start-line="122" selection-start-column="19" selection-end-line="122" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resourceServiceSpec.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="8157" max-vertical-offset="9051">
+              <caret line="412" column="25" selection-start-line="412" selection-start-column="25" selection-end-line="412" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/common-bundle/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="1722">
+              <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="36" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fsWriteService.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.57846713" vertical-offset="2245" max-vertical-offset="3486">
+              <caret line="122" column="27" selection-start-line="122" selection-start-column="27" selection-end-line="125" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="uploadService.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3549">
+              <caret line="19" column="39" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -112,71 +188,67 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/server/utilities/functionUtilities.js" />
-        <option value="$PROJECT_DIR$/server/utilities/objectUtilities.js" />
-        <option value="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/config/configSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" />
-        <option value="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" />
-        <option value="$PROJECT_DIR$/server/utilities/encryptionUtility.js" />
-        <option value="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" />
-        <option value="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" />
-        <option value="$PROJECT_DIR$/server/services/promises/promiseService.js" />
-        <option value="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" />
         <option value="$PROJECT_DIR$/node_modules/require-enhanced/index.js" />
+        <option value="$PROJECT_DIR$/node_modules/common-bindle/index.js" />
+        <option value="$PROJECT_DIR$/server/controllers/authentication/authCtrl.js" />
+        <option value="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
+        <option value="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
+        <option value="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
+        <option value="$PROJECT_DIR$/server/controllers/coreCtrl.js" />
+        <option value="$PROJECT_DIR$/server/models/authentication/userViewModels.js" />
+        <option value="$PROJECT_DIR$/server/models/authentication/User.js" />
+        <option value="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
+        <option value="$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js" />
+        <option value="$PROJECT_DIR$/server/routes/authentication/routes.js" />
+        <option value="$PROJECT_DIR$/server/routes/userFiles/routes.js" />
+        <option value="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
         <option value="$PROJECT_DIR$/server/routes/routes.js" />
         <option value="$PROJECT_DIR$/server/services/authentication/passportService.js" />
-        <option value="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" />
-        <option value="/chrome-extension://hgmlo…ent/restclient.nocache.js" />
-        <option value="$PROJECT_DIR$/server/controllers/authentication/uploadsCtrl.js" />
-        <option value="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
-        <option value="$PROJECT_DIR$/server/services/hypermedia/linkService.js" />
-        <option value="$PROJECT_DIR$/server/services/database/databaseService.js" />
-        <option value="$PROJECT_DIR$/server.js" />
-        <option value="$PROJECT_DIR$/server/services/error/errorService.js" />
-        <option value="$PROJECT_DIR$/server/controllers/coreCtrl.js" />
-        <option value="$PROJECT_DIR$/server/config/CORS.js" />
-        <option value="$PROJECT_DIR$/server/services/authentication/userService.js" />
-        <option value="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
         <option value="$PROJECT_DIR$/server/services/authentication/userServiceOptions.js" />
-        <option value="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
-        <option value="$PROJECT_DIR$/server/routes/userFiles/routes.js" />
-        <option value="$PROJECT_DIR$/server/config/require-shortcuts.json" />
-        <option value="$PROJECT_DIR$/notes/todolist.txt" />
-        <option value="$PROJECT_DIR$/server/routes/authentication/routes.js" />
-        <option value="$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js" />
-        <option value="$PROJECT_DIR$/server/controllers/authentication/authCtrl.js" />
-        <option value="$PROJECT_DIR$/server/models/authentication/User.js" />
-        <option value="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
-        <option value="$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js" />
-        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
-        <option value="$PROJECT_DIR$/server/models/authentication/userViewModels.js" />
-        <option value="$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js" />
-        <option value="$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js" />
-        <option value="$PROJECT_DIR$/server/controllers/authentication/userCtrl.js" />
+        <option value="$PROJECT_DIR$/server/services/authorization/authorizationService.js" />
+        <option value="$PROJECT_DIR$/server/services/caching/cacheService.js" />
+        <option value="$PROJECT_DIR$/server/services/database/databaseService.js" />
+        <option value="$PROJECT_DIR$/server/services/hypermedia/linkService.js" />
+        <option value="$PROJECT_DIR$/server/services/utilities/fileSystemService.js" />
+        <option value="$PROJECT_DIR$/server/services/restifyService.js" />
+        <option value="$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/models/authentication/UserSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/utilities/encryptionSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js" />
+        <option value="$PROJECT_DIR$/server/utilities/encryptionUtility.js" />
+        <option value="$PROJECT_DIR$/server/utilities/fileSystemUtility.js" />
+        <option value="$PROJECT_DIR$/server/config/config.js" />
+        <option value="$PROJECT_DIR$/server/test/config/configSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js" />
+        <option value="$PROJECT_DIR$/server.js" />
+        <option value="$PROJECT_DIR$/server/services/promises/promiseService.js" />
+        <option value="$PROJECT_DIR$/server/services/logging/logService.js" />
+        <option value="$PROJECT_DIR$/server/services/authentication/userService.js" />
+        <option value="$PROJECT_DIR$/server/services/error/errorService.js" />
         <option value="$PROJECT_DIR$/server/services/userRelationships/userRelService.js" />
-        <option value="$PROJECT_DIR$/server/routes/userRelationships/routes.js" />
+        <option value="$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js" />
+        <option value="$PROJECT_DIR$/server/services/utilities/resourceService.js" />
+        <option value="$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js" />
+        <option value="$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js" />
+        <option value="$PROJECT_DIR$/node_modules/common-bundle/index.js" />
+        <option value="$PROJECT_DIR$/server/services/uploads/uploadService.js" />
+        <option value="$PROJECT_DIR$/server/services/uploads/fsWriteService.js" />
       </list>
     </option>
+  </component>
+  <component name="JsBowerSettings">
+    <exe-path>/usr/local/bin/bower</exe-path>
+    <config-path />
   </component>
   <component name="JsGruntFileManager">
     <gruntfiles>
       <GruntfileState>
-        <multi-tasks>
-          <GruntMultiTaskState>
-            <name>jshint</name>
-            <targets>
-              <target value="globals" />
-            </targets>
-          </GruntMultiTaskState>
-        </multi-tasks>
         <gruntfile-path>$PROJECT_DIR$/Gruntfile.js</gruntfile-path>
       </GruntfileState>
     </gruntfiles>
@@ -186,12 +258,12 @@
     <data>$PROJECT_DIR$/node_modules/mocha</data>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="149" />
+    <option name="x" value="65" />
     <option name="y" value="-4" />
-    <option name="width" value="1215" />
-    <option name="height" value="1028" />
+    <option name="width" value="1855" />
+    <option name="height" value="1084" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
@@ -303,69 +375,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="userRelationships" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="routes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="routes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="userRelationships" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="routes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="userFiles" />
+              <option name="myItemId" value="uploads" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -384,10 +394,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="userRelationships" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -413,73 +419,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tapStoryServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="notes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="options.lastSelected" value="preferences.keymap" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="options.lastSelected" value="Settings.JavaScript.Linters.JSHint" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="FullScreen" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/server" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="LayoutCode.rearrangeEntriesJavaScript" value="false" />
+    <property name="restartRequiresConfirmation" value="true" />
   </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/server/controllers/userFiles" />
-      <recent name="$PROJECT_DIR$/node_modules/require-enhanced" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/server" />
-      <recent name="$PROJECT_DIR$/server/models/authentication" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Node.js.Run app">
-    <configuration default="false" name="sinonSpec.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/bin/node" path-to-js-file="sinonSpec.js" working-dir="$PROJECT_DIR$/server/test/samples">
-      <RunnerSettings RunnerId="NodeJS.run" />
-      <ConfigurationWrapper RunnerId="NodeJS.run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Gruntfile.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/bin/node" path-to-js-file="Gruntfile.js" working-dir="$PROJECT_DIR$">
-      <RunnerSettings RunnerId="NodeJS.run" />
-      <ConfigurationWrapper RunnerId="NodeJS.run" />
+  <component name="RunManager" selected="JavaScript Debug.Run Server">
+    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="scope" value="ALL" />
+      <option name="testName" />
       <method />
     </configuration>
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
@@ -492,12 +453,14 @@
       <option name="showConsoleOnStdOut" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
-      <option name="VMOptions" />
-      <option name="arguments" />
+    <configuration default="true" type="CucumberJavaScriptRunConfigurationType" factoryName="Cucumber.js">
+      <option name="cucumberJsArguments" />
+      <option name="executablePath" />
       <option name="filePath" />
-      <option name="scope" value="ALL" />
-      <option name="testName" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver">
@@ -507,14 +470,8 @@
       <setting name="preferredDebugBrowser" value="Chrome" />
       <method />
     </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="CucumberJavaScriptRunConfigurationType" factoryName="Cucumber.js">
-      <option name="cucumberJsArguments" />
-      <option name="executablePath" />
-      <option name="filePath" />
+    <configuration default="true" type="NodeJSRemoteDebug" factoryName="Node.js Remote Debug">
+      <node-js-remote-debug />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -534,12 +491,7 @@
     <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
       <method />
     </configuration>
-    <configuration default="false" name="Run app JavaScript" type="JavascriptDebugType" factoryName="JavaScript Debug" uri="http://localhost:3030/api">
-      <RunnerSettings RunnerId="JavascriptDebugRunner" />
-      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Server Testing" type="mocha-javascript-test-runner" factoryName="Mocha">
+    <configuration default="false" name="Tests" type="mocha-javascript-test-runner" factoryName="Mocha">
       <node-options />
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
@@ -548,110 +500,52 @@
       <extra-mocha-options>-R spec</extra-mocha-options>
       <test-directory>$PROJECT_DIR$/server/test</test-directory>
       <recursive>true</recursive>
-      <RunnerSettings RunnerId="MochaDebugRunner" />
       <RunnerSettings RunnerId="RunnerForMochaJavaScript" />
-      <ConfigurationWrapper RunnerId="MochaDebugRunner" />
       <ConfigurationWrapper RunnerId="RunnerForMochaJavaScript" />
       <method />
     </configuration>
-    <configuration default="false" name="Run app" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="/usr/bin/node" path-to-js-file="server.js" node-parameters="--debug --harmony" working-dir="$PROJECT_DIR$">
-      <browser start="true" with-js-debugger="true" url="http://localhost:3030/api" />
-      <RunnerSettings RunnerId="NodeJS.debug" />
-      <RunnerSettings RunnerId="NodeJS.run" />
-      <ConfigurationWrapper RunnerId="NodeJS.debug" />
-      <ConfigurationWrapper RunnerId="NodeJS.run" />
+    <configuration default="false" name="Run Server" type="JavascriptDebugType" factoryName="JavaScript Debug" uri="http://localhost:3030">
+      <RunnerSettings RunnerId="JavascriptDebugRunner" />
+      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
       <method />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Run app JavaScript" />
-      <item index="1" class="java.lang.String" itemvalue="Mocha.Server Testing" />
-      <item index="2" class="java.lang.String" itemvalue="Node.js.Run app" />
-      <item index="3" class="java.lang.String" itemvalue="Node.js.sinonSpec.js" />
-      <item index="4" class="java.lang.String" itemvalue="Node.js.Gruntfile.js" />
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Mocha.Tests" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.Run Server" />
     </list>
-    <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Node.js.Gruntfile.js" />
-        <item index="1" class="java.lang.String" itemvalue="Node.js.sinonSpec.js" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d3b3e1fd-9cb5-4959-aaff-d59ea208a842" name="Default" comment="" />
-      <created>1405955146838</created>
-      <updated>1405955146838</updated>
+      <changelist id="654666d3-cc4c-4e54-bb95-08822f57a652" name="Default" comment="" />
+      <created>1410886044399</created>
+      <updated>1410886044399</updated>
     </task>
     <servers />
   </component>
-  <component name="TodoView" selected-index="0">
-    <todo-panel id="selected-file">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="false" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="true" />
-      <todo-filter name="Randy TODO" />
-    </todo-panel>
-    <todo-panel id="default-changelist">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="false" />
-    </todo-panel>
-  </component>
   <component name="ToolWindowManager">
-    <frame x="149" y="-4" width="1215" height="1028" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31661093" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2831661" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32818073" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3478261" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32948583" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32948583" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32948583" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20689656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21850613" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3199554" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32887402" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2170585" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39979014" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32948583" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24978392" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32858992" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33376455" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729626" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39974126" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988358" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3182406" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32849163" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1823573" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32858992" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24978392" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -670,462 +564,413 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints-dialog>
-        <breakpoints-dialog />
-      </breakpoints-dialog>
-      <option name="time" value="96" />
-    </breakpoint-manager>
+    <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/server/test/config/configSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.91268194" vertical-offset="1052" max-vertical-offset="2268">
-          <caret line="71" column="24" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7858628" vertical-offset="1701" max-vertical-offset="4284">
-          <caret line="99" column="15" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8299595" vertical-offset="241" max-vertical-offset="1827">
-          <caret line="31" column="24" selection-start-line="31" selection-start-column="24" selection-end-line="31" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/utilities/fileSystemUtility.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="52" max-vertical-offset="546">
-          <caret line="39" column="1" selection-start-line="39" selection-start-column="1" selection-end-line="39" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/utilities/encryptionUtility.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="861">
-          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/models/authentication/UserSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1638" max-vertical-offset="4032">
-          <caret line="83" column="7" selection-start-line="83" selection-start-column="7" selection-end-line="83" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="798">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="14" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1307054" vertical-offset="2395" max-vertical-offset="3885">
-          <caret line="140" column="74" selection-start-line="140" selection-start-column="74" selection-end-line="140" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/tapStoryServer.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="483">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/utilities/encryptionSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2352">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="264" max-vertical-offset="2835">
-          <caret line="27" column="79" selection-start-line="27" selection-start-column="79" selection-end-line="27" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/promises/promiseService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2844" max-vertical-offset="3696">
-          <caret line="165" column="13" selection-start-line="165" selection-start-column="13" selection-end-line="165" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1848" max-vertical-offset="9009">
-          <caret line="112" column="18" selection-start-line="112" selection-start-column="18" selection-end-line="112" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/passportService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.62931037" vertical-offset="575" max-vertical-offset="1155">
-          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4642857" vertical-offset="577" max-vertical-offset="1155">
-          <caret line="38" column="28" selection-start-line="38" selection-start-column="28" selection-end-line="38" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/restify/lib/server.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.258348" vertical-offset="15183" max-vertical-offset="16800">
-          <caret line="730" column="0" selection-start-line="730" selection-start-column="0" selection-end-line="730" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="193" max-vertical-offset="1281">
-          <caret line="16" column="25" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-          <folding>
-            <element signature="e#763#995#0" expanded="false" />
-            <element signature="e#1046#7877#0" expanded="false" />
-            <element signature="e#1122#2146#0" expanded="false" />
-            <element signature="e#1124#1156#0" expanded="false" />
-            <element signature="e#1429#1995#0" expanded="false" />
-            <element signature="e#1451#1509#0" expanded="false" />
-            <element signature="e#2032#2082#0" expanded="false" />
-            <element signature="e#2212#2687#0" expanded="false" />
-            <element signature="e#2384#2473#0" expanded="false" />
-            <element signature="e#2510#2623#0" expanded="false" />
-            <element signature="e#2754#3228#0" expanded="false" />
-            <element signature="e#2925#3014#0" expanded="false" />
-            <element signature="e#3051#3164#0" expanded="false" />
-            <element signature="e#3300#3986#0" expanded="false" />
-            <element signature="e#3397#3496#0" expanded="false" />
-            <element signature="e#3627#3717#0" expanded="false" />
-            <element signature="e#3754#3922#0" expanded="false" />
-            <element signature="e#4080#4929#0" expanded="false" />
-            <element signature="e#4186#4295#0" expanded="false" />
-            <element signature="e#4491#4778#0" expanded="false" />
-            <element signature="e#4815#4865#0" expanded="false" />
-            <element signature="e#4998#5847#0" expanded="false" />
-            <element signature="e#5606#5696#0" expanded="false" />
-            <element signature="e#5733#5783#0" expanded="false" />
-            <element signature="e#5930#6812#0" expanded="false" />
-            <element signature="e#6533#6622#0" expanded="false" />
-            <element signature="e#6659#6748#0" expanded="false" />
-            <element signature="e#6892#7867#0" expanded="false" />
-            <element signature="e#7593#7682#0" expanded="false" />
-            <element signature="e#7719#7803#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authorization/authorizationService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18453427" vertical-offset="0" max-vertical-offset="569">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="7" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/require-enhanced/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7755682" vertical-offset="1197" max-vertical-offset="2604">
-          <caret line="70" column="9" selection-start-line="70" selection-start-column="9" selection-end-line="70" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="20" max-vertical-offset="630">
-          <caret line="8" column="18" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/hypermedia/linkService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="189" max-vertical-offset="1281">
-          <caret line="26" column="18" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/logging/logService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="11" max-vertical-offset="2352">
-          <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/database/databaseService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0779468" vertical-offset="126" max-vertical-offset="1113">
-          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="756">
-          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/routes/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1033275" vertical-offset="0" max-vertical-offset="840">
-          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/coreCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37806875" vertical-offset="0" max-vertical-offset="611">
-          <caret line="11" column="23" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/restifyService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7905074" vertical-offset="630" max-vertical-offset="1428">
-          <caret line="53" column="59" selection-start-line="53" selection-start-column="43" selection-end-line="53" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/CORS.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2749591" vertical-offset="0" max-vertical-offset="777">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="431" max-vertical-offset="1911">
-          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.73745817" vertical-offset="63" max-vertical-offset="3423">
-          <caret line="24" column="71" selection-start-line="24" selection-start-column="71" selection-end-line="24" selection-end-column="71" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.035117056" vertical-offset="1680" max-vertical-offset="3108">
-          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2436" max-vertical-offset="3822">
-          <caret line="307" column="8" selection-start-line="307" selection-start-column="8" selection-end-line="307" selection-end-column="8" />
-          <folding>
-            <element signature="n#!!block;n#save#0" expanded="false" />
-            <element signature="e#134#1269#0" expanded="false" />
-            <element signature="e#1333#1663#0" expanded="false" />
-            <element signature="e#2730#2784#0" expanded="false" />
-            <element signature="e#3580#3635#0" expanded="false" />
-            <element signature="e#4377#4484#0" expanded="false" />
-            <element signature="e#5377#5425#0" expanded="false" />
-            <element signature="e#5460#5687#0" expanded="false" />
-            <element signature="e#5717#5776#0" expanded="false" />
-            <element signature="n#!!block;n#saveDocument#0" expanded="false" />
-            <element signature="e#5928#6302#0" expanded="false" />
-            <element signature="e#5952#6213#0" expanded="false" />
-            <element signature="e#5994#6201#0" expanded="false" />
-            <element signature="e#6219#6296#0" expanded="false" />
-            <element signature="e#6314#6346#0" expanded="false" />
-            <element signature="e#6439#6691#0" expanded="false" />
-            <element signature="e#7379#7438#0" expanded="false" />
-            <element signature="n#!!block;n#processDocumentSave#0" expanded="false" />
-            <element signature="e#7995#8058#0" expanded="false" />
-            <element signature="e#8137#8606#0" expanded="false" />
-            <element signature="e#8475#8578#0" expanded="false" />
-            <element signature="n#!!doc;n#modelUpdate#0" expanded="false" />
-            <element signature="e#10812#11039#0" expanded="false" />
-            <element signature="e#10856#11025#0" expanded="false" />
-            <element signature="n#!!block;n#postOperationCleanup#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.73745817" vertical-offset="756" max-vertical-offset="3024">
-          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/routes/userFiles/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="865" max-vertical-offset="1533">
-          <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/notes/todolist.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="252">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/controllers/userFiles/uploadsCtrl.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-33.46875" vertical-offset="420" max-vertical-offset="4830">
-          <caret line="71" column="32" selection-start-line="71" selection-start-column="32" selection-end-line="71" selection-end-column="32" />
-          <folding>
-            <element signature="e#6888#7087#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/routes/authentication/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46061644" vertical-offset="214" max-vertical-offset="1050">
-          <caret line="23" column="24" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/authentication/authCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45652175" vertical-offset="0" max-vertical-offset="1050">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/require-shortcuts.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-20.333334" vertical-offset="125" max-vertical-offset="924">
-          <caret line="35" column="66" selection-start-line="35" selection-start-column="66" selection-end-line="35" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/authentication/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75555557" vertical-offset="1734" max-vertical-offset="3297">
-          <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="291" max-vertical-offset="3486">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31666666" vertical-offset="6654" max-vertical-offset="14931">
-          <caret line="325" column="36" selection-start-line="325" selection-start-column="36" selection-end-line="325" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1281">
-          <caret line="14" column="16" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6839465" vertical-offset="1187" max-vertical-offset="3234">
-          <caret line="80" column="37" selection-start-line="80" selection-start-column="37" selection-end-line="80" selection-end-column="37" />
-          <folding>
-            <element signature="e#3160#3358#0" expanded="false" />
-            <element signature="e#4993#5153#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/authentication/userViewModels.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1680">
-          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="798">
-          <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="567" max-vertical-offset="1806">
-          <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.2614155" vertical-offset="3740" max-vertical-offset="4914">
+          <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="196" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/controllers/userRelationships/relCtrl.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.84375" vertical-offset="736" max-vertical-offset="1722">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.23622048" vertical-offset="0" max-vertical-offset="1743">
+          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/controllers/authentication/userCtrl.js">
+    <entry file="file://$PROJECT_DIR$/server/controllers/coreCtrl.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="756" max-vertical-offset="4515">
-          <caret line="86" column="44" selection-start-line="86" selection-start-column="44" selection-end-line="86" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="567">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/middleware/bodyParser.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="921">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/authentication/userViewModels.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1701">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/UserRelationship.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37795275" vertical-offset="378" max-vertical-offset="1281">
+          <caret line="34" column="9" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/userRelationships/userRelViewModels.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="819">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/routes/userFiles/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1512">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/routes/userRelationships/routes.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.65630114" vertical-offset="502" max-vertical-offset="1197">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1218">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/routes/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="840">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/userServiceOptions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3108">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authorization/authorizationService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="399">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/caching/cacheService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2100">
+          <caret line="22" column="1" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/database/databaseService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1134">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/hypermedia/linkService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1218">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/uploads/dbWriteService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="894">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/utilities/fileSystemService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="672">
+          <caret line="1" column="36" selection-start-line="1" selection-start-column="36" selection-end-line="1" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/restifyService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.9375" vertical-offset="0" max-vertical-offset="1428">
+          <caret line="6" column="10" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/models/authentication/tapStoryServer.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="580">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/samples/sinonSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3570">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/fsWriteServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.59375" vertical-offset="1218" max-vertical-offset="3969">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/authorization/authorizationServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="281" max-vertical-offset="861">
+          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/utilities/encryptionSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.84375" vertical-offset="231" max-vertical-offset="2436">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/uploads/uploadsServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.28125" vertical-offset="0" max-vertical-offset="4788">
+          <caret line="5" column="29" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/models/authentication/UserSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.625" vertical-offset="0" max-vertical-offset="4095">
+          <caret line="4" column="28" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/controllers/coreCtrlSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1176">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/userCtrlSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.59375" vertical-offset="14174" max-vertical-offset="15036">
+          <caret line="685" column="33" selection-start-line="685" selection-start-column="33" selection-end-line="685" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/uploadsCtrlSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2730">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/passportServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1550" max-vertical-offset="4347">
+          <caret line="83" column="36" selection-start-line="83" selection-start-column="36" selection-end-line="83" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/utilities/encryptionUtility.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="323" max-vertical-offset="903">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/utilities/fileSystemUtility.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1092">
+          <caret line="21" column="50" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/config/config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48105437" vertical-offset="128" max-vertical-offset="735">
+          <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/config/configSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
+          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/controllers/authentication/authCtrlSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="953" max-vertical-offset="2310">
+          <caret line="55" column="12" selection-start-line="55" selection-start-column="12" selection-end-line="55" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="735">
+          <caret line="18" column="12" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/routes/authentication/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1050">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/models/authentication/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1422" max-vertical-offset="3339">
+          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/passportService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="21" max-vertical-offset="1155">
+          <caret line="8" column="21" selection-start-line="8" selection-start-column="12" selection-end-line="8" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/promises/promiseService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="344" max-vertical-offset="3738">
+          <caret line="27" column="32" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/logging/logService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="659" max-vertical-offset="2331">
+          <caret line="48" column="23" selection-start-line="48" selection-start-column="23" selection-end-line="48" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/authentication/userService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="953" max-vertical-offset="3087">
+          <caret line="61" column="45" selection-start-line="61" selection-start-column="45" selection-end-line="61" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/error/errorService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="554" max-vertical-offset="1932">
+          <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1869">
+          <caret line="26" column="43" selection-start-line="26" selection-start-column="43" selection-end-line="26" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/userRelationships/userRelServiceOptions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1470" max-vertical-offset="3465">
+          <caret line="80" column="15" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/utilities/resourceService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6237" max-vertical-offset="7686">
+          <caret line="307" column="30" selection-start-line="307" selection-start-column="30" selection-end-line="307" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceOptionsSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="395" max-vertical-offset="1911">
+          <caret line="29" column="17" selection-start-line="29" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/authentication/userServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2318" max-vertical-offset="2898">
+          <caret line="122" column="19" selection-start-line="122" selection-start-column="19" selection-end-line="122" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/services/utilities/resourceServiceSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="8157" max-vertical-offset="9051">
+          <caret line="412" column="25" selection-start-line="412" selection-start-column="25" selection-end-line="412" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/uploads/uploadService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3549">
+          <caret line="19" column="39" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/common-bundle/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="1722">
+          <caret line="34" column="24" selection-start-line="34" selection-start-column="24" selection-end-line="36" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/services/uploads/fsWriteService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.57846713" vertical-offset="2245" max-vertical-offset="3486">
+          <caret line="122" column="27" selection-start-line="122" selection-start-column="27" selection-end-line="125" selection-end-column="27" />
           <folding />
         </state>
       </provider>

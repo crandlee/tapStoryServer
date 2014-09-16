@@ -1,7 +1,8 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var promise = cb.Promise;
 
-var fileSystemSvc = global.rootRequire('svc-filesystem');
+var fileSystemSvc = cb.rootRequire('svc-filesystem');
 var recursive = require('recursive-readdir');
 
 module.exports.setFileSystemService = function(fss) {
@@ -36,7 +37,7 @@ function getSubDirectories (dir, done) {
 }
 
 function getFilesRecursive(rootPath) {
-    return global.Promise.denodeify(recursive)(rootPath);
+    return promise.denodeify(recursive)(rootPath);
 }
 
 module.exports = {

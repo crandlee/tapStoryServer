@@ -1,7 +1,10 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var promise = cb.Promise;
 
-var resSvc = global.rootRequire('svc-resource');
+var resSvc = cb.rootRequire('svc-resource');
 
 function setSaveRelationshipOptions(opts) {
 
@@ -10,18 +13,18 @@ function setSaveRelationshipOptions(opts) {
         //Validate participants objects early since they will be used to set
         //up everything
         if (!opts.participants || !Array.isArray(opts.participants) || opts.participants.length !== 2)
-            global.errSvc.error('No participants available for relationship', { participants: opts.participants });
+            errSvc.error('No participants available for relationship', { participants: opts.participants });
         if (!opts.participants[0] || !opts.participants[1])
-            global.errSvc.error('Missing participants in relationship', { participants: opts.participants });
+            errSvc.error('Missing participants in relationship', { participants: opts.participants });
         if (!opts.participants[0].user || !opts.participants[0].rel || !opts.participants[0].status)
-            global.errSvc.error('Missing data in participant one', { participant: opts.participant[0] });
+            errSvc.error('Missing data in participant one', { participant: opts.participant[0] });
         if (!opts.participants[1].user || !opts.participants[1].rel || !opts.participants[1].status)
-            global.errSvc.error('Missing data in participant two', { participant: opts.participant[1] });
+            errSvc.error('Missing data in participant two', { participant: opts.participant[1] });
         var model = resSvc._getModelFromOptions({ modelName: 'UserRelationship' });
         if (!model.isValidStatus(opts.participants[0].status) || !model.isValidStatus(opts.participants[1].status))
-            global.errSvc.error('One or more statuses is invalid', { status1: opts.participants[0].status, status2: opts.participants[1].status });
+            errSvc.error('One or more statuses is invalid', { status1: opts.participants[0].status, status2: opts.participants[1].status });
         if (!model.isValidRelationship(opts.participants[0].rel) || !model.isValidRelationship(opts.participants[1].rel))
-            global.errSvc.error('One or more relationships is invalid', { rel1: opts.participants[0].rel, rel2: opts.participants[1].rel });
+            errSvc.error('One or more relationships is invalid', { rel1: opts.participants[0].rel, rel2: opts.participants[1].rel });
 
     };
 
@@ -38,7 +41,7 @@ function setSaveRelationshipOptions(opts) {
             var changes = {};
 
             var noRevertActiveFriendToPending = function(reqData, prevData) {
-                if (reqData.rel === 'friend' && global._.indexOf(['pending', 'pendingack'], reqData.status) > -1) {
+                if (reqData.rel === 'friend' && _.indexOf(['pending', 'pendingack'], reqData.status) > -1) {
                     if (!prevData.status || prevData.status === 'inactive')
                         return [reqData.status, {}];
                     else
@@ -50,7 +53,7 @@ function setSaveRelationshipOptions(opts) {
                 if (reqData.rel === 'friend' && reqData.status === 'active') {
 
                     if(prevData.status === 'pending' && isSourceUser)
-                        global.errSvc.error('The user who requested the friendship cannot acknowledge it');
+                        errSvc.error('The user who requested the friendship cannot acknowledge it');
 
                     if (prevData.status === 'pendingack' && isSourceUser) {
                         return [reqData.status, { acknowledgement: true }];
@@ -61,7 +64,7 @@ function setSaveRelationshipOptions(opts) {
 
             };
             var noNonFriendRelationshipsCanBePending = function(reqData, prevData) {
-                if (reqData.rel !== 'friend' && global._.indexOf(['pending','pendingack'], reqData.status) > -1) {
+                if (reqData.rel !== 'friend' && _.indexOf(['pending','pendingack'], reqData.status) > -1) {
                     return [prevData.status, {}];
                 }
             };
@@ -74,7 +77,7 @@ function setSaveRelationshipOptions(opts) {
                 noNonFriendRelationshipsCanBePending
             ].map(function(fn) {
                if (!status) ret = fn(reqData, prevData, isSourceUser);
-               if (ret) { status = ret[0]; changes = global.extend(changes, ret[1]); }
+               if (ret) { status = ret[0]; changes = cb.extend(changes, ret[1]); }
             });
 
             if (!status) { status = reqData.status; changes = {}; }
@@ -113,7 +116,7 @@ function setSaveRelationshipOptions(opts) {
                 };
 
                 //Build unique identifier for two users that will be the search key
-                var userRelSvc = global.rootRequire('svc-rel');
+                var userRelSvc = cb.rootRequire('svc-rel');
 
                 var relKey = userRelSvc.getRelKey(users.map(function(user) { return user.userName; }));
 
@@ -130,7 +133,7 @@ function setSaveRelationshipOptions(opts) {
 
                 //Replace the participants with the appropriate ids replacing the user names
                 opts.participants = opts.participants.map(function(updateParticipant) {
-                    updateParticipant.user = global._.find(users,
+                    updateParticipant.user = _.find(users,
                         function(existUser) { return existUser.userName.toLowerCase()
                             === updateParticipant.user.toLowerCase() })._id;
                     return updateParticipant;
@@ -138,7 +141,7 @@ function setSaveRelationshipOptions(opts) {
             };
 
             if (!users || !Array.isArray(users) || users.length !== 2)
-                global.errSvc.error('Attempted to create a user relationship without two distinct existing user names');
+                errSvc.error('Attempted to create a user relationship without two distinct existing user names');
 
             prepareUsersAndRelKey(opts, users);
 
@@ -147,7 +150,7 @@ function setSaveRelationshipOptions(opts) {
                 return opts;
             };
 
-            return global.Promise(opts);
+            return promise(opts);
         });
 }
 

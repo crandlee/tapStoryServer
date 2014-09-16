@@ -1,21 +1,23 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var promise = cb.Promise;
+var _ = cb._;
 
 var bcrypt = require('bcrypt');
 
 function createSalt(rounds) {
     rounds = rounds || 11;
-    return global.Promise.denodeify(bcrypt.genSalt)(rounds);
+    return promise.denodeify(bcrypt.genSalt)(rounds);
 }
 
 function hashPwd(pwd, salt) {
-    return global.Promise.denodeify(bcrypt.hash)(pwd, salt);
+    return promise.denodeify(bcrypt.hash)(pwd, salt);
 }
 
 function saltAndHash(pwd) {
     //promise
     return createSalt()
-        .then(global._.partial(hashPwd, pwd))
+        .then(_.partial(hashPwd, pwd))
         .then(function(hash) {
             return hash;
         });
@@ -23,7 +25,7 @@ function saltAndHash(pwd) {
 
 
 function checkEqualToken(candidate, existing) {
-    return global.Promise.denodeify(bcrypt.compare)(candidate, existing);
+    return promise.denodeify(bcrypt.compare)(candidate, existing);
 }
 
 module.exports = {

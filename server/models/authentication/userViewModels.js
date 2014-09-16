@@ -1,6 +1,7 @@
 'use strict';
-require('require-enhanced')();
-var linkSvc = global.rootRequire('svc-link');
+var cb = require('common-bundle')();
+var linkSvc = cb.rootRequire('svc-link');
+
 
 function getBaseUserVm(userDoc) {
     return {

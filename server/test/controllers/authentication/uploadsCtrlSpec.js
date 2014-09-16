@@ -1,19 +1,22 @@
 "use strict";
-require('require-enhanced')({ test: true });
-
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var promiseUtils = cb.promiseUtils;
 
 describe('controllers/authentication/uploadsCtrlSpec.js', function() {
 
-    var sinon = global.sinon, sandbox;
+    var sandbox;
     var uploadsCtrl, uploadsSvcStub, resStub, reqStub, nextStub;
 
     beforeEach(function() {
 
         sandbox = sinon.sandbox.create();
 
-        uploadsSvcStub = sandbox.stub(global.rootRequire('svc-uploads'));
+        uploadsSvcStub = sandbox.stub(cb.rootRequire('svc-uploads'));
 
-        uploadsCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-uploads'), {});
+        uploadsCtrl = cb.proxyquire(cb.getRoutePathFromKey('ctrl-uploads'), {});
 
         resStub  = sandbox.stub({
             status: function() {},
@@ -34,7 +37,7 @@ describe('controllers/authentication/uploadsCtrlSpec.js', function() {
 
         it('fails with 400 when userName is not on the parameters', function() {
 
-            uploadsSvcStub.uploadFiles = global.promiseUtils.getNoopPromiseStub();
+            uploadsSvcStub.uploadFiles = promiseUtils.getNoopPromiseStub();
             uploadsCtrl._setUploadsService(uploadsSvcStub);
 
             reqStub.params = { userName: null };
@@ -46,9 +49,9 @@ describe('controllers/authentication/uploadsCtrlSpec.js', function() {
 
         it('calls uploadFiles on the uploads service with the proper options and returns 200 ok after', function(done) {
 
-            var userName = global.testUtils.getRandomString(10);
-            var fileName = global.testUtils.getRandomString(10);
-            uploadsSvcStub.uploadFiles = global.promiseUtils.getNoopPromiseStub();
+            var userName = testUtils.getRandomString(10);
+            var fileName = testUtils.getRandomString(10);
+            uploadsSvcStub.uploadFiles = promiseUtils.getNoopPromiseStub();
             uploadsCtrl._setUploadsService(uploadsSvcStub);
             reqStub.files = [fileName];
             reqStub.params = { userName: userName };
@@ -71,8 +74,8 @@ describe('controllers/authentication/uploadsCtrlSpec.js', function() {
 
         it('sends 500 and an error when upload service uploadFiles fails', function(done) {
 
-            var testError = global.testUtils.getRandomString(10);
-            uploadsSvcStub.uploadFiles = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            uploadsSvcStub.uploadFiles = promiseUtils.getRejectExactlyPromiseStub(testError);
             uploadsCtrl._setUploadsService(uploadsSvcStub);
             reqStub.params = { userName: 'anything' };
             uploadsCtrl.upload(reqStub, resStub, nextStub);
@@ -101,8 +104,8 @@ describe('controllers/authentication/uploadsCtrlSpec.js', function() {
         });
 
         it('sends the uploads html to the requestor', function() {
-            var userName = global.testUtils.getRandomString(10);
-            var uri = global.config.baseUri;
+            var userName = testUtils.getRandomString(10);
+            var uri = cb.config.baseUri;
             reqStub.params = { userName: userName };
             var uploadsHtml = '<html>' + userName + uri + '</html>';
             uploadsCtrl.getUploadsHtml =

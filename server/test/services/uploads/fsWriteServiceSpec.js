@@ -1,9 +1,13 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var promiseUtils = cb.promiseUtils;
 
 describe('services/uploads/fsWriteServiceSpec.js', function () {
 
-    var sinon = global.sinon, sandbox;
+    var sandbox;
     var writeSvc;
 
     beforeEach(function () {
@@ -12,9 +16,9 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
         var fs = sandbox.stub({
             writeFile: function(file, data, cb) {}
         });
-        global.errSvc.bypassLogger(true);
+        cb.errSvc.bypassLogger(true);
 
-        writeSvc = global.proxyquire(global.getRoutePathFromKey('svc-write'),
+        writeSvc = cb.proxyquire(cb.getRoutePathFromKey('svc-write'),
             { fs: fs });
 
     });
@@ -23,12 +27,12 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
 
         it('calls finalizeFile with destPath & data when no optional dir', function(done) {
-            var opts = { finalizeFile: global.promiseUtils.getNoopPromiseStub() };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
+            var opts = { finalizeFile: promiseUtils.getNoopPromiseStub() };
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
             writeSvc.writeFile(destFile, data, opts)
                 .then(function(ret) {
-                    ret.args[0].should.equal(global.config.uploadPath + destFile);
+                    ret.args[0].should.equal(cb.config.uploadPath + destFile);
                     ret.args[1].should.equal(data);
                 })
                 .fail(function(err) {
@@ -41,12 +45,12 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('calls mkdirp with optionalPath added when optional dir exists', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10),
+            var opts = { dirName: testUtils.getRandomString(10),
                 finalizeFile: function() { return arguments; } };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            var testMkdirpCall = global.testUtils.getRandomString(10);
-            writeSvc._setMkdirp(global.promiseUtils.getResolvingPromiseStub(testMkdirpCall));
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            var testMkdirpCall = testUtils.getRandomString(10);
+            writeSvc._setMkdirp(promiseUtils.getResolvingPromiseStub(testMkdirpCall));
 
             writeSvc.writeFile(destFile, data, opts)
                 .then(function(ret) {
@@ -62,12 +66,12 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('rejects when mkdirp throws error', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10),
-                finalizeFile: global.promiseUtils.getNoopPromiseStub() };
-            var testError = global.testUtils.getRandomString(10);
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            writeSvc._setMkdirp(global.promiseUtils.getRejectExactlyPromiseStub(testError));
+            var opts = { dirName: testUtils.getRandomString(10),
+                finalizeFile: promiseUtils.getNoopPromiseStub() };
+            var testError = testUtils.getRandomString(10);
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            writeSvc._setMkdirp(promiseUtils.getRejectExactlyPromiseStub(testError));
 
             writeSvc.writeFile(destFile, data, opts)
                 .then(function() {
@@ -83,15 +87,15 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('calls finalizeFile with optional dir and data when mkdirp succeeds', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10),
-                finalizeFile: global.promiseUtils.getNoopPromiseStub() };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            writeSvc._setMkdirp(global.promiseUtils.getNoopPromiseStub());
+            var opts = { dirName: testUtils.getRandomString(10),
+                finalizeFile: promiseUtils.getNoopPromiseStub() };
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            writeSvc._setMkdirp(promiseUtils.getNoopPromiseStub());
 
             writeSvc.writeFile(destFile, data, opts)
                 .then(function(ret) {
-                    ret.args[0].should.equal(global.config.uploadPath + opts.dirName + '/' + destFile);
+                    ret.args[0].should.equal(cb.config.uploadPath + opts.dirName + '/' + destFile);
                     ret.args[1].should.equal(data);
                 })
                 .fail(function(err) {
@@ -104,17 +108,17 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('calls fs.WriteFile from finalizeFile', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10) };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            writeSvc._setMkdirp(global.promiseUtils.getNoopPromiseStub());
+            var opts = { dirName: testUtils.getRandomString(10) };
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            writeSvc._setMkdirp(promiseUtils.getNoopPromiseStub());
             writeSvc._setFs({
-                writeFile: global.promiseUtils.getNoopPromiseStub()
+                writeFile: promiseUtils.getNoopPromiseStub()
             });
 
             writeSvc.writeFile(destFile, data, opts)
                 .then(function(ret) {
-                    ret.args[0].should.equal(global.config.uploadPath + opts.dirName + '/' + destFile);
+                    ret.args[0].should.equal(cb.config.uploadPath + opts.dirName + '/' + destFile);
                     ret.args[1].should.equal(data);
                 })
                 .fail(function(err) {
@@ -127,13 +131,13 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('Rejects when fs.WriteFile has error', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10) };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            var testError = global.testUtils.getRandomString(10);
-            writeSvc._setMkdirp(global.promiseUtils.getNoopPromiseStub());
+            var opts = { dirName: testUtils.getRandomString(10) };
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            var testError = testUtils.getRandomString(10);
+            writeSvc._setMkdirp(promiseUtils.getNoopPromiseStub());
             writeSvc._setFs({
-                writeFile: global.promiseUtils.getRejectExactlyPromiseStub(testError)
+                writeFile: promiseUtils.getRejectExactlyPromiseStub(testError)
             });
 
             writeSvc.writeFile(destFile, data, opts)
@@ -150,13 +154,13 @@ describe('services/uploads/fsWriteServiceSpec.js', function () {
 
         it('fs.WriteFile resolves the created file name when no error', function(done) {
 
-            var opts = { dirName: global.testUtils.getRandomString(10) };
-            var destFile = global.testUtils.getRandomString(10);
-            var data = global.testUtils.getRandomString(25);
-            var testResolveVal = global.testUtils.getRandomString(10);
-            writeSvc._setMkdirp(global.promiseUtils.getNoopPromiseStub());
+            var opts = { dirName: testUtils.getRandomString(10) };
+            var destFile = testUtils.getRandomString(10);
+            var data = testUtils.getRandomString(25);
+            var testResolveVal = testUtils.getRandomString(10);
+            writeSvc._setMkdirp(promiseUtils.getNoopPromiseStub());
             writeSvc._setFs({
-                writeFile: global.promiseUtils.getResolveExactlyPromiseStub(testResolveVal)
+                writeFile: promiseUtils.getResolveExactlyPromiseStub(testResolveVal)
             });
 
             writeSvc.writeFile(destFile, data, opts)

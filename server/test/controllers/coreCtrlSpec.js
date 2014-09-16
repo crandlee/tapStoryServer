@@ -1,18 +1,19 @@
 "use strict";
-require('require-enhanced')( { test: true });
-
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
 
 describe('controllers/coreCtrl.js', function() {
 
-       var sinon = global.sinon, sandbox;
+       var sandbox;
        var linkSvcStub, coreCtrl, resStub, next;
 
 
        beforeEach(function() {
 
            sandbox = sinon.sandbox.create();
-           linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
-           coreCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-core'), { linkSvc: linkSvcStub });
+           linkSvcStub = sandbox.stub(cb.rootRequire('svc-link'));
+           coreCtrl = cb.proxyquire(cb.getRoutePathFromKey('ctrl-core'), { linkSvc: linkSvcStub });
            resStub  = sandbox.stub({
                send: function() {
 

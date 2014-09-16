@@ -1,17 +1,19 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
 
+describe.only('controllers/authentication/authCtrlSpec.js', function() {
 
-describe('controllers/authentication/authCtrlSpec.js', function() {
-
-        var sinon = global.sinon, sandbox;
+        var sandbox;
         var authSvcStub, authCtrl, resStub, reqStub, nextStub;
 
         beforeEach(function() {
 
             sandbox = sinon.sandbox.create();
-            authSvcStub = sandbox.stub(global.rootRequire('svc-passport'));
-            authCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-auth'), { authSvc: authSvcStub });
+            authSvcStub = sandbox.stub(cb.rootRequire('svc-passport'));
+            authCtrl = cb.proxyquire(cb.getRoutePathFromKey('ctrl-auth'), { authSvc: authSvcStub });
             resStub  = sandbox.stub({
                 status: function() {},
                 send: function() {},
@@ -47,7 +49,7 @@ describe('controllers/authentication/authCtrlSpec.js', function() {
 
             it('returns a function', function() {
                 fn = authCtrl.authorizeMethod();
-                global.should.exist(fn);
+                should.exist(fn);
                 fn.should.be.a('function');
             });
 
@@ -68,7 +70,7 @@ describe('controllers/authentication/authCtrlSpec.js', function() {
                 nextStub.returns(nextRetVal);
                 var ret = fn(reqStub, resStub, nextStub);
                 sinon.assert.calledOnce(nextStub);
-                global.should.exist(ret);
+                should.exist(ret);
                 ret.should.equal(nextRetVal);
 
             });

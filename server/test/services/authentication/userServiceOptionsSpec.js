@@ -1,20 +1,24 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+
 
 describe('services/authentication/userServiceOptions', function() {
 
-    var sinon = global.sinon, sandbox;
+    var sandbox;
     var authorizeSvc, encryptionSvc, userServiceOptions;
-    global.errSvc.bypassLogger(true);
+    cb.errSvc.bypassLogger(true);
 
 
     beforeEach(function() {
 
         sandbox = sinon.sandbox.create();
-        authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
-        encryptionSvc = sandbox.stub(global.rootRequire('util-encryption'));
+        authorizeSvc = sandbox.stub(cb.rootRequire('svc-auth'));
+        encryptionSvc = sandbox.stub(cb.rootRequire('util-encryption'));
         userServiceOptions =
-            global.proxyquire(global.getRoutePathFromKey('svc-opts-user'),
+            cb.proxyquire(cb.getRoutePathFromKey('svc-opts-user'),
                 { authorizeSvc: authorizeSvc, encryptionSvc: encryptionSvc});
 
     });
@@ -22,13 +26,13 @@ describe('services/authentication/userServiceOptions', function() {
 
     function testOptionsSetting(fn, opts) {
 
-        opts = global.extend({}, opts);
+        opts = cb.extend({}, opts);
         fn(opts);
-        global.should.exist(opts.preValidation);
+        should.exist(opts.preValidation);
         opts.preValidation.should.be.a('function');
         opts.modelName.should.equal('User');
-        global.should.exist(opts.singleSearch);
-        global.should.exist(opts.mapOptionsToDocument);
+        should.exist(opts.singleSearch);
+        should.exist(opts.mapOptionsToDocument);
         opts.mapOptionsToDocument.should.be.a('function');
 
         return opts;
@@ -54,7 +58,7 @@ describe('services/authentication/userServiceOptions', function() {
     describe('setAddRoleOptions', function() {
         it('adds the proper fields to the options object', function() {
 
-            var role = global.testUtils.getRandomString(10);
+            var role = testUtils.getRandomString(10);
             var opts = { role: role };
             opts = testOptionsSetting(userServiceOptions.setAddRoleOptions, opts);
             opts.role.should.equal(role.toLowerCase());
@@ -65,7 +69,7 @@ describe('services/authentication/userServiceOptions', function() {
     describe('setRemoveRoleOptions', function() {
         it('adds the proper fields to the options object', function() {
 
-            var role = global.testUtils.getRandomString(10);
+            var role = testUtils.getRandomString(10);
             var opts = { role: role };
             opts = testOptionsSetting(userServiceOptions.setRemoveRoleOptions, opts);
             opts.role.should.equal(role.toLowerCase());

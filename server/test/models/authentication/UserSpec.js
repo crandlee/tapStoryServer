@@ -1,32 +1,35 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
 
 var mongoose = require('mongoose');
 var uuid = require('node-uuid');
 
 describe('models/authentication/UserSpec.js', function () {
 
-    var sinon = global.sinon, sandbox, encUtility, authorizeSvc;
+    var sandbox, encUtility, authorizeSvc;
     var User, testRole, testUser;
 
     before(function () {
 
         sandbox = sinon.sandbox.create();
-        encUtility = sandbox.stub(global.rootRequire('util-encryption'));
-        authorizeSvc = sandbox.stub(global.rootRequire('svc-auth'));
-        global.errSvc.bypassLogger(true);
+        encUtility = sandbox.stub(cb.rootRequire('util-encryption'));
+        authorizeSvc = sandbox.stub(cb.rootRequire('svc-auth'));
+        cb.errSvc.bypassLogger(true);
 
-        global.proxyquire(global.getRoutePathFromKey('model-User'),
+        cb.proxyquire(cb.getRoutePathFromKey('model-User'),
             { encryptionUtility: encUtility, authorizeSvc: authorizeSvc });
 
         User = mongoose.model('User');
 
-        testRole = global.testUtils.getRandomString(10);
+        testRole = testUtils.getRandomString(10);
         testUser = new User(
-            { firstName: global.testUtils.getRandomString(10),
-                lastName: global.testUtils.getRandomString(10),
-                userName: global.testUtils.getRandomString(10),
-                userSecret: global.testUtils.getRandomString(16),
+            { firstName: testUtils.getRandomString(10),
+                lastName: testUtils.getRandomString(10),
+                userName: testUtils.getRandomString(10),
+                userSecret: testUtils.getRandomString(16),
                 roles: [testRole],
                 fileGroup: []
             });
@@ -45,10 +48,10 @@ describe('models/authentication/UserSpec.js', function () {
         });
 
         it('adds a single file to an empty list with fileName and groupId', function () {
-            var testFileName = global.testUtils.getRandomString(20);
+            var testFileName = testUtils.getRandomString(20);
             var groupId = uuid.v4();
             var ret = testUser.addFile(testFileName, groupId);
-            global.should.exist(ret);
+            cb.should.exist(ret);
             ret.should.equal(groupId);
             testUser.fileGroup.length.should.equal(1);
             testUser.fileGroup[0].files.length.should.equal(1);
@@ -70,15 +73,15 @@ describe('models/authentication/UserSpec.js', function () {
         });
 
         it('fails when the file already exists', function () {
-            var groupId = uuid.v4(), fileName = global.testUtils.getRandomString(20);
-            global.should.exist(testUser.addFile(groupId, fileName));
-            global.should.not.exist(testUser.addFile(groupId, fileName));
+            var groupId = uuid.v4(), fileName = testUtils.getRandomString(20);
+            should.exist(testUser.addFile(groupId, fileName));
+            should.not.exist(testUser.addFile(groupId, fileName));
         });
 
 
         it('defaults the groupId when none is passed in', function () {
-            var ret = testUser.addFile(global.testUtils.getRandomString(20));
-            global.should.exist(ret);
+            var ret = testUser.addFile(testUtils.getRandomString(20));
+            should.exist(ret);
             ret.should.be.a('String');
         });
     });
@@ -91,7 +94,7 @@ describe('models/authentication/UserSpec.js', function () {
 
         it('does nothing when file does not exist', function () {
 
-            var testFileName = global.testUtils.getRandomString(20);
+            var testFileName = testUtils.getRandomString(20);
             var groupId = uuid.v4();
             testUser.addFile(testFileName, groupId);
             testUser.fileGroup.length.should.equal(1);
@@ -103,8 +106,8 @@ describe('models/authentication/UserSpec.js', function () {
         });
         it('removes the file when file does exist', function () {
 
-            var testFileName = global.testUtils.getRandomString(20).toLowerCase();
-            var testFileName2 = global.testUtils.getRandomString(20).toLowerCase();
+            var testFileName = testUtils.getRandomString(20).toLowerCase();
+            var testFileName2 = testUtils.getRandomString(20).toLowerCase();
             var groupId = uuid.v4();
             var groupId2 = uuid.v4();
             testUser.addFile(testFileName, groupId);
@@ -125,13 +128,13 @@ describe('models/authentication/UserSpec.js', function () {
 
         it('returns what is passed into the encrpytion utility', function () {
 
-            var passwordToMatch = global.testUtils.getRandomString(16);
+            var passwordToMatch = testUtils.getRandomString(16);
             var utilReturns = true;
             encUtility.checkEqualToken.returns(utilReturns);
             var ret = testUser.authenticate(passwordToMatch);
 
             sinon.assert.calledWithExactly(encUtility.checkEqualToken, passwordToMatch, testUser.userSecret);
-            global.should.exist(ret);
+            should.exist(ret);
             ret.should.equal(utilReturns);
 
         });
@@ -161,19 +164,19 @@ describe('models/authentication/UserSpec.js', function () {
 
         it('returns an object when called with "user"', function () {
 
-            global.should.exist(testUser.viewModel('user'));
+            should.exist(testUser.viewModel('user'));
 
         });
 
         it('returns an object when called with "users"', function () {
 
-            global.should.exist(testUser.viewModel('users'));
+            should.exist(testUser.viewModel('users'));
 
         });
 
         it('returns an object when called with no param', function () {
 
-            global.should.exist(testUser.viewModel());
+            should.exist(testUser.viewModel());
 
         });
 

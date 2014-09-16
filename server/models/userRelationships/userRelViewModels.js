@@ -1,10 +1,11 @@
 'use strict';
-require('require-enhanced')();
-var linkSvc = global.rootRequire('svc-link');
+var cb = require('common-bundle')();
+var _ = cb._;
+var linkSvc = cb.rootRequire('svc-link');
 
 function getBaseRelationshipVm(relDoc, sourceName) {
 
-    var relPart = global._.find(relDoc.participants, function (user) {
+    var relPart = _.find(relDoc.participants, function (user) {
         return user.user.userName.toLowerCase() !== sourceName.toLowerCase();
     });
 

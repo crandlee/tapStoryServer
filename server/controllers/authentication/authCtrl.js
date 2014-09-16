@@ -1,7 +1,7 @@
 "use strict";
-require('require-enhanced')();
 
-var authSvc = global.rootRequire('svc-passport');
+var cb = require('common-bundle')();
+var authSvc = cb.rootRequire('svc-passport');
 
 
 function authenticateMethod() {

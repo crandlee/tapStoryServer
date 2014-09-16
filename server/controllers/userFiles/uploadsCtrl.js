@@ -1,8 +1,8 @@
 "use strict";
-require('require-enhanced')();
-
-var uploads =  global.rootRequire('svc-uploads');
-var linkSvc = global.rootRequire('svc-link');
+var cb = require('common-bundle')();
+var _ = cb._;
+var uploads =  cb.rootRequire('svc-uploads');
+var linkSvc = cb.rootRequire('svc-link');
 var Encoder = require('node-html-encoder').Encoder;
 
 
@@ -39,7 +39,7 @@ function getUploadsScreen(req, res, next) {
     if (!userName) { res.status(400); res.end('The fileHelper requires a userName'); }
 
     if (userName) {
-        res.end(getUploadsHtml(userName, global.config.baseUri, multiple, fileGroup));
+        res.end(getUploadsHtml(userName, cb.config.baseUri, multiple, fileGroup));
     } else {
         return next();
     }
@@ -59,8 +59,7 @@ function getFileGroups(req, res, next) {
         uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
                 var obj =  { fileGroups: fileGroups } ;
-                obj.fileGroups = global._.map(obj.fileGroups,
-                    global._.partial(getFileGroupTopLevelLinks, groupId, apiPath));
+                obj.fileGroups = obj.fileGroups.map(_.partial(getFileGroupTopLevelLinks, groupId, apiPath));
                 if (!groupId) {
                     obj = linkSvc.attachLinksToObject(obj, [
                         { uri: '', method: "DELETE", rel: "fileGroup"}

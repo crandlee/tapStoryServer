@@ -1,9 +1,8 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
-var authCtrl = global.rootRequire('ctrl-auth');
-var uploadsCtrl = global.rootRequire('ctrl-uploads');
-
+var authCtrl = cb.rootRequire('ctrl-auth');
+var uploadsCtrl = cb.rootRequire('ctrl-uploads');
 var passport = require('passport');
 
 module.exports = function (serverSvc) {

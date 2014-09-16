@@ -1,5 +1,8 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var promise = cb.Promise;
 
 var mongoose = require('mongoose');
 
@@ -41,18 +44,18 @@ function save(opts) {
             opts.document = documents;
             //Allow custom component to validate
             if (opts.preValidation && typeof opts.preValidation === 'function')
-                return global.Promise.fcall(opts.preValidation, opts, documents);
+                return promise.fcall(opts.preValidation, opts, documents);
             else
                 return opts;
         }
 
         //Some global validation
         if (!opts.find && !opts.manualSave)
-            global.errSvc.error('No search criteria set for save',
+            errSvc.error('No search criteria set for save',
                 { modelName: (opts.model && opts.model.modelName) });
         if ((!opts.buildDocument || typeof opts.buildDocument !== 'function') &&
             (!opts.manualSave || typeof opts.manualSave !== 'function'))
-            global.errSvc.error('Document options must have either a buildDocument function or a manualSave function',
+            errSvc.error('Document options must have either a buildDocument function or a manualSave function',
                 { modelName: (opts.model && opts.model.modelName) });
 
 
@@ -63,7 +66,7 @@ function save(opts) {
             var retrieveFn = (opts.findType && opts.findType.toLowerCase() === 'list') ?
                 getList : getSingle;
             return retrieveFn({ model: opts.model, find: opts.find })
-                .then(global._.partial(getCustomValidatedOpts, opts));
+                .then(_.partial(getCustomValidatedOpts, opts));
         } else {
             opts.document = null;
             return getCustomValidatedOpts(opts, null);
@@ -90,9 +93,9 @@ function save(opts) {
 
         opts = opts || {};
         if (opts.manualSave && (typeof opts.manualSave === 'function'))
-            return global.Promise.fcall(opts.manualSave, opts);
+            return promise.fcall(opts.manualSave, opts);
         else
-            return global.Promise.fcall(opts.buildDocument, opts, existDocuments || {})
+            return promise.fcall(opts.buildDocument, opts, existDocuments || {})
                 .then(function(saveDocument) {
                     if (saveDocument) {
                         opts = setAddUpdateState(opts, existDocuments);
@@ -105,9 +108,9 @@ function save(opts) {
 
     };
 
-    return global.Promise.fcall(setupOptions, opts)
+    return promise.fcall(setupOptions, opts)
         .then(function(opts) {
-            return global.Promise.fcall(validateOptions, opts)
+            return promise.fcall(validateOptions, opts)
                 .then(saveDocument);
 
         });
@@ -120,7 +123,7 @@ function getSingle(opts) {
 
         opts = opts || {};
         opts.model = getModelFromOptions(opts);
-        if (!opts.find) global.errSvc.error('No find provided for document',
+        if (!opts.find) errSvc.error('No find provided for document',
             { modelName: (opts.model && opts.model.modelName) });
 
         return opts;
@@ -135,12 +138,12 @@ function getSingle(opts) {
             fn = fn.populate.apply(fn, opts.populate);
         }
 
-        return global.Promise(fn.exec())
+        return promise(fn.exec())
             .then(function(document) {
                 return document;
             })
             .fail(function (err) {
-                if (err) global.errSvc.error('An error was returned retrieving the document',
+                if (err) errSvc.error('An error was returned retrieving the document',
                     { error: err.message, modelName: opts.model.modelName, select: opts.select, query: opts.query });
             })
             .fin(function() {
@@ -157,16 +160,16 @@ function getSingle(opts) {
 
 function saveDocument(document) {
 
-    var dfr = global.Promise.defer();
+    var dfr = promise.defer();
     try {
         if (document) {
             document.save(function(err) {
-                if (err) global.errSvc.error('Could not save document',
+                if (err) errSvc.error('Could not save document',
                     { document: JSON.stringify(document), error: err.message });
                 dfr.resolve(document);
             });
         } else {
-            global.errSvc.error('No document to be updated', {});
+            errSvc.error('No document to be updated', {});
         }
     } catch(err) {
         dfr.reject(err);
@@ -181,7 +184,7 @@ function getList(opts) {
 
         opts = opts || {};
         opts.model = getModelFromOptions(opts);
-        if (!opts.find) global.errSvc.error('No find provided for document list',
+        if (!opts.find) errSvc.error('No find provided for document list',
             { modelName: (opts.model && opts.model.modelName) });
         return opts;
     };
@@ -195,12 +198,12 @@ function getList(opts) {
             fn = fn.populate.apply(fn, opts.populate);
         }
 
-        return global.Promise(fn.exec())
+        return promise(fn.exec())
             .then(function(documents) {
                 return documents;
             })
             .fail(function (err) {
-                if (err) global.errSvc.error('An error was returned retrieving the document',
+                if (err) errSvc.error('An error was returned retrieving the document',
                     { error: err.message, modelName: opts.model.modelName, select: opts.select, query: opts.query });
             })
             .fin(function() {
@@ -218,9 +221,9 @@ function getList(opts) {
 
 function processDocumentSave(params, setupFunction, options) {
 
-    var completeOptions = global.extend(options, params);
+    var completeOptions = cb.extend(options, params);
     if (setupFunction && typeof setupFunction === 'function') {
-        return global.Promise.fcall(setupFunction, completeOptions)
+        return promise.fcall(setupFunction, completeOptions)
             .then(save);
     } else {
         //promise (call through 'this' to allow test stubbing)
@@ -243,11 +246,11 @@ function getModelFromOptions(options) {
         modelName = (options && options.modelName) || '';
         var model = mongoose.model(modelName);
         if (!model) {
-            global.errSvc.error({ modelName: modelName }, 'No model set for the document');
+            errSvc.error({ modelName: modelName }, 'No model set for the document');
         }
         return model;
     } catch(err) {
-        global.errSvc.error("Unable to set the model for the document",
+        errSvc.error("Unable to set the model for the document",
             { error: err.message, modelName: modelName });
     }
 
@@ -264,14 +267,14 @@ function getModelFromOptions(options) {
  */
 function modelUpdate(find, document, options) {
 
-    var dfr = global.Promise.defer();
+    var dfr = promise.defer();
     try {
         options = options || {};
         options.model = getModelFromOptions(options);
         if (!find)
             dfr.reject(Error('No search criteria provided for model update'));
-        options.updateOptions = global.extend({ upsert: !options.updateOnly, new: true }, options.updateOptions);
-        document = global.extend(document, { $setOnInsert: options.onNew });
+        options.updateOptions = cb.extend({ upsert: !options.updateOnly, new: true }, options.updateOptions);
+        document = cb.extend(document, { $setOnInsert: options.onNew });
         //Prepare/convert document for saving
         var docObj = (document.toObject && typeof document.toObject === 'function') ?
             document.toObject() : document;
@@ -297,11 +300,11 @@ function modelUpdate(find, document, options) {
 
 function modelCreate(documents, options) {
 
-    var dfr = global.Promise.defer();
+    var dfr = promise.defer();
     try {
         options = options || {};
         options.model = getModelFromOptions(options);
-        documents = global.extend(documents, options.onNew);
+        documents = cb.extend(documents, options.onNew);
         options.model.create(documents, function(err, obj) {
             if (err) {
                 if (err.message.indexOf("E11000") > -1)
@@ -332,7 +335,7 @@ function modelCreate(documents, options) {
 
 function modelSave(document, options) {
 
-    if (options.noSave) return global.Promise(document);
+    if (options.noSave) return promise(document);
     if (options.addOnly) {
         return modelCreate(document, options);
     } else {
@@ -346,13 +349,13 @@ function postOperationCleanup(opts) {
 }
 
 module.exports = {
-    save: global.Promise.fbind(save),
-    getSingle: global.Promise.fbind(getSingle),
-    getList: global.Promise.fbind(getList),
+    save: promise.fbind(save),
+    getSingle: promise.fbind(getSingle),
+    getList: promise.fbind(getList),
     saveDocument: saveDocument,
     modelUpdate: modelUpdate,
     modelCreate: modelCreate,
     modelSave: modelSave,
-    processDocumentSave: global.Promise.fbind(processDocumentSave),
+    processDocumentSave: promise.fbind(processDocumentSave),
     _getModelFromOptions: getModelFromOptions
 };

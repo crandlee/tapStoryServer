@@ -1,8 +1,9 @@
 "use strict";
-require('require-enhanced')();
-
-var userRelSvc = global.rootRequire('svc-rel');
-var linkSvc = global.rootRequire('svc-link');
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var userRelSvc = cb.rootRequire('svc-rel');
+var linkSvc = cb.rootRequire('svc-link');
 
 function saveRelationship(srcRel, targetRel, options, req, res, next) {
 

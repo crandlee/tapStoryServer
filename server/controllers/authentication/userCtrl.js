@@ -1,10 +1,11 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
 
-var userSvc = global.rootRequire('svc-user');
-var userRelSvc = global.rootRequire('svc-rel');
-
-var linkSvc = global.rootRequire('svc-link');
+var userSvc = cb.rootRequire('svc-user');
+var userRelSvc = cb.rootRequire('svc-rel');
+var linkSvc = cb.rootRequire('svc-link');
 
 function saveUser(options) {
 
@@ -97,7 +98,7 @@ function getUsers(req, res, next) {
                 res.status(404);
                 res.end('No users found');
             } else {
-                users = { users: global._.map(users, function (user) {
+                users = { users: users.map(function (user) {
                     return user.viewModel('users', req.path());
                 }) };
                 users = linkSvc.attachLinksToObject(users, [
@@ -129,7 +130,7 @@ function addRole(req, res, next) {
                 res.send(201, { roles: user.roles });
             })
             .fail(function (err) {
-                res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
+                res.status(errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
                 res.end(err.message);
             })
             .fin(function() { return next(); })
@@ -153,7 +154,7 @@ function removeRole(req, res, next) {
                 res.send(200, { roles: user.roles });
             })
             .fail(function (err) {
-                res.status(global.errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
+                res.status(errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
                 res.end(err.message);
             })
             .fin(function() { return next(); })

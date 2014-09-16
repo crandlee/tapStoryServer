@@ -1,8 +1,8 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
-var authCtrl = global.rootRequire('ctrl-auth');
-var userCtrl = global.rootRequire('ctrl-user');
+var authCtrl = cb.rootRequire('ctrl-auth');
+var userCtrl = cb.rootRequire('ctrl-user');
 
 var passport = require('passport');
 

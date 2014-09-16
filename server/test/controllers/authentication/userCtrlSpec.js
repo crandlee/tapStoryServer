@@ -1,9 +1,14 @@
 "use strict";
-require('require-enhanced')({ test: true });
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var _ = cb._;
+var promiseUtils = cb.promiseUtils;
 
 describe('controllers/authentication/userCtrl.js', function () {
 
-    var sinon = global.sinon, sandbox;
+    var sandbox;
 
     var userSvcStub, userCtrl,
         linkSvcStub, resStub, reqStub, nextStub, optionsStub;
@@ -12,9 +17,9 @@ describe('controllers/authentication/userCtrl.js', function () {
     beforeEach(function () {
 
         sandbox = sinon.sandbox.create();
-        linkSvcStub = sandbox.stub(global.rootRequire('svc-link'));
-        userSvcStub = sandbox.stub(global.rootRequire('svc-user'));
-        userCtrl = global.proxyquire(global.getRoutePathFromKey('ctrl-user'),
+        linkSvcStub = sandbox.stub(cb.rootRequire('svc-link'));
+        userSvcStub = sandbox.stub(cb.rootRequire('svc-user'));
+        userCtrl = cb.proxyquire(cb.getRoutePathFromKey('ctrl-user'),
             { linkSvc: linkSvcStub });
 
         resStub = sandbox.stub({
@@ -33,7 +38,7 @@ describe('controllers/authentication/userCtrl.js', function () {
                 role: 'admin'
             },
             params: {
-                userName: global.testUtils.getRandomString(10)
+                userName: testUtils.getRandomString(10)
             }
         });
         nextStub = sandbox.stub();
@@ -48,7 +53,7 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('returns a route function', function () {
 
             fn = userCtrl.saveUser();
-            global.should.exist(fn);
+            should.exist(fn);
             fn.should.be.a('function');
 
         });
@@ -66,7 +71,7 @@ describe('controllers/authentication/userCtrl.js', function () {
 
             optionsStub.addOnly = true;
             fn = userCtrl.saveUser(optionsStub);
-            userSvcStub.save = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.save = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             fn(reqStub, resStub, nextStub);
             userSvcStub.save()
@@ -88,9 +93,9 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if save succeeds and addOnly true, returns a user view model and a 201 status', function (done) {
 
             optionsStub.addOnly = true;
-            var testRes = { userName: global.testUtils.getRandomString(10),
+            var testRes = { userName: testUtils.getRandomString(10),
                 viewModel: function() { return this.userName; } };
-            userSvcStub.save = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userSvcStub.save = promiseUtils.getResolveExactlyPromiseStub(testRes);
             userCtrl._setUserService(userSvcStub);
             fn = userCtrl.saveUser(optionsStub);
             fn(reqStub, resStub, nextStub);
@@ -110,9 +115,9 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if save succeeds and addOnly false, returns a user view model and a 200 status', function (done) {
 
             optionsStub.addOnly = false;
-            var testRes = { userName: global.testUtils.getRandomString(10),
+            var testRes = { userName: testUtils.getRandomString(10),
                 viewModel: function() { return this.userName; } };
-            userSvcStub.save = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userSvcStub.save = promiseUtils.getResolveExactlyPromiseStub(testRes);
             userCtrl._setUserService(userSvcStub);
             fn = userCtrl.saveUser(optionsStub);
             fn(reqStub, resStub, nextStub);
@@ -133,8 +138,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if save fails, return a 405 if fails due to existing resource', function (done) {
 
             optionsStub.addOnly = false;
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.save = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1000");
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.save = promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1000");
             userCtrl._setUserService(userSvcStub);
             fn = userCtrl.saveUser(optionsStub);
             fn(reqStub, resStub, nextStub);
@@ -156,8 +161,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if save fails, return a 500 for any other failure', function (done) {
 
             optionsStub.addOnly = false;
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.save = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.save = promiseUtils.getRejectExactlyPromiseStub(testError);
             userCtrl._setUserService(userSvcStub);
             fn = userCtrl.saveUser(optionsStub);
             fn(reqStub, resStub, nextStub);
@@ -193,9 +198,9 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('calls getSingle on the user service with the req.param.userName', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
+            var userName = testUtils.getRandomString(10);
             reqStub.params.userName = userName;
-            userSvcStub.getSingle = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.getSingle = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUser(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -214,11 +219,11 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if getSingle on the user service succeeds, then send 200 and the user view model', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
+            var userName = testUtils.getRandomString(10);
             var testRes = { userName: userName,
                 viewModel: function() { return this.userName; } };
             reqStub.params.userName = userName;
-            userSvcStub.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userSvcStub.getSingle = promiseUtils.getResolveExactlyPromiseStub(testRes);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUser(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -237,8 +242,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if getSingle on the user service fails due to no resource, then 404 and error', function (done) {
 
             reqStub.params.userName = 'anything';
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.getSingle = promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUser(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -260,8 +265,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if getSingle on the user service fails generally, then 500 and error', function (done) {
 
             reqStub.params.userName = 'anything';
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.getSingle = promiseUtils.getRejectExactlyPromiseStub(testError);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUser(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -287,7 +292,7 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('calls getList on the user service with an empty object', function (done) {
 
-            userSvcStub.getList = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.getList = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUsers(reqStub, resStub, nextStub);
             userSvcStub.getList()
@@ -308,7 +313,7 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if getList on the user service succeeds, then send 200 and the user view model', function (done) {
 
-            var viewModelStub = { firstName: global.testUtils.getRandomString(10) };
+            var viewModelStub = { firstName: testUtils.getRandomString(10) };
             var usersStub = [
                 { viewModel: function () {
                     return viewModelStub;
@@ -317,12 +322,12 @@ describe('controllers/authentication/userCtrl.js', function () {
                     return viewModelStub;
                 } }
             ];
-            userSvcStub.getList = global.promiseUtils.getResolveExactlyPromiseStub(usersStub);
+            userSvcStub.getList = promiseUtils.getResolveExactlyPromiseStub(usersStub);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUsers(reqStub, resStub, nextStub);
             userSvcStub.getList()
                 .then(function(users) {
-                    var viewModels = global._.map(users, function (user) {
+                    var viewModels = _.map(users, function (user) {
                         return user.viewModel('users');
                     });
                     sinon.assert.calledWithExactly(resStub.send, 200, viewModels);
@@ -340,8 +345,8 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if getList on the user service fails due to no resource, then send 404 and error', function (done) {
 
-            var testErrString = global.testUtils.getRandomString(20);
-            userSvcStub.getList = global.promiseUtils.getRejectExactlyPromiseStub(testErrString, null, "E1001");
+            var testErrString = testUtils.getRandomString(20);
+            userSvcStub.getList = promiseUtils.getRejectExactlyPromiseStub(testErrString, null, "E1001");
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUsers(reqStub, resStub, nextStub);
             userSvcStub.getList()
@@ -362,8 +367,8 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if getList on the user service fails due to other, then send 500 and error', function (done) {
 
-            var testErrString = global.testUtils.getRandomString(20);
-            userSvcStub.getList = global.promiseUtils.getRejectExactlyPromiseStub(testErrString);
+            var testErrString = testUtils.getRandomString(20);
+            userSvcStub.getList = promiseUtils.getRejectExactlyPromiseStub(testErrString);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getUsers(reqStub, resStub, nextStub);
             userSvcStub.getList()
@@ -407,11 +412,11 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('calls addRole on the user service with the req.param.userName and req.body.role', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
-            var role = global.testUtils.getRandomString(10);
+            var userName = testUtils.getRandomString(10);
+            var role = testUtils.getRandomString(10);
             reqStub.params.userName = userName;
             reqStub.body.role = role;
-            userSvcStub.addRole = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.addRole = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
@@ -431,13 +436,13 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if addRole on the user service succeeds, then send 201 and the list of roles', function (done) {
 
-            var rolesStub = [ global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)];
+            var rolesStub = [ testUtils.getRandomString(10), testUtils.getRandomString(10)];
             var userStub = {
                 roles: rolesStub,
-                userName: global.testUtils.getRandomString(10)
+                userName: testUtils.getRandomString(10)
             };
             linkSvcStub.attachLinksToObject.returnsArg(0);
-            userSvcStub.addRole = global.promiseUtils.getResolveExactlyPromiseStub(userStub);
+            userSvcStub.addRole = promiseUtils.getResolveExactlyPromiseStub(userStub);
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
@@ -457,8 +462,8 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if addRole on the user service fails due to already existing, then 400 and error', function (done) {
 
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1002");
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.addRole = promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1002");
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
@@ -479,8 +484,8 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if addRole on the user service fails due to other error, then 500 and error', function (done) {
 
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.addRole = promiseUtils.getRejectExactlyPromiseStub(testError);
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
@@ -524,11 +529,11 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('calls removeRole on the user service with the req.param.userName and req.body.role', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
-            var role = global.testUtils.getRandomString(10);
+            var userName = testUtils.getRandomString(10);
+            var role = testUtils.getRandomString(10);
             reqStub.params.userName = userName;
             reqStub.body.role = role;
-            userSvcStub.removeRole = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.removeRole = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             userCtrl.removeRole(reqStub, resStub, nextStub);
             userSvcStub.removeRole()
@@ -548,13 +553,13 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if removeRole on the user service succeeds, then send 200 and the list of roles', function (done) {
 
-            var rolesStub = [ global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)];
+            var rolesStub = [ testUtils.getRandomString(10), testUtils.getRandomString(10)];
             var userStub = {
                 roles: rolesStub,
-                userName: global.testUtils.getRandomString(10)
+                userName: testUtils.getRandomString(10)
             };
             linkSvcStub.attachLinksToObject.returnsArg(0);
-            userSvcStub.removeRole = global.promiseUtils.getResolveExactlyPromiseStub(userStub);
+            userSvcStub.removeRole = promiseUtils.getResolveExactlyPromiseStub(userStub);
             userCtrl._setUserService(userSvcStub);
             userCtrl.removeRole(reqStub, resStub, nextStub);
             userSvcStub.removeRole()
@@ -574,8 +579,8 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if removeRole on the user service fails due to error, then 500 and error', function (done) {
 
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.addRole = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.addRole = promiseUtils.getRejectExactlyPromiseStub(testError);
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
             userSvcStub.addRole()
@@ -609,9 +614,9 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('calls getSingle on the user service with the req.param.userName', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
+            var userName = testUtils.getRandomString(10);
             reqStub.params.userName = userName;
-            userSvcStub.getSingle = global.promiseUtils.getNoopPromiseStub();
+            userSvcStub.getSingle = promiseUtils.getNoopPromiseStub();
             userCtrl._setUserService(userSvcStub);
             userCtrl.getRoles(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -630,11 +635,11 @@ describe('controllers/authentication/userCtrl.js', function () {
 
         it('if getSingle on the user service succeeds, then send 200 and the list of roles with links', function (done) {
 
-            var userName = global.testUtils.getRandomString(10);
-            var testRes = { userName: userName, roles: [global.testUtils.getRandomString(10), global.testUtils.getRandomString(10)] };
+            var userName = testUtils.getRandomString(10);
+            var testRes = { userName: userName, roles: [testUtils.getRandomString(10), testUtils.getRandomString(10)] };
             reqStub.params.userName = userName;
             linkSvcStub.attachLinksToObject.returnsArg(0);
-            userSvcStub.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(testRes);
+            userSvcStub.getSingle = promiseUtils.getResolveExactlyPromiseStub(testRes);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getRoles(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -655,8 +660,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if getSingle on the user service fails due to no resource, then 404 and error', function (done) {
 
             reqStub.params.userName = 'anything';
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.getSingle = promiseUtils.getRejectExactlyPromiseStub(testError, null, "E1001");
             userCtrl._setUserService(userSvcStub);
             userCtrl.getRoles(reqStub, resStub, nextStub);
             userSvcStub.getSingle()
@@ -678,8 +683,8 @@ describe('controllers/authentication/userCtrl.js', function () {
         it('if getSingle on the user service fails generally, then 500 and error', function (done) {
 
             reqStub.params.userName = 'anything';
-            var testError = global.testUtils.getRandomString(10);
-            userSvcStub.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+            var testError = testUtils.getRandomString(10);
+            userSvcStub.getSingle = promiseUtils.getRejectExactlyPromiseStub(testError);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getRoles(reqStub, resStub, nextStub);
             userSvcStub.getSingle()

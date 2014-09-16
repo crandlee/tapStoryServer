@@ -1,13 +1,16 @@
 "use strict";
-require('require-enhanced')({ test: true });
-
+var cb = require('common-bundle')({test:true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var promiseUtils = cb.promiseUtils;
 
 describe('services/authentication/passportService.js', function () {
     describe('authentication', function () {
 
-        var sinon = global.sinon, sandbox;
+        var sandbox;
         var passport, BasicStrategy, userSvc, serverSvcStub, passportSvc;
-        global.errSvc.bypassLogger(true);
+        cb.errSvc.bypassLogger(true);
 
         beforeEach(function () {
 
@@ -25,14 +28,14 @@ describe('services/authentication/passportService.js', function () {
 
                 }
             });
-            userSvc = sandbox.stub(global.rootRequire('svc-user'));
+            userSvc = sandbox.stub(cb.rootRequire('svc-user'));
 
             serverSvcStub = sandbox.stub({
                 addMiddleware: function () {
 
                 }
             });
-            passportSvc = global.proxyquire(global.getRoutePathFromKey('svc-passport'),
+            passportSvc = cb.proxyquire(cb.getRoutePathFromKey('svc-passport'),
                 { passport: passport, BasicStrategy: BasicStrategy, userSvc: userSvc });
 
         });
@@ -41,15 +44,15 @@ describe('services/authentication/passportService.js', function () {
 
             it('calls getSingle on userSvc with username and resolves a user', function (done) {
 
-                var userName = global.testUtils.getRandomString(10);
+                var userName = testUtils.getRandomString(10);
                 var user = {
-                  authenticate: global.promiseUtils.getResolveExactlyPromiseStub(true)
+                  authenticate: promiseUtils.getResolveExactlyPromiseStub(true)
                 };
-                userSvc.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(user);
+                userSvc.getSingle = promiseUtils.getResolveExactlyPromiseStub(user);
                 passportSvc._setUserService(userSvc);
                 passportSvc.userLookupForStrategy(userName, '',
                     function (val, retUser) {
-                        global.should.not.exist(val);
+                        should.not.exist(val);
                         retUser.should.equal(user);
                     }
                 );
@@ -77,19 +80,19 @@ describe('services/authentication/passportService.js', function () {
 
             it('returns null when authenticate does not match user', function (done) {
 
-                var userName = global.testUtils.getRandomString(10);
-                userSvc.getSingle = global.promiseUtils.getResolveNullPromiseStub();
+                var userName = testUtils.getRandomString(10);
+                userSvc.getSingle = promiseUtils.getResolveNullPromiseStub();
 
                 passportSvc._setUserService(userSvc);
                 passportSvc.userLookupForStrategy(userName, '',
                     function (val,user) {
-                        global.should.not.exist(val);
+                        should.not.exist(val);
                         user.should.equal(false);
                     }
                 );
                 userSvc.getSingle()
                     .then(function(ret) {
-                        global.should.not.exist(ret);
+                        should.not.exist(ret);
                     })
                     .fail(function(err) {
                         throw err;
@@ -102,12 +105,12 @@ describe('services/authentication/passportService.js', function () {
 
             it('returns an error when authenticate gets error', function (done) {
 
-                var userName = global.testUtils.getRandomString(10);
-                var testError = global.testUtils.getRandomString(10);
+                var userName = testUtils.getRandomString(10);
+                var testError = testUtils.getRandomString(10);
                 var user = {
-                    authenticate: global.promiseUtils.getRejectExactlyPromiseStub(testError)
+                    authenticate: promiseUtils.getRejectExactlyPromiseStub(testError)
                 };
-                userSvc.getSingle = global.promiseUtils.getResolveExactlyPromiseStub(user);
+                userSvc.getSingle = promiseUtils.getResolveExactlyPromiseStub(user);
                 passportSvc._setUserService(userSvc);
                 passportSvc.userLookupForStrategy(userName, '',
                     function (err) {
@@ -135,9 +138,9 @@ describe('services/authentication/passportService.js', function () {
 
             it('returns an error when getSingle rejects', function (done) {
 
-                var userName = global.testUtils.getRandomString(10);
-                var testError = global.testUtils.getRandomString(10);
-                userSvc.getSingle = global.promiseUtils.getRejectExactlyPromiseStub(testError);
+                var userName = testUtils.getRandomString(10);
+                var testError = testUtils.getRandomString(10);
+                userSvc.getSingle = promiseUtils.getRejectExactlyPromiseStub(testError);
                 passportSvc._setUserService(userSvc);
                 passportSvc.userLookupForStrategy(userName, '',
                     function (err) {
@@ -167,7 +170,7 @@ describe('services/authentication/passportService.js', function () {
             });
 
             it('adds server service to middleware', function () {
-                var retVal = global.testUtils.getRandomString(10);
+                var retVal = testUtils.getRandomString(10);
                 passport.initialize.returns(retVal);
                 passportSvc.initialize(serverSvcStub);
                 sinon.assert.calledWith(serverSvcStub.addMiddleware, retVal);
@@ -181,7 +184,7 @@ describe('services/authentication/passportService.js', function () {
                 sinon.assert.calledWithExactly(passport.authenticate, 'basic', { session: false });
             });
             it('returns the results of passport authenticate', function () {
-                var authRet = global.testUtils.getRandomString(10);
+                var authRet = testUtils.getRandomString(10);
                 passport.authenticate.returns(authRet);
                 var ret = passportSvc.authenticateMethod();
                 ret.should.equal(authRet);

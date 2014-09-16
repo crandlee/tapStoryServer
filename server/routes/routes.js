@@ -1,9 +1,9 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
 
-var fileSystemUtility = global.rootRequire('util-filesystem');
-var coreCtrl = global.rootRequire('ctrl-core');
-var authCtrl = global.rootRequire('ctrl-auth');
+var fileSystemUtility = cb.rootRequire('util-filesystem');
+var coreCtrl = cb.rootRequire('ctrl-core');
+var authCtrl = cb.rootRequire('ctrl-auth');
 
 //Central Repository for more specific routes
 

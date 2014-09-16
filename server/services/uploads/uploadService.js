@@ -1,9 +1,12 @@
 'use strict';
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var promise = cb.Promise;
 
 var fs = require('fs');
-var writeSvc = global.rootRequire('svc-fswrite');
-var userSvc = global.rootRequire('svc-user');
+var writeSvc = cb.rootRequire('svc-fswrite');
+var userSvc = cb.rootRequire('svc-user');
 var uuid = require('node-uuid');
 var archiver = require('archiver');
 var concat = require('concat-stream');
@@ -13,16 +16,16 @@ function getFileGroups(userName, options) {
     //Get file groups from user object then verify with storage service
     //that file group actually exists.
     return userSvc.getFileGroups(userName, options)
-        .then(global._.partialRight(transformFileGroupsViewModel, options))
+        .then(_.partialRight(transformFileGroupsViewModel, options))
         .then(writeSvc.verifyFileGroups)
-        .fail(global.errSvc.promiseError("Could not get file groups",
+        .fail(errSvc.promiseError("Could not get file groups",
             { userName: userName } ));
 
 }
 
 function transformFileGroupsViewModel(userFileGroups, options) {
 
-    return global.Promise(global._.map(userFileGroups, function(userFileGroup) {
+    return promise(_.map(userFileGroups, function(userFileGroup) {
         return userFileGroup.parent().viewModel('fileGroup', options.apiPath, {doc :userFileGroup } );
     }));
 
@@ -39,18 +42,18 @@ function uploadFiles(groupName, filesFromRequest, options) {
 
         return writeSvc.writeFile(fileName, data, { dirName: groupId })
             .then(function() {
-                return global.Promise(fileName);
+                return promise(fileName);
             })
-            .fail(global.errSvc.promiseError("Could not complete file output"),
+            .fail(errSvc.promiseError("Could not complete file output"),
                 { path: filePath, fileName: fileName });
     };
 
     var processFile = options.processFile || function(filePath, fileName, groupId) {
 
         if (filePath && fileName) {
-            return global.promiseUtils.deNodeify(fs.readFile)(filePath)
-                .then(global._.partial(fileOutputComplete, filePath, fileName, groupId))
-                .fail(global.errSvc.promiseError("Could not complete file upload process",
+            return cb.promiseUtils.deNodeify(fs.readFile)(filePath)
+                .then(_.partial(fileOutputComplete, filePath, fileName, groupId))
+                .fail(errSvc.promiseError("Could not complete file upload process",
                         { path: filePath, fileName: fileName } ));
         }
 
@@ -62,11 +65,11 @@ function uploadFiles(groupName, filesFromRequest, options) {
         if (filesFromRequest.hasOwnProperty(fieldName)) {
             var field = filesFromRequest[fieldName];
             if (field.name && field.path)
-                promiseArr.push(global.Promise.fcall(processFile,
+                promiseArr.push(promise.fcall(processFile,
                     field.path, field.name, groupId));
         }
     }
-    return global.Promise.all(promiseArr)
+    return promise.all(promiseArr)
         .then(function(fileArr) {
             return userSvc.addFiles(userName, fileArr, groupId, groupName, options);
         });
@@ -77,8 +80,8 @@ function removeFileGroup(userName, groupId, options) {
 
     options = options || {};
     return userSvc.removeFileGroup(userName, groupId, options)
-        .then(global._.partial(writeSvc.removeFileGroup, groupId))
-        .fail(global.errSvc.promiseError("Could not remove file group",
+        .then(_.partial(writeSvc.removeFileGroup, groupId))
+        .fail(errSvc.promiseError("Could not remove file group",
             { userName: userName, groupId: groupId } ));
 }
 
@@ -86,8 +89,8 @@ function removeFile(userName, groupId, fileName, options) {
 
     options = options || {};
     return userSvc.removeFile(userName, fileName, groupId, options)
-        .then(global._.partial(writeSvc.removeFile, groupId, fileName))
-        .fail(global.errSvc.promiseError("Could not remove file",
+        .then(_.partial(writeSvc.removeFile, groupId, fileName))
+        .fail(errSvc.promiseError("Could not remove file",
             { userName: userName, fileName: fileName } ));
 
 }
@@ -115,10 +118,10 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
     var routeDownloadsToArchiver = function(files, groupId) {
 
         if (files && Array.isArray(files)) {
-            return global.Promise.all(global._.map(files, function (file) {
-                return global.Promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
+            return promise.all(_.map(files, function (file) {
+                return promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
             })).then(function (streamArr) {
-                return global.Promise.fcall(archiveStreams, streamArr);
+                return promise.fcall(archiveStreams, streamArr);
             });
         } else {
             throw new Error('No files available to route to archiver');
@@ -127,8 +130,8 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
     };
 
     return userSvc.getPermittedFiles(currentUser, groupId, fileName)
-        .then(global._.partialRight(routeDownloadsToArchiver, groupId))
-        .fail(global.errSvc.promiseError("Could not download files",
+        .then(_.partialRight(routeDownloadsToArchiver, groupId))
+        .fail(errSvc.promiseError("Could not download files",
             { userName: currentUser.userName, groupId: groupId, files: fileName } ));
 
 }

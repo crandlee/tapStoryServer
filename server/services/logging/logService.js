@@ -1,11 +1,10 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
 
 var bunyan = require('bunyan');
-var extend = require('extend');
 var logger = null;
 var uuid = require('node-uuid');
-var config = global.rootRequire('cfg-config')[process.env.NODE_ENV || 'development'];
 var loggingBypassed = false;
 
 function getMsgObject(msg, method) {
@@ -17,7 +16,7 @@ function getMsgObject(msg, method) {
 
 function buildFinalLogObject(msg, obj, method) {
 
-    return extend(obj, getMsgObject(msg, method));
+    return cb.extend(obj, getMsgObject(msg, method));
 }
 
 function callLogger(type, msg, obj, method) {
@@ -31,7 +30,7 @@ function callLogger(type, msg, obj, method) {
 function initialize(options) {
 
     options = options || {};
-    options = extend(options, getStandardOptions());
+    options = cb.extend(options, getStandardOptions());
     logger = loggingBypassed ? null : bunyan.createLogger(options);
     /* jshint validthis: true */
     return this;
@@ -40,14 +39,14 @@ function initialize(options) {
 
 function logError(msg, obj, method) {
 
-    obj = extend(obj, {'errorRef' : uuid.v4()});
+    obj = cb.extend(obj, {'errorRef' : uuid.v4()});
     return callLogger('error', msg, obj, method);
 
 }
 
 function logWarning(msg, obj, method) {
 
-    obj = extend(obj, {'errorRef' : uuid.v4()});
+    obj = cb.extend(obj, {'errorRef' : uuid.v4()});
     return callLogger('warn', msg, obj, method);
 
 }
@@ -74,14 +73,14 @@ function logTrace(msg, obj, method) {
 function getStandardOptions() {
 
     return {
-        name: config.applicationName,
+        name: cb.config.applicationName,
         streams: [
             {
                 stream: process.stdout,
                 level: 'debug'
             },
             {
-                path: config.rootPath + config.logName,
+                path: cb.rootPath + cb.config.logName,
                 level: 'trace'
             }
         ]

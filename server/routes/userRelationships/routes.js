@@ -1,9 +1,10 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
 
-var authCtrl = global.rootRequire('ctrl-auth');
-var relCtrl = global.rootRequire('ctrl-rel');
-var userCtrl = global.rootRequire('ctrl-user');
+var authCtrl = cb.rootRequire('ctrl-auth');
+var relCtrl = cb.rootRequire('ctrl-rel');
+var userCtrl = cb.rootRequire('ctrl-user');
 
 module.exports = function (serverSvc) {
 
@@ -12,28 +13,28 @@ module.exports = function (serverSvc) {
     serverSvc.addRoute('POST', '/users/:userName/friendships',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.currentUser),
-        global._.partial(relCtrl.saveRelationship,
+        _.partial(relCtrl.saveRelationship,
             { rel: 'friend', status: 'pending'},
             { rel: 'friend', status: 'pendingack'}, {}));
 
     serverSvc.addRoute('POST', '/users/:userName/friendships/acknowledgement',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.currentUser),
-        global._.partial(relCtrl.saveRelationship,
+        _.partial(relCtrl.saveRelationship,
             { rel: 'friend', status: 'active'},
             { rel: 'friend', status: 'active'}, {updateOnly: true}));
 
     serverSvc.addRoute('DEL', '/users/:userName/friendships',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        global._.partial(relCtrl.saveRelationship,
+        _.partial(relCtrl.saveRelationship,
             { rel: 'friend', status: 'inactive'},
             { rel: 'friend', status: 'inactive'}, {}));
 
     serverSvc.addRoute('GET', '/users/:userName/friendships',
         authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        global._.partial(relCtrl.getRelationships, 'friend'));
+        _.partial(relCtrl.getRelationships, 'friend'));
 
     serverSvc.addRoute('GET', '/users/:userName/friendships/:relUser',
         authCtrl.authenticateMethod(),

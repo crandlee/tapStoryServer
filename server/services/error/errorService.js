@@ -1,7 +1,8 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
 
-var logSvc = global.rootRequire('svc-logging');
+var logSvc = cb.rootRequire('svc-logging');
 var loggingBypassed = false;
 
 function error(msg, props, opts) {
@@ -18,7 +19,7 @@ function promiseError(msg, props, opts) {
         opts = opts || {};
         props = props || {};
         if (err && err.message) {
-            props = global.extend(props, { error: err.message });
+            props = cb.extend(props, { error: err.message });
         }
         error(msg, props, opts);
     };
@@ -33,7 +34,7 @@ function warn(msg, props, method) {
 function buildAndLogError(msg, props, internalCode) {
 
     props = props || {};
-    if (internalCode) props = global.extend(props, { 'serverInternalCode' : internalCode });
+    if (internalCode) props = cb.extend(props, { 'serverInternalCode' : internalCode });
     return logSvc.logError(msg, props);
 
 }
@@ -44,8 +45,8 @@ function stripDetailsFromFinal(obj) {
     //They may have too many details about internals.  Generally these
     //should still appear in the log
     if (obj && !loggingBypassed) {
-        global._.forOwn(obj, function(num, key) {
-            if (global._.indexOf(['errorRef', 'serverMessage', 'errDisplay'], key) === -1) {
+        _.forOwn(obj, function(num, key) {
+            if (_.indexOf(['errorRef', 'serverMessage', 'errDisplay'], key) === -1) {
                 delete obj[key];
             }
         });

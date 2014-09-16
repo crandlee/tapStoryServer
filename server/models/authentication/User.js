@@ -1,11 +1,13 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var promise = cb.Promise;
 
 var mongoose = require('mongoose');
-var encryptionUtility = global.rootRequire('util-encryption');
-var authorizeSvc = global.rootRequire('svc-auth');
+var encryptionUtility = cb.rootRequire('util-encryption');
+var authorizeSvc = cb.rootRequire('svc-auth');
 var uuid = require('node-uuid');
-var viewModels = global.rootRequire('vm-user');
+var viewModels = cb.rootRequire('vm-user');
 
 //Schema setup
 var schema = mongoose.Schema({
@@ -56,8 +58,8 @@ schema.methods = {
         var editingGroup = buildEditingFileGroup( groupId, groupName, existingGroup);
 
         //Remove any files that are duplicates
-        global._.remove(fileNames, function(fileName) {
-            return (!!global._.find(editingGroup.files, function(file) {
+        _.remove(fileNames, function(fileName) {
+            return (!!_.find(editingGroup.files, function(file) {
                 return file.fileName.toLowerCase() === fileName.toLowerCase();
             }));
         });
@@ -72,7 +74,7 @@ schema.methods = {
 
     getFileGroup: function(groupId) {
 
-        return global._.find(this.fileGroups, function(fg) {
+        return _.find(this.fileGroups, function(fg) {
             return fg.groupId === groupId;
         });
 
@@ -87,7 +89,7 @@ schema.methods = {
 
         var that = this;
         if (!Array.isArray(roles)) roles = [roles];
-        return global._.chain(roles)
+        return _.chain(roles)
             .map(function(role) {
                 return (that.roles.indexOf(role) > -1) && (authorizeSvc.isValidRole(role));
             })
@@ -123,9 +125,9 @@ function createDefaultUsers() {
     function createUser(firstName, lastName, userName, password, roles) {
         return encryptionUtility.saltAndHash(password)
             .then(function(token) {
-                return global.Promise(User.create({ firstName: firstName, lastName: lastName, userName: userName, userSecret: token, roles: roles }))
+                return promise(User.create({ firstName: firstName, lastName: lastName, userName: userName, userSecret: token, roles: roles }))
                     .then(function(ret) {
-                        return global.Promise(ret);
+                        return promise(ret);
                     });
             })
     }
@@ -137,7 +139,7 @@ function createDefaultUsers() {
             promiseArr.push(createUser('Starter', 'Admin', 'starterAdmin', 'admin1234', ['admin']));
             promiseArr.push(createUser('Starter', 'SuperAdmin', 'starterSuperAdmin', 'superadmin1234', ['super-admin']));
             promiseArr.push(createUser('Starter', 'User', 'starterUser', 'user1234', ['user']));
-            global.Promise.all(promiseArr)
+            promise.all(promiseArr)
                 .fail(function () {
                     console.log('Could not create default users.');
                 })

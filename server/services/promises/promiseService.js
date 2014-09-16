@@ -1,14 +1,16 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var promise = cb.Promise;
 
-var functionUtils = global.rootRequire('util-function');
+var functionUtils = cb.rootRequire('util-function');
 
 function wrapWithPromise(fn, context) {
 
     return (function() {
 
         //Begin a new promise and attach it to the function
-        var dfr = global.Promise.defer();
+        var dfr = promise.defer();
 
         var options = {
             before: null,
@@ -22,7 +24,7 @@ function wrapWithPromise(fn, context) {
                     if(exactlyValue) {
                         if (typeof value === 'object' || typeof value === 'function') {
                             //Can still use the extended properties if this is an object or function / not for 'value' types
-                            return global.extend(true, value, makePromiseReturnVal(args, value));
+                            return cb.extend(true, value, makePromiseReturnVal(args, value));
                         } else {
                             return value;
                         }
@@ -81,7 +83,7 @@ function makeEmptyPromise(sinonStub) {
 
     //For sinon stubs that just need to compile as a promise
     //and don't actually need to resolve/reject
-    sinonStub.returns(global.Promise.defer().promise);
+    sinonStub.returns(promise.defer().promise);
     return sinonStub;
 
 }
@@ -93,7 +95,7 @@ function deNodeify(fn, context) {
     //in this case it will be assumed to be stubbed
     if (fn && fn.isWrappedPromise) return fn;
     if (fn && context) fn = fn.bind(context);
-    return global.Promise.denodeify(fn);
+    return promise.denodeify(fn);
 
 }
 

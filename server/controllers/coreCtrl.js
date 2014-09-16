@@ -1,7 +1,9 @@
 "use strict";
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
 
-var linkSvc = global.rootRequire('svc-link');
+var linkSvc = cb.rootRequire('svc-link');
 
 function core(req, res, next) {
 

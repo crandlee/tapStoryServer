@@ -1,10 +1,15 @@
 "use strict";
-require('require-enhanced')({ test: true, withDatabase: true });
+var cb = require('common-bundle')({test:true, withDatabase: true});
+var should = cb.should;
+var sinon = cb.sinon;
+var testUtils = cb.testUtils;
+var promiseUtils = cb.promiseUtils;
+
 var uuid = require('node-uuid');
 
 describe('services/uploads/uploadServiceSpec.js', function () {
 
-    var sinon = global.sinon, sandbox;
+    var sandbox;
     var uploadSvc, reqFiles;
     var groupId = uuid.v4();
 
@@ -15,15 +20,15 @@ describe('services/uploads/uploadServiceSpec.js', function () {
             readFile: function(filePath) {}
         };
         var writeSvc = { writeFile: function() {}};
-        var userSvc = global.rootRequire('svc-user');//{ addFile: function() {}};
-        global.errSvc.bypassLogger(true);
+        var userSvc = cb.rootRequire('svc-user');//{ addFile: function() {}};
+        cb.errSvc.bypassLogger(true);
 
-        uploadSvc = global.proxyquire(global.getRoutePathFromKey('svc-uploads'),
+        uploadSvc = cb.proxyquire(cb.getRoutePathFromKey('svc-uploads'),
             { fs: fs, writeSvc: writeSvc, userSvc: userSvc });
 
         reqFiles = {
-            field1: { name: global.testUtils.getRandomString(10), path: global.testUtils.getRandomString(10)},
-            field2: { name: global.testUtils.getRandomString(10), path: global.testUtils.getRandomString(10)}
+            field1: { name: testUtils.getRandomString(10), path: testUtils.getRandomString(10)},
+            field2: { name: testUtils.getRandomString(10), path: testUtils.getRandomString(10)}
         };
 
     });
@@ -31,10 +36,7 @@ describe('services/uploads/uploadServiceSpec.js', function () {
     describe('uploadFiles', function() {
 
         it('executes processFiles for each file sent in', function(done) {
-//            uploadSvc._setFs({
-//               readFile: global.promiseUtils.getNoopPromiseStub()
-//            });
-            var opts = { processFile: global.promiseUtils.getNoopPromiseStub(), groupId: groupId };
+            var opts = { processFile: promiseUtils.getNoopPromiseStub(), groupId: groupId };
             uploadSvc.uploadFiles(reqFiles, opts)
                 .then(function(ret) {
                     //Note there is currently a problem with the promise stubs
@@ -85,9 +87,9 @@ describe('services/uploads/uploadServiceSpec.js', function () {
         });
 
         it('rejects if fs.readFile throws an error', function(done) {
-            var testError = global.testUtils.getRandomString(10);
+            var testError = testUtils.getRandomString(10);
             uploadSvc._setFs({
-               readFile: global.promiseUtils.getRejectExactlyPromiseStub(testError)
+               readFile: promiseUtils.getRejectExactlyPromiseStub(testError)
             });
             var opts = { groupId: groupId };
             uploadSvc.uploadFiles(reqFiles, opts)
@@ -105,11 +107,11 @@ describe('services/uploads/uploadServiceSpec.js', function () {
 
         it('calls fileOutputComplete if fs.readFile does not throw error', function(done) {
 
-            var testResolveString = global.testUtils.getRandomString(10);
+            var testResolveString = testUtils.getRandomString(10);
             uploadSvc._setFs({
-                readFile: global.promiseUtils.getResolveExactlyPromiseStub(testResolveString)
+                readFile: promiseUtils.getResolveExactlyPromiseStub(testResolveString)
             });
-            var opts = { groupId: groupId, fileOutputComplete: global.promiseUtils.getNoopPromiseStub() };
+            var opts = { groupId: groupId, fileOutputComplete: promiseUtils.getNoopPromiseStub() };
             uploadSvc.uploadFiles(reqFiles, opts)
                 .then(function(ret) {
                     ret[0].args[0].should.equal(reqFiles.field1.path);
@@ -127,11 +129,11 @@ describe('services/uploads/uploadServiceSpec.js', function () {
 
         it('calls writeFile on the writeService', function(done) {
 
-            var testDataString = global.testUtils.getRandomString(10);
-            var testRetFromWriteFile = global.testUtils.getRandomString(10);
-            uploadSvc._setFs({readFile: global.promiseUtils.getResolveExactlyPromiseStub(testDataString)});
-            uploadSvc._setWriteService({writeFile: global.promiseUtils.getResolveExactlyPromiseStub(testRetFromWriteFile)});
-            uploadSvc._setUserService({addFile: global.promiseUtils.getNoopPromiseStub()});
+            var testDataString = testUtils.getRandomString(10);
+            var testRetFromWriteFile = testUtils.getRandomString(10);
+            uploadSvc._setFs({readFile: promiseUtils.getResolveExactlyPromiseStub(testDataString)});
+            uploadSvc._setWriteService({writeFile: promiseUtils.getResolveExactlyPromiseStub(testRetFromWriteFile)});
+            uploadSvc._setUserService({addFile: promiseUtils.getNoopPromiseStub()});
 
             var opts = { groupId: groupId };
             uploadSvc.uploadFiles(reqFiles, opts)
@@ -147,11 +149,11 @@ describe('services/uploads/uploadServiceSpec.js', function () {
         });
 
         it('rejects if writeService.writeFile throws an error', function(done) {
-            var testDataString = global.testUtils.getRandomString(10);
-            var testErrFromWriteFile = global.testUtils.getRandomString(10);
-            uploadSvc._setFs({readFile: global.promiseUtils.getResolveExactlyPromiseStub(testDataString)});
-            uploadSvc._setWriteService({writeFile: global.promiseUtils.getRejectExactlyPromiseStub(testErrFromWriteFile)});
-            uploadSvc._setUserService({addFile: global.promiseUtils.getNoopPromiseStub()});
+            var testDataString = testUtils.getRandomString(10);
+            var testErrFromWriteFile = testUtils.getRandomString(10);
+            uploadSvc._setFs({readFile: promiseUtils.getResolveExactlyPromiseStub(testDataString)});
+            uploadSvc._setWriteService({writeFile: promiseUtils.getRejectExactlyPromiseStub(testErrFromWriteFile)});
+            uploadSvc._setUserService({addFile: promiseUtils.getNoopPromiseStub()});
 
             var opts = { groupId: groupId };
             uploadSvc.uploadFiles(reqFiles, opts)
@@ -168,12 +170,12 @@ describe('services/uploads/uploadServiceSpec.js', function () {
 
         it('rejects if userService.addFile throws an error', function(done) {
 
-            var testDataString = global.testUtils.getRandomString(10);
-            var testRetFromWriteFile = global.testUtils.getRandomString(10);
-            var testErrorString = global.testUtils.getRandomString(10);
-            uploadSvc._setFs({readFile: global.promiseUtils.getResolveExactlyPromiseStub(testDataString)});
-            uploadSvc._setWriteService({writeFile: global.promiseUtils.getResolveExactlyPromiseStub(testRetFromWriteFile)});
-            uploadSvc._setUserService({addFile: global.promiseUtils.getRejectExactlyPromiseStub(testErrorString)});
+            var testDataString = testUtils.getRandomString(10);
+            var testRetFromWriteFile = testUtils.getRandomString(10);
+            var testErrorString = testUtils.getRandomString(10);
+            uploadSvc._setFs({readFile: promiseUtils.getResolveExactlyPromiseStub(testDataString)});
+            uploadSvc._setWriteService({writeFile: promiseUtils.getResolveExactlyPromiseStub(testRetFromWriteFile)});
+            uploadSvc._setUserService({addFile: promiseUtils.getRejectExactlyPromiseStub(testErrorString)});
 
             var opts = { groupId: groupId };
             uploadSvc.uploadFiles(reqFiles, opts)
@@ -193,9 +195,9 @@ describe('services/uploads/uploadServiceSpec.js', function () {
 
     describe('getFileGroups', function() {
 
-        it.only('returns the results of the userService get file groups', function(done) {
+        it('returns the results of the userService get file groups', function(done) {
 
-            global.waitUntilReady(function() {
+            cb.waitUntilReady(function() {
 
 //                uploadSvc.getFileGroups('admin@gmail.com')
 //                    .then(function(ret) {
@@ -205,6 +207,7 @@ describe('services/uploads/uploadServiceSpec.js', function () {
 //                    .fin(done)
 //                    .done()
 
+                done();
             });
 
         });

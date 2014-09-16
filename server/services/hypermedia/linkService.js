@@ -1,8 +1,5 @@
 "use strict";
-require('require-enhanced')();
-
-var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-var config = global.rootRequire('cfg-config')[env];
+var cb = require('common-bundle')();
 var links = {};
 
 function attachLinksToObject(obj, linkArr, path) {

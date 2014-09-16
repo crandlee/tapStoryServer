@@ -1,4 +1,5 @@
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var promise = cb.Promise;
 
 var redis = require('redis');
 var client = redis.createClient();
@@ -10,7 +11,7 @@ client.on("error", function (err) {
 
 
 function setKey(key, val) {
-    return Q.denodeify(client.set)(key, val);
+    return promise.denodeify(client.set)(key, val);
 }
 
 function setExpires(key, seconds) {
@@ -18,7 +19,7 @@ function setExpires(key, seconds) {
 }
 
 function getKey(key) {
-    return Q.denodeify(client.get)(key);
+    return promise.denodeify(client.get)(key);
 }
 
 //function updateFromArray(array, options){

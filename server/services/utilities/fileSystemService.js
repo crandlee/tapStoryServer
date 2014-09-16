@@ -1,6 +1,5 @@
 "use strict";
-require('require-enhanced')();
-
+var cb = require('common-bundle')();
 var fs = require('fs');
 
 

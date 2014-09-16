@@ -1,9 +1,12 @@
 'use strict';
-require('require-enhanced')();
+var cb = require('common-bundle')();
+var _ = cb._;
+var errSvc = cb.errSvc;
+var promise = cb.Promise;
 
-var resSvc = global.rootRequire('svc-resource');
-var relSvcOptions = global.rootRequire('svc-opts-rel');
-var userSvc = global.rootRequire('svc-user');
+var resSvc = cb.rootRequire('svc-resource');
+var relSvcOptions = cb.rootRequire('svc-opts-rel');
+var userSvc = cb.rootRequire('svc-user');
 
 function saveRelationship(sourceRel, targetRel, options) {
 
@@ -16,11 +19,11 @@ function getRelationships(sourceUser, relationship, statuses) {
 
     return userSvc.getSingle(sourceUser)
         .then(function(user) {
-            if (!user) global.errSvc.error('Could not find user to get relationships', { userName: sourceUser });
+            if (!user) errSvc.error('Could not find user to get relationships', { userName: sourceUser });
             var find = { "participants.user" : user._id };
-            if (relationship) find = global.extend(find, { "participants.rel" : relationship });
+            if (relationship) find = cb.extend(find, { "participants.rel" : relationship });
             if (statuses && !Array.isArray(statuses)) statuses = [statuses];
-            if (statuses) find = global.extend(find, { "participants.status" : { $in: statuses }});
+            if (statuses) find = cb.extend(find, { "participants.status" : { $in: statuses }});
             return resSvc.getList({ find: find, populate: ['participants.user'], model: 'UserRelationship'  })
                 .then(function(relationships) {
                     //TODO-Randy: filter out records where the relationship string is
@@ -39,26 +42,26 @@ function getRelationship(userNames) {
 
     if (userNames && Array.isArray(userNames) && userNames.length === 2 && userNames[0] && userNames[1]) {
 
-        return global.Promise.all([getUser(userNames[0]), getUser(userNames[1])])
+        return promise.all([getUser(userNames[0]), getUser(userNames[1])])
             .then(function (users) {
                 if (users && Array.isArray(users) && users.length === 2 && users[0] && users[1]) {
                     var find = { "participants.user" : { $all : [ users[0]._id, users[1]._id] } };
                     return resSvc.getSingle({ find: find, model: 'UserRelationship'  });
                 } else {
-                    global.errSvc.error('Unable to retrieve users for relationship', { userNames: userNames });
+                    errSvc.error('Unable to retrieve users for relationship', { userNames: userNames });
                 }
             })
     } else {
-        global.errSvc.error('Expected array of userNames', { userNames: userNames });
+        errSvc.error('Expected array of userNames', { userNames: userNames });
     }
 }
 
 function getRelKey(userNames) {
 
     if (!userNames || !Array.isArray(userNames) || userNames.length !== 2)
-        global.errSvc.error('Must include two user names for this operation', { userNames: userNames });
+        errSvc.error('Must include two user names for this operation', { userNames: userNames });
 
-    return global._.chain(userNames)
+    return _.chain(userNames)
         .map(function(str) { return str.toLowerCase() })
         .sortBy(function(str) { return str })
         .reduce(function(existing, single) { return existing + '||' + single.toLowerCase() })
@@ -74,7 +77,7 @@ function canViewRelationshipUser(sourceUserName, relUserName) {
 }
 
 module.exports = {
-    saveRelationship: global.Promise.fbind(saveRelationship),
+    saveRelationship: promise.fbind(saveRelationship),
     getRelationships: getRelationships,
     canViewRelationshipUser: canViewRelationshipUser,
     getRelKey: getRelKey
