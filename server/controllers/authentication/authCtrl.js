@@ -24,6 +24,8 @@ function authorizeMethod(opts) {
             ? (authByRole || authByUser)
             : (authByRole && authByUser);
 
+        if (opts.isAdult) authorized = (!user.isMinor);
+
         if (authorized) {
             return next();
         } else {
@@ -38,8 +40,9 @@ function authorizeMethod(opts) {
 module.exports = {
     authenticateMethod: authenticateMethod,
     authorizeMethod: authorizeMethod,
-    adminRoles: { role: ['admin', 'super-admin']},
-    superAdmin: { role: ['super-admin']},
-    adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], op: 'or' },
+    adminRoles: { role: ['admin', 'super-admin'], isAdult: true },
+    superAdmin: { role: ['super-admin'], isAdult: true },
+    adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], op: 'or', isAdult: true },
+    currentUserAndAdult: { currentUser: true, isAdult: true },
     currentUser: { currentUser: true }
 };

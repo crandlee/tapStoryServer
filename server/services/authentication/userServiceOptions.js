@@ -26,6 +26,7 @@ function saveUserOptions(opts) {
 
         if (opts.firstName) doc.firstName = opts.firstName;
         if (opts.lastName) doc.lastName = opts.lastName;
+        if (opts.isMinor) doc.isMinor = opts.isMinor;
         doc.userName = opts.userName;
         if (opts.password && opts.password.length > 0) {
             return encryptionSvc.saltAndHash(opts.password).then(function (token) {

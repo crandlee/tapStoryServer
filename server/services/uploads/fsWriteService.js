@@ -119,11 +119,10 @@ function verifyFiles(fileGroup) {
             .then(function (fileArr) {
                 //Return only non-null names, meaning they passed the stat check
                 //from the previous step
-                var files = _.filter(fileArr, function (file) {
+                fileGroup.files = _.filter(fileArr, function (file) {
                     if (!file) return null;
                     return !!file.fileName;
                 });
-                fileGroup.files = files;
                 return fileGroup;
             });
 

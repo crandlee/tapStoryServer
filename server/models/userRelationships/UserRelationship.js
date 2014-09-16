@@ -2,10 +2,11 @@
 var cb = require('common-bundle')();
 
 var mongoose = require('mongoose');
-var validRelationships = ['friend', 'guardian', 'child', 'surrogate'];
-var validStatuses = ['pending', 'pendingack', 'active', 'inactive'];
+var enums = cb.rootRequire('enums');
+var _ = cb._;
+var validRelationships = _.values(enums.relationships);
+var validStatuses = _.values(enums.statuses);
 var viewModels = cb.rootRequire('vm-rel');
-
 
 var schema = mongoose.Schema({
     relKey: { type: "String", required: '{PATH} is required!'},

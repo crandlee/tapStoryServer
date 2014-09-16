@@ -40,12 +40,16 @@ function getUserVm(userDoc, apiPath, options) {
 
     var vm = getBaseUserVm(userDoc);
     if (!options.hideLinks) {
-        vm = linkSvc.attachLinksToObject(vm, [
+        var arr = [
             { uri: '', method: 'PUT', rel: 'user' },
             { uri: '/roles', rel: 'roles' },
             { uri: '/fileGroups', rel: 'fileGroups' },
             { uri: '/fileHelper', rel: 'fileHelper' }
-        ], apiPath);
+        ];
+        if (!userDoc.isMinor) {
+            arr.push({ uri: '/friendships', rel: 'friendship' }, { uri: '/guardianships', rel: 'guardianship' });
+        }
+        vm = linkSvc.attachLinksToObject(vm, arr, apiPath);
     }
     return vm;
 
