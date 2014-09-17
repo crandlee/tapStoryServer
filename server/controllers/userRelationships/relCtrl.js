@@ -84,6 +84,8 @@ function saveRelationship(srcRel, targetRel, options, req, res, next) {
     if (!targetRel || typeof targetRel !== 'object')
         ctrlHelper.setBadRequest(res, 'Adding a relationship requires a target relationship');
 
+    //Allows a user to override operation for a subordinate
+    if (req.params && req.params.relUser) sourceUserName = req.params.relUser;
 
     if (sourceUserName && targetUserName && srcRel && targetRel) {
 
@@ -109,8 +111,12 @@ function getRelationships(relationship, req, res, next) {
     var userName = (req.params && req.params.userName);
     if (!userName)
         ctrlHelper.setBadRequest(res, 'Getting relationships requires a userName');
+
+    //Allows a user to override operation for a subordinate
+    if (req.params && req.params.relUser) userName = req.params.relUser;
+
     if (userName) {
-        userRelSvc.getRelationships(userName, relationship, ['pending', 'pendingack', 'active'])
+        userRelSvc.getRelationships(userName, relationship, [enums.statuses.pending, enums.statuses.pendingack, enums.statuses.active])
             .then(function (rels) {
                 rels = rels || [];
                 var relsVm = rels.map(function(rel) {

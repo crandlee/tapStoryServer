@@ -101,6 +101,17 @@ function setSaveRelationshipOptions(opts) {
         return document;
     };
 
+    opts.returnViewModel = function(result) {
+        return {
+            relationshipKey: result && result.relKey,
+            relationships: result && result.participants.map(function (p) {
+                return p.rel;
+            }),
+            statuses: result && result.participants.map(function (p) {
+                return p.status;
+            })
+        };
+    };
 
     performInitialValidation(opts);
 

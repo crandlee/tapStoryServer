@@ -65,9 +65,11 @@ function activateUser(req, res, next) {
 
 function getUser(req, res, next) {
 
-    //May be a relUser being requested, check it first
+    //May be a relUser being requested, check it first (also allow relUser2 for checking child friend)
     // (from a relationship route for instance)
     var relUser = (req.params && req.params.relUser);
+    if  (req.params && req.params.relUser2) relUser = req.params.relUser2;
+
     var userName = (req.params && (req.params.userName));
     var shouldHideLinks = !!relUser;
 

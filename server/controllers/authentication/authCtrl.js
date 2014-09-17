@@ -43,13 +43,14 @@ function authorizeMethod(opts) {
                     && (opts.allowInactive || opts.currentUser.isActive);
                 var authByAdult = !opts.isAdult || (!user.isMinor);
 
-                var authorized = ((opts.op || 'and') === 'or')
-                    ? (authByAdult || authByRole || authByUser)
-                    : (authByAdult || authByRole && authByUser);
+                var authorized = authByRole || ((opts.op || 'and') === 'or')
+                    ? (authByAdult || authByUser)
+                    : (authByAdult && authByUser);
 
                 if (opts.isGuardian) {
                     var targetChild = (req && req.params && req.params.relUser || '');
-                    userRelSvc.getRelationship([user.userName, targetChild], { allowInactive: opts.allowInactive })
+                    var getRelOpts = (opts.allowInactive ? { allowInactive: true } : {});
+                    userRelSvc.getRelationship([user.userName, targetChild], getRelOpts)
                         .then(function (rel) {
                             authorized = isValidGuardianRelationship(rel);
                             finalAuthorize(authorized);
@@ -79,7 +80,7 @@ module.exports = {
     authorizeMethod: authorizeMethod,
     adminRoles: { role: ['admin', 'super-admin'], isAdult: true },
     superAdmin: { role: ['super-admin'], isAdult: true },
-    adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], op: 'or', isAdult: true },
+    adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], isAdult: true },
     currentUserAndAdult: { currentUser: true, isAdult: true },
     currentUserAndGuardian: { currentUser: true, isAdult: true, isGuardian: true },
     currentUser: { currentUser: true }

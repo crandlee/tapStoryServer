@@ -40,7 +40,6 @@ function getRelationship(userNames, options) {
     };
 
     if (userNames && Array.isArray(userNames) && userNames.length === 2 && userNames[0] && userNames[1]) {
-
         return promise.all([getUser(userNames[0], options), getUser(userNames[1], options)])
             .then(function (users) {
                 if (users && Array.isArray(users) && users.length === 2) {

@@ -68,8 +68,8 @@ function activate(userName, options) {
 
 function getList(find, options) {
 
-    find = cb.extend(find, { isActive: true });
-    return resSvc.getList(cb.extend(options, { modelName: 'User', find: find }));
+    find = cb.extend({ isActive: true }, find);
+    return resSvc.getList(cb.extend({ modelName: 'User', find: find }, options));
 
 }
 
@@ -78,8 +78,7 @@ function getSingle(userName, options) {
     options = options || {};
     var find = { userName: userName };
     if (!options.allowInactive) find.isActive = true;
-
-    return resSvc.getSingle(cb.extend(options, { modelName: 'User', find: find }));
+    return resSvc.getSingle(cb.extend({ modelName: 'User', find: find }, options));
 
 }
 

@@ -99,7 +99,12 @@ function save(opts) {
                 .then(function(saveDocument) {
                     if (saveDocument) {
                         opts = setAddUpdateState(opts, existDocuments);
-                        return modelSave(saveDocument, opts);
+                        if (opts.returnViewModel && typeof opts.returnViewModel === 'function') {
+                            return modelSave(saveDocument, opts)
+                                .then(opts.returnViewModel);
+                        } else {
+                            return modelSave(saveDocument, opts);
+                        }
                     } else {
                         throw new Error('No document returned from buildDocument');
                     }

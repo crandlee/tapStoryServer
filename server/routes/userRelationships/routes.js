@@ -10,9 +10,6 @@ module.exports = function (serverSvc) {
 
 
     //Friendships
-    //Adults can create friendships by request to other adults only
-    //Other adults can view pending friendship requests and can acknowledge them to make them active
-    //Adults can view their active friendships and deactivate them at any time
 
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships',
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
@@ -36,12 +33,7 @@ module.exports = function (serverSvc) {
 
 
     //Guardian
-    //Adults can add new children accounts which are immediately active
-    //Guardians can view all of their children and the existing relationships of their children
-    //Guardians can add friendships for their children.
     //Guardians can add other guardians to their children.
-    //Guardians can deactivate friendships for their children.
-    //Guardians can remove child accounts
 
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships',
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
@@ -66,5 +58,25 @@ module.exports = function (serverSvc) {
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships/:relUser',
         authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
         relCtrlExt.getChild);
+
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships/:relUser/friendships',
+        authCtrl.authorizeMethod(cb.extend({ isAdmin: true }, authCtrl.currentUserAndGuardian)),
+        relCtrlExt.getChildFriendships);
+
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships/:relUser/friendships/acknowledgement',
+        authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
+        relCtrlExt.acknowledgeChildFriendship);
+
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships/:relUser/friendships',
+        authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
+        relCtrlExt.addChildFriendship);
+
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/guardianships/:relUser/friendships',
+        authCtrl.authorizeMethod(cb.extend({ isAdmin: true }, authCtrl.currentUserAndGuardian)),
+        relCtrlExt.deactivateChildFriendship);
+
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships/:relUser/friendships/:relUser2',
+        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
+        relCtrlExt.getChildFriend);
 
 };
