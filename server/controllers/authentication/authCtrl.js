@@ -14,7 +14,6 @@ function authenticateMethod() {
 function authorizeMethod(opts) {
 
     opts = opts || {};
-
     return function (req, res, next) {
 
         var finalAuthorize = function (authorized) {
@@ -38,10 +37,10 @@ function authorizeMethod(opts) {
             if (!user) {
                 ctrlHelper.setUnauthorized(res);
             } else {
-
                 var requestedUser = (req.params && req.params.userName);
                 var authByRole = !opts.role || (user.hasRole(opts.role));
-                var authByUser = !opts.currentUser || (user.userName.toLowerCase() === requestedUser.toLowerCase());
+                var authByUser = !opts.currentUser || (user.userName.toLowerCase() === requestedUser.toLowerCase())
+                    && (opts.allowInactive || opts.currentUser.isActive);
                 var authByAdult = !opts.isAdult || (!user.isMinor);
 
                 var authorized = ((opts.op || 'and') === 'or')
@@ -50,7 +49,7 @@ function authorizeMethod(opts) {
 
                 if (opts.isGuardian) {
                     var targetChild = (req && req.params && req.params.relUser || '');
-                    userRelSvc.getRelationship([user.userName, targetChild])
+                    userRelSvc.getRelationship([user.userName, targetChild], { allowInactive: opts.allowInactive })
                         .then(function (rel) {
                             authorized = isValidGuardianRelationship(rel);
                             finalAuthorize(authorized);

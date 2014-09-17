@@ -34,14 +34,14 @@ function getRelationships(sourceUser, relationship, statuses) {
 
 }
 
-function getRelationship(userNames) {
-    var getUser = function (userName) {
-        return userSvc.getSingle(userName);
+function getRelationship(userNames, options) {
+    var getUser = function (userName, options) {
+        return userSvc.getSingle(userName, options);
     };
 
     if (userNames && Array.isArray(userNames) && userNames.length === 2 && userNames[0] && userNames[1]) {
 
-        return promise.all([getUser(userNames[0]), getUser(userNames[1])])
+        return promise.all([getUser(userNames[0], options), getUser(userNames[1], options)])
             .then(function (users) {
                 if (users && Array.isArray(users) && users.length === 2) {
                     if (!users[0] || !users[1]) return cb.Promise(null);

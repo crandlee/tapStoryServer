@@ -4,6 +4,7 @@ var cb = require('common-bundle')();
 var fileSystemUtility = cb.rootRequire('util-filesystem');
 var coreCtrl = cb.rootRequire('ctrl-core');
 var authCtrl = cb.rootRequire('ctrl-auth');
+var enums = cb.enums;
 
 //Central Repository for more specific routes
 
@@ -25,7 +26,7 @@ function initialize(serverSvc, fileSystemSvc) {
     });
 
     //Add core routes
-    serverSvc.addRoute('GET', '/',
+    serverSvc.addRoute(enums.routeMethods.GET, '/',
         authCtrl.authenticateMethod(),
         coreCtrl.core);
 

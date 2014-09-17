@@ -34,6 +34,34 @@ function saveUser(options) {
 
 }
 
+function deactivateUser(req, res, next) {
+
+    var userName = (req.params && req.params.userName);
+    if (!userName)
+        ctrlHelper.setBadRequest(res, 'Deactivating a user requires a source userName');
+
+    userSvc.deactivate(userName, {})
+        .then(_.partial(ctrlHelper.setOk, res))
+        .fail(_.partial(ctrlHelper.setInternalError, res))
+        .fin(next)
+        .done();
+
+}
+
+function activateUser(req, res, next) {
+
+    var userName = (req.params && req.params.userName);
+    if (!userName)
+        ctrlHelper.setBadRequest(res, 'Activating a user requires a source userName');
+
+    userSvc.activate(userName, {})
+        .then(_.partial(ctrlHelper.setOk, res))
+        .fail(_.partial(ctrlHelper.setInternalError, res))
+        .fin(next)
+        .done();
+
+}
+
 
 function getUser(req, res, next) {
 
@@ -194,6 +222,8 @@ module.exports = {
     saveUser: saveUser,
     getUser: getUser,
     getUsers: getUsers,
+    activateUser: activateUser,
+    deactivateUser: deactivateUser,
     addRole: addRole,
     removeRole: removeRole,
     getRoles: getRoles,

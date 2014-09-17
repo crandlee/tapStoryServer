@@ -136,11 +136,35 @@ function setRemoveRoleOptions(opts) {
 
 }
 
+function setIsActive(isActive, opts) {
+
+    opts.updateOnly = true;
+    opts.preValidation = function(opts) {
+        if (!opts.userName) errSvc.error('Setting user active state requires a userName');
+        return opts;
+    };
+    opts.modelName = 'User';
+    opts.find = { userName: opts.userName };
+    opts.manualSave = function(opts) {
+
+        return resSvc.modelUpdate({ "userName" : opts.userName },
+            { $set : { "isActive" : isActive } }, opts)
+            .then(function(user) {
+                return { isActive: user.isActive };
+            });
+
+    };
+    return opts;
+
+}
+
 module.exports = {
     setAddFileOptions: _.partial(setFileOptions, 'add'),
     setRemoveFileOptions: _.partial(setFileOptions, 'remove'),
     setAddRoleOptions: setAddRoleOptions,
     setRemoveRoleOptions: setRemoveRoleOptions,
     setRemoveFileGroupOptions: setRemoveFileGroupOptions,
-    setSaveUserOptions: saveUserOptions
+    setSaveUserOptions: saveUserOptions,
+    setActivateOptions: _.partial(setIsActive, true),
+    setDeactivateOptions: _.partial(setIsActive, false)
 };

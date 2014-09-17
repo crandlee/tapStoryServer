@@ -3,11 +3,8 @@ var cb = require('common-bundle')();
 var _ = cb._;
 
 var authCtrl = cb.rootRequire('ctrl-auth');
-var relCtrl = cb.rootRequire('ctrl-rel');
 var relCtrlExt = cb.rootRequire('ctrl-rel-ext');
-
-var userCtrl = cb.rootRequire('ctrl-user');
-var enums = cb.rootRequire('enums');
+var enums = cb.enums;
 
 module.exports = function (serverSvc) {
 
@@ -17,23 +14,23 @@ module.exports = function (serverSvc) {
     //Other adults can view pending friendship requests and can acknowledge them to make them active
     //Adults can view their active friendships and deactivate them at any time
 
-    serverSvc.addRoute('POST', '/users/:userName/friendships',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships',
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
         relCtrlExt.addFriendship);
 
-    serverSvc.addRoute('POST', '/users/:userName/friendships/acknowledgement',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships/acknowledgement',
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
         relCtrlExt.acknowledgeFriendship);
 
-    serverSvc.addRoute('DEL', '/users/:userName/friendships',
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/friendships',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         relCtrlExt.deactivateFriendship);
 
-    serverSvc.addRoute('GET', '/users/:userName/friendships',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/friendships',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         relCtrlExt.getFriendships);
 
-    serverSvc.addRoute('GET', '/users/:userName/friendships/:relUser',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/friendships/:relUser',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         relCtrlExt.getFriend);
 
@@ -46,19 +43,27 @@ module.exports = function (serverSvc) {
     //Guardians can deactivate friendships for their children.
     //Guardians can remove child accounts
 
-    serverSvc.addRoute('POST', '/users/:userName/guardianships',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships',
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
         relCtrlExt.addGuardianship);
 
-    serverSvc.addRoute('PUT', '/users/:userName/guardianships/:relUser',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships/:relUser/activation',
+        authCtrl.authorizeMethod(cb.extend({ allowInactive: true }, authCtrl.currentUserAndGuardian)),
+        relCtrlExt.activateChild);
+
+    serverSvc.addRoute(enums.routeMethods.PUT, '/users/:userName/guardianships/:relUser',
         authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
         relCtrlExt.updateChild);
 
-    serverSvc.addRoute('GET', '/users/:userName/guardianships',
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/guardianships/:relUser',
+        authCtrl.authorizeMethod(cb.extend({ allowInactive: true }, authCtrl.currentUserAndGuardian)),
+        relCtrlExt.deactivateChild);
+
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         relCtrlExt.getGuardianships);
 
-    serverSvc.addRoute('GET', '/users/:userName/guardianships/:relUser',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships/:relUser',
         authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
         relCtrlExt.getChild);
 

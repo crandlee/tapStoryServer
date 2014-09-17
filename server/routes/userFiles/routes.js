@@ -4,51 +4,52 @@ var cb = require('common-bundle')();
 var authCtrl = cb.rootRequire('ctrl-auth');
 var uploadsCtrl = cb.rootRequire('ctrl-uploads');
 var passport = require('passport');
+var enums = cb.enums;
 
 module.exports = function (serverSvc) {
 
 
     //Files/Filegroups
-    serverSvc.addRoute('GET', '/users/:userName/fileHelper',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileHelper',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.getUploadsScreen);
 
-    serverSvc.addRoute('GET', '/users/:userName/fileGroups',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.getFileGroups);
 
-    serverSvc.addRoute('POST', '/users/:userName/fileGroups',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/fileGroups',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.upload);
 
-    serverSvc.addRoute('DEL', '/users/:userName/fileGroups',
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/fileGroups',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.removeFileGroup);
 
-    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.getFileGroups);
 
 
-    serverSvc.addRoute('POST', '/users/:userName/fileGroups/:groupId/files',
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/fileGroups/:groupId/files',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.upload);
 
-    serverSvc.addRoute('DEL', '/users/:userName/fileGroups/:groupId/files',
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/fileGroups/:groupId/files',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.removeFile);
 
 
-    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/fileHelper',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/fileHelper',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.getUploadsScreen);
 
 
-    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/files',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/files',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.downloadFiles);
 
-    serverSvc.addRoute('GET', '/users/:userName/fileGroups/:groupId/:fileName',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/:fileName',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         uploadsCtrl.downloadFiles);
 

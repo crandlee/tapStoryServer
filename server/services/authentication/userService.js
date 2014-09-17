@@ -51,15 +51,35 @@ function removeFileGroup(userName, groupId, options) {
 
 }
 
+function deactivate(userName, options) {
+
+    return resSvc.processDocumentSave(
+        { userName: userName },
+        userSvcOptions.setDeactivateOptions, options);
+}
+
+function activate(userName, options) {
+
+    return resSvc.processDocumentSave(
+        { userName: userName },
+        userSvcOptions.setActivateOptions, options);
+
+}
+
 function getList(find, options) {
 
+    find = cb.extend(find, { isActive: true });
     return resSvc.getList(cb.extend(options, { modelName: 'User', find: find }));
 
 }
 
 function getSingle(userName, options) {
 
-    return resSvc.getSingle(cb.extend(options, { modelName: 'User', find: {userName: userName} }));
+    options = options || {};
+    var find = { userName: userName };
+    if (!options.allowInactive) find.isActive = true;
+
+    return resSvc.getSingle(cb.extend(options, { modelName: 'User', find: find }));
 
 }
 
@@ -131,6 +151,8 @@ module.exports = {
     save: save,
     getSingle: getSingle,
     getList: getList,
+    activate: activate,
+    deactivate: deactivate,
     addRole: addRole,
     removeRole: removeRole,
     addFiles: addFiles,

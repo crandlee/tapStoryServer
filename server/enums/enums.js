@@ -20,6 +20,12 @@ module.exports = {
         forbidden: 403,
         notFound: 404,
         internalError: 500
+    }),
+    routeMethods: Object.freeze({
+       GET: 'GET',
+       PUT: 'PUT',
+       POST: 'POST',
+       DEL: 'DEL'
     })
 };
 

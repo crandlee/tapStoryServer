@@ -4,3 +4,11 @@
   Add ability for resourceSvc to bubble up whether a resource was added/updated.
   Add JsDoc markup for everything
   API Versioning
+  Logging history of data changes
+  API Keys for valid clients of api
+
+
+Questions for Owen:
+- What data needs to be on a user
+- What is the best way to communicate specific errors
+- How should we verify that a user is actually an adult (coming from iOS)

@@ -19,6 +19,7 @@ var schema = mongoose.Schema({
         unique: true
     },
     isMinor: {type: Boolean, default: false},
+    isActive: {type: Boolean, default: true},
     userSecret: {type: String, required: '{PATH} is required!'},
     roles: [{ type: String, lowercase: true}],
     fileGroups: [

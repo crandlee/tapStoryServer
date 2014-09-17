@@ -25,6 +25,8 @@ module.exports = {
     getChild: userCtrl.getUser,
     updateChild: function(req, res, next) {
       return relCtrl.updateSubordinate(enums.relationships.child, req, res, next);
-    }
+    },
+    deactivateChild: relCtrl.deactivateSubordinate,
+    activateChild: relCtrl.activateSubordinate
 
 };

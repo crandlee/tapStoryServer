@@ -8,6 +8,35 @@ var userSvc = cb.rootRequire('svc-user');
 var enums = cb.rootRequire('enums');
 var ctrlHelper = cb.rootRequire('ctrl-helper');
 
+
+function activateSubordinate(req, res, next) {
+
+    var userName = (req.params && req.params.relUser);
+    if (!userName)
+        ctrlHelper.setBadRequest(res, 'Activating a subordinate requires a target relUser');
+
+    userSvc.activate(userName)
+        .then(_.partial(ctrlHelper.setOk, res))
+        .fail(_.partial(ctrlHelper.setInternalError, res))
+        .fin(next)
+        .done();
+
+}
+
+function deactivateSubordinate(req, res, next) {
+
+    var userName = (req.params && req.params.relUser);
+    if (!userName)
+        ctrlHelper.setBadRequest(res, 'Deactivating a subordinate requires a target relUser');
+
+    userSvc.deactivate(userName)
+        .then(_.partial(ctrlHelper.setOk, res))
+        .fail(_.partial(ctrlHelper.setInternalError, res))
+        .fin(next)
+        .done();
+
+}
+
 function updateSubordinate(targetRel, req, res, next) {
 
     var sourceUserName = (req.params && req.params.userName);
@@ -124,5 +153,7 @@ function getRelationshipLinks(relationship, req, relsVm) {
 module.exports = {
     saveRelationship: saveRelationship,
     getRelationships: getRelationships,
-    updateSubordinate: updateSubordinate
+    updateSubordinate: updateSubordinate,
+    deactivateSubordinate: deactivateSubordinate,
+    activateSubordinate: activateSubordinate
 };
