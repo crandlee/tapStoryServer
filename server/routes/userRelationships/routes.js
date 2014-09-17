@@ -59,7 +59,7 @@ module.exports = function (serverSvc) {
         relCtrlExt.getGuardianships);
 
     serverSvc.addRoute('GET', '/users/:userName/guardianships/:relUser',
-        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
+        authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
         relCtrlExt.getChild);
 
 };

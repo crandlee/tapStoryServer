@@ -34,6 +34,9 @@ module.exports = {
     setInternalError: function(res, data) {
         var msg = (data && data.message || data);
         sendStatusAndData(res, enums.httpStatusCodes.internalError, msg);
+    },
+    setCreated: function(res, data) {
+        sendStatusAndData(res, enums.httpStatusCodes.created, data);
     }
 
 };

@@ -4,26 +4,23 @@ var _ = cb._;
 var uploads =  cb.rootRequire('svc-uploads');
 var linkSvc = cb.rootRequire('svc-link');
 var Encoder = require('node-html-encoder').Encoder;
-
+var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function upload(req, res, next) {
 
     var groupName = (req.body && req.body.groupName);
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    if (!userName) { res.status(400); res.end('Uploading a file requires a userName'); }
-    if (!groupId && !groupName) if (!userName) { res.status(400); res.end('Uploading a file/files requires either a groupName or a groupId'); }
+    if (!userName) ctrlHelper.setBadRequest('Uploading a file requires a userName');
+    if (!groupId && !groupName)
+        ctrlHelper.setBadRequest('Uploading a file/files requires either a groupName or a groupId');
     if (userName && (groupId || groupName)) {
         uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
             .then(function () {
-                res.status(200);
-                res.end();
+                ctrlHelper.setOk(res);
             })
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
     } else {
         return next();
@@ -36,13 +33,14 @@ function getUploadsScreen(req, res, next) {
     var fileGroup = (req.params && req.params.groupId);
     var multiple = !fileGroup;
 
-    if (!userName) { res.status(400); res.end('The fileHelper requires a userName'); }
-
-    if (userName) {
-        res.end(getUploadsHtml(userName, cb.config.baseUri, multiple, fileGroup));
-    } else {
+    if (!userName) {
+        ctrlHelper.setBadRequest('The fileHelper requires a userName');
         return next();
+    } else {
+        ctrlHelper.setOk(res, getUploadsHtml(userName, cb.config.baseUri, multiple, fileGroup));
     }
+
+
 
 }
 
@@ -53,30 +51,27 @@ function getFileGroups(req, res, next) {
     var groupId = (req.params && req.params.groupId);
     var apiPath = req.path();
 
-    if (!userName) { res.status(400); res.end('Getting fileGroups requires a userName'); }
-
-    if (userName) {
+    if (!userName)  {
+        ctrlHelper.setBadRequest(res, 'Getting fileGroups requires a userName');
+        return next();
+    } else {
+        
         uploads.getFileGroups(userName, { groupId: groupId, apiPath: apiPath })
             .then(function(fileGroups) {
-                var obj =  { fileGroups: fileGroups } ;
-                obj.fileGroups = obj.fileGroups.map(_.partial(getFileGroupTopLevelLinks, groupId, apiPath));
+                var fgWrapper =  { fileGroups: fileGroups } ;
+                fgWrapper.fileGroups = fgWrapper.fileGroups.map(_.partial(getFileGroupTopLevelLinks, groupId, apiPath));
                 if (!groupId) {
-                    obj = linkSvc.attachLinksToObject(obj, [
+                    fgWrapper = linkSvc.attachLinksToObject(fgWrapper, [
                         { uri: '', method: "DELETE", rel: "fileGroup"}
                     ], req.path());
                 }
-                res.send(200, obj);
+                ctrlHelper.setOk(res, fgWrapper)
             })
-            .fail(function(err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
-    } else {
-        return next();
-    }
-
+        
+    }        
 
 }
 
@@ -134,20 +129,16 @@ function removeFileGroup(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.body && req.body.groupId);
     var options = {};
-    if (!userName) { res.status(400); res.end('Removing a fileGroup requires a userName'); }
-    if (!groupId) { res.status(400); res.end('Removing a fileGroup requires a groupId'); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Removing a fileGroup requires a userName');
+    if (!groupId) ctrlHelper.setBadRequest(res, 'Removing a fileGroup requires a groupId');
 
     if (userName && groupId) {
         uploads.removeFileGroup(userName, groupId, options)
             .then(function () {
-                res.status(200);
-                res.end();
+                ctrlHelper.setOk(res);
             })
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
     } else {
         return next();
@@ -160,20 +151,17 @@ function removeFile(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
     var fileName = (req.body && req.body.fileName);
-    if (!userName) { res.status(400); res.end('Removing a file requires a userName'); }
-    if (!groupId) { res.status(400); res.end('Removing a file requires a groupId'); }
-    if (!fileName) { res.status(400); res.end('Removing a file requires a fileName'); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Removing a file requires a userName');
+    if (!groupId) ctrlHelper.setBadRequest(res, 'Removing a file requires a groupId');
+    if (!fileName) ctrlHelper.setBadRequest(res, 'Removing a file requires a fileName');
 
     if (userName && groupId && fileName) {
         uploads.removeFile(userName, groupId, fileName)
             .then(function (groups) {
-                res.send(200, groups);
+                ctrlHelper.setOk(res, groups);
             })
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
     } else {
         return next();
@@ -195,17 +183,14 @@ function downloadFiles(req, res, next) {
         res.end();
     };
     var currentUser = req.user;
-    if (!userName) { res.status(400); res.end('Downloading requires a userName'); }
-    if (!groupId) { res.status(400); res.end('Downloading requires a groupId'); }
-    if (!currentUser) { res.status(400); res.end('Downloading requires a currently logged in user'); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Downloading requires a userName');
+    if (!groupId) ctrlHelper.setBadRequest(res, 'Downloading requires a groupId');
+    if (!currentUser) ctrlHelper.setBadRequest(res, 'Downloading requires a currently logged in user');
 
     if (userName && groupId && currentUser) {
         uploads.downloadFiles(currentUser, groupId, fileName, sendDownload)
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
     } else {
         return next();

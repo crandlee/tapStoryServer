@@ -6,6 +6,7 @@ var errSvc = cb.errSvc;
 var userSvc = cb.rootRequire('svc-user');
 var userRelSvc = cb.rootRequire('svc-rel');
 var linkSvc = cb.rootRequire('svc-link');
+var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function saveUser(options) {
 
@@ -13,24 +14,20 @@ function saveUser(options) {
     return function (req, res, next) {
 
         if (!req.body || Object.getOwnPropertyNames(req.body).length === 0) {
-            res.status(400);
-            res.end('No request body');
-            return next();
+            ctrlHelper.setBadRequest(res, 'No request body');
+            next();
         } else {
             userSvc.save({addOnly: addOnly}, req.body)
                 .then(function (user) {
                     if (!user) {
-                        res.status(404);
-                        res.end('No user returned from operation');
+                        ctrlHelper.setNotFound(res, 'No user returned from the operation');
                     } else {
-                        res.send((addOnly ? 201 : 200), user.viewModel('user', req.path()));
+                        (addOnly ? ctrlHelper.setCreated: ctrlHelper.setOk)
+                            (res, user.viewModel('user', req.path()))
                     }
                 })
-                .fail(function (err) {
-                    res.status(500);
-                    res.end(err.message);
-                })
-                .fin(function() { return next(); })
+                .fail(_.partial(ctrlHelper.setInternalError, res))
+                .fin(next)
                 .done();
         }
     };
@@ -46,47 +43,46 @@ function getUser(req, res, next) {
     var userName = (req.params && (req.params.userName));
     var shouldHideLinks = !!relUser;
 
-    function retrieveUserAndHandleResult(userName, shouldHideLinks, res, next) {
+    var getUserWithRelatedUserBehavior = function(sourceUser, relUser, shouldHideLinks, res, next) {
 
-        //If this came in as a target user, verify against the target user through
-        if (!userName) { res.status(400); res.end('Getting a user requires a userName'); }
-        if (userName) {
-            userSvc.getSingle(userName)
-                .then(function (user) {
-                    if (!user) {
-                        res.status(404);
-                        res.end('No user found for this criteria');
+        if (relUser) {
+            return userRelSvc.canViewRelationshipUser(sourceUser, relUser, shouldHideLinks)
+                .then(function(canView) {
+                    if (canView) {
+                        return retrieveUserAndHandleResult(relUser, shouldHideLinks, res, next);
+                    } else {
+                        ctrlHelper.setForbidden(res, 'Cannot view a user with which you have no active relationship');
+                        next();
                     }
-                    res.send(200, user.viewModel('user', req.path(), { hideLinks: shouldHideLinks }));
                 })
-                .fail(function (err) {
-                    res.status(500);
-                    res.end(err.message);
-                })
-                .fin(function() { return next(); })
-                .done();
-
         } else {
-            return next();
+            return retrieveUserAndHandleResult(sourceUser, shouldHideLinks, res, next);
         }
 
-    }
+    };
 
-    if (relUser) {
-        return userRelSvc.canViewRelationshipUser(userName, relUser)
-            .then(function(canView) {
-                if (canView) {
-                    return retrieveUserAndHandleResult
-                        (relUser, shouldHideLinks, res, next);
-                } else {
-                    res.status(403);
-                    res.end('Cannot view a user with which you have no active relationship');
-                }
-            })
-    } else {
-        return retrieveUserAndHandleResult
-            (userName, shouldHideLinks, res, next);
-    }
+    var retrieveUserAndHandleResult = function(userName, shouldHideLinks, res, next) {
+
+        //If this came in as a target user, verify against the target user through
+        if (!userName) {
+            ctrlHelper.setBadRequest(res, 'Getting a user requires a userName');
+            next();
+        } else {
+            userSvc.getSingle(userName)
+                .then(function (user) {
+                    if (!user)
+                        ctrlHelper.setBadRequest(res, 'No user found for this criteria');
+                    else
+                        ctrlHelper.setOk(res, user.viewModel('user', req.path(), { hideLinks: shouldHideLinks }));
+                })
+                .fail(_.partial(ctrlHelper.setInternalError, res))
+                .fin(next)
+                .done();
+        }
+
+    };
+
+    getUserWithRelatedUserBehavior(userName, relUser, shouldHideLinks, res, next);
 
 }
 
@@ -95,8 +91,7 @@ function getUsers(req, res, next) {
     userSvc.getList({})
         .then(function (users) {
             if (!users || users.length === 0) {
-                res.status(404);
-                res.end('No users found');
+                ctrlHelper.setNotFound(res, 'No users found');
             } else {
                 users = { users: users.map(function (user) {
                     return user.viewModel('users', req.path());
@@ -104,14 +99,11 @@ function getUsers(req, res, next) {
                 users = linkSvc.attachLinksToObject(users, [
                     { uri: '', rel: 'user', method: 'POST'}
                 ], req.path());
-                res.send(200, users);
+                ctrlHelper.setOk(res, users);
             }
         })
-        .fail(function (err) {
-            res.status(500);
-            res.end(err.message);
-        })
-        .fin(function() { return next(); })
+        .fail(_.partial(ctrlHelper.setInternalError, res))
+        .fin(next)
         .done();
 
 }
@@ -121,19 +113,19 @@ function addRole(req, res, next) {
     var userName = (req.params && req.params.userName);
     var role = (req.body && req.body.role);
 
-    if (!userName) { res.status(400); res.end('Adding a role requires a userName'); }
-    if (!role) { res.status(400); res.end('Adding a role requires a role'); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Adding a role requires a userName');
+    if (!role) ctrlHelper.setBadRequest(res, 'Adding a role requires a role');
 
     if (userName && role) {
         userSvc.addRole(userName, role)
             .then(function (user) {
-                res.send(201, { roles: user.roles });
+                ctrlHelper.setCreated(res, { roles: user.roles });
             })
             .fail(function (err) {
-                res.status(errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
-                res.end(err.message);
+                (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
+                    (res, err.message);
             })
-            .fin(function() { return next(); })
+            .fin(next)
             .done();
     } else {
         return next();
@@ -145,19 +137,19 @@ function removeRole(req, res, next) {
     var userName = (req.params && req.params.userName);
     var role = (req.body && req.body.role);
 
-    if (!userName) { res.status(400); res.end('Removing a role requires a userName'); }
-    if (!role) { res.status(400); res.end('Removing a role requires a role'); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Removing a role requires a userName');
+    if (!role) ctrlHelper.setBadRequest(res, 'Removing a role requires a role');
 
     if (userName && role) {
         userSvc.removeRole(userName, role)
             .then(function (user) {
-                res.send(200, { roles: user.roles });
+                ctrlHelper.setOk(res, { roles: user.roles });
             })
             .fail(function (err) {
-                res.status(errSvc.checkErrorCode(err, "E1002") ? 400 : 500);
-                res.end(err.message);
+                (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
+                    (res, err.message);
             })
-            .fin(function() { return next(); })
+            .fin(next)
             .done();
     } else {
         return next();
@@ -168,25 +160,23 @@ function removeRole(req, res, next) {
 function getRoles(req, res, next) {
 
     var userName = (req.params && req.params.userName);
-    if (!userName) { res.status(400); res.end("Getting roles requires a userName"); }
+    if (!userName) ctrlHelper.setBadRequest(res, 'Getting roles requires a userName');
+
     if (userName) {
+
         userSvc.getSingle(userName)
             .then(function (user) {
                 if (!user) {
-                    res.status(404);
-                    res.end('Cannot find requested user');
+                    ctrlHelper.setNotFound(res, 'Cannot find requested user');
                 } else {
                     var roles = linkSvc.attachLinksToObject({ roles: user.roles },
                         [{ uri: '', rel: 'role', method: 'POST'}, { uri: '', rel: 'role', method: 'DELETE'}],
                             req.path());
-                    res.send(200, roles);
+                    ctrlHelper.setOk(res, roles);
                 }
             })
-            .fail(function (err) {
-                res.status(500);
-                res.end(err.message);
-            })
-            .fin(function() { return next(); })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
             .done();
 
     } else {

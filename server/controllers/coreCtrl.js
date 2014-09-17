@@ -2,8 +2,8 @@
 var cb = require('common-bundle')();
 var _ = cb._;
 var errSvc = cb.errSvc;
-
 var linkSvc = cb.rootRequire('svc-link');
+var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function core(req, res, next) {
 
@@ -11,7 +11,7 @@ function core(req, res, next) {
     var obj = linkSvc.attachLinksToObject({}, [
         { uri: '/users', rel: 'users'}
     ], req.path());
-    res.send(200, obj);
+    ctrlHelper.setOk(res, obj);
 
     return next();
 

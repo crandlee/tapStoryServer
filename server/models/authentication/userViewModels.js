@@ -8,6 +8,7 @@ function getBaseUserVm(userDoc) {
         firstName: userDoc.firstName,
         lastName: userDoc.lastName,
         userName: userDoc.userName,
+        isMinor: !!userDoc.isMinor,
         roles: userDoc.roles
     };
 }
