@@ -22,6 +22,9 @@ module.exports = {
         { rel: enums.relationships.guardian, status: enums.statuses.active},
         { rel: enums.relationships.child, status: enums.statuses.active}, { addSubordinate: true }),
     getGuardianships: _.partial(relCtrl.getRelationships, enums.relationships.guardian),
-    getChild: userCtrl.getUser
+    getChild: userCtrl.getUser,
+    updateChild: function(req, res, next) {
+      return relCtrl.updateSubordinate(enums.relationships.child, req, res, next);
+    }
 
 };

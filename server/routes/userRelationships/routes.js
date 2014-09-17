@@ -50,6 +50,10 @@ module.exports = function (serverSvc) {
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
         relCtrlExt.addGuardianship);
 
+    serverSvc.addRoute('PUT', '/users/:userName/guardianships/:relUser',
+        authCtrl.authorizeMethod(authCtrl.currentUserAndGuardian),
+        relCtrlExt.updateChild);
+
     serverSvc.addRoute('GET', '/users/:userName/guardianships',
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
         relCtrlExt.getGuardianships);

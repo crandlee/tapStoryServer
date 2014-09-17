@@ -2,7 +2,10 @@
 
 var cb = require('common-bundle')();
 var authSvc = cb.rootRequire('svc-passport');
-
+var userRelSvc = cb.rootRequire('svc-rel');
+var ctrlHelper = cb.rootRequire('ctrl-helper');
+var _ = cb._;
+var enums = cb.rootRequire('enums');
 
 function authenticateMethod() {
     return authSvc.authenticateMethod();
@@ -14,27 +17,50 @@ function authorizeMethod(opts) {
 
     return function (req, res, next) {
 
-        var afterAuthenticate = function() {
+        var finalAuthorize = function (authorized) {
+            if (!authorized)
+                ctrlHelper.setForbidden(res, 'Current user is not authorized to view or operate on this resource');
+        };
+
+        var isValidGuardianRelationship = function (rel) {
+
+            if (rel && rel.participants && rel.participants.length === 2) {
+                return _.every(rel.participants, function (p) {
+                    return (p.status && p.status === enums.statuses.active) &&
+                        (p.rel && _.indexOf([enums.relationships.guardian, enums.relationships.child], p.rel) > -1);
+                });
+            }
+
+        };
+
+        var afterAuthenticate = function () {
             var user = req.user;
             if (!user) {
-                res.status(401);
-                res.end();
+                ctrlHelper.setUnauthorized(res);
             } else {
+
                 var requestedUser = (req.params && req.params.userName);
                 var authByRole = !opts.role || (user.hasRole(opts.role));
                 var authByUser = !opts.currentUser || (user.userName.toLowerCase() === requestedUser.toLowerCase());
+                var authByAdult = !opts.isAdult || (!user.isMinor);
+
                 var authorized = ((opts.op || 'and') === 'or')
-                    ? (authByRole || authByUser)
-                    : (authByRole && authByUser);
+                    ? (authByAdult || authByRole || authByUser)
+                    : (authByAdult || authByRole && authByUser);
 
-                if (opts.isAdult) authorized = (!user.isMinor);
-
-                if (authorized) {
-                    return next();
+                if (opts.isGuardian) {
+                    var targetChild = (req && req.params && req.params.relUser || '');
+                    userRelSvc.getRelationship([user.userName, targetChild])
+                        .then(function (rel) {
+                            authorized = isValidGuardianRelationship(rel);
+                            finalAuthorize(authorized);
+                        })
+                        .fin(next);
                 } else {
-                    res.status(403);
-                    res.end('Current user is not authorized to view or operate on this resource');
+                    finalAuthorize(authorized);
+                    next();
                 }
+
 
             }
 
@@ -56,5 +82,6 @@ module.exports = {
     superAdmin: { role: ['super-admin'], isAdult: true },
     adminRolesOrCurrent: { currentUser: true, role: ['admin', 'super-admin'], op: 'or', isAdult: true },
     currentUserAndAdult: { currentUser: true, isAdult: true },
+    currentUserAndGuardian: { currentUser: true, isAdult: true, isGuardian: true },
     currentUser: { currentUser: true }
 };

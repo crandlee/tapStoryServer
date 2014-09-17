@@ -35,7 +35,6 @@ function getRelationships(sourceUser, relationship, statuses) {
 }
 
 function getRelationship(userNames) {
-
     var getUser = function (userName) {
         return userSvc.getSingle(userName);
     };
@@ -44,7 +43,8 @@ function getRelationship(userNames) {
 
         return promise.all([getUser(userNames[0]), getUser(userNames[1])])
             .then(function (users) {
-                if (users && Array.isArray(users) && users.length === 2 && users[0] && users[1]) {
+                if (users && Array.isArray(users) && users.length === 2) {
+                    if (!users[0] || !users[1]) return cb.Promise(null);
                     var find = { "participants.user" : { $all : [ users[0]._id, users[1]._id] } };
                     return resSvc.getSingle({ find: find, model: 'UserRelationship'  });
                 } else {
@@ -79,6 +79,7 @@ function canViewRelationshipUser(sourceUserName, relUserName) {
 module.exports = {
     saveRelationship: promise.fbind(saveRelationship),
     getRelationships: getRelationships,
+    getRelationship: getRelationship,
     canViewRelationshipUser: canViewRelationshipUser,
     getRelKey: getRelKey
 };
