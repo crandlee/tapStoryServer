@@ -4,6 +4,8 @@ var _ = cb._;
 
 var authCtrl = cb.rootRequire('ctrl-auth');
 var relCtrl = cb.rootRequire('ctrl-rel');
+var relCtrlExt = cb.rootRequire('ctrl-rel-ext');
+
 var userCtrl = cb.rootRequire('ctrl-user');
 var enums = cb.rootRequire('enums');
 
@@ -16,36 +18,24 @@ module.exports = function (serverSvc) {
     //Adults can view their active friendships and deactivate them at any time
 
     serverSvc.addRoute('POST', '/users/:userName/friendships',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
-        _.partial(relCtrl.saveRelationship,
-            { rel: enums.relationships.friend, status: enums.statuses.pending},
-            { rel: enums.relationships.friend, status: enums.statuses.pendingack}, {}));
+        relCtrlExt.addFriendship);
 
     serverSvc.addRoute('POST', '/users/:userName/friendships/acknowledgement',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
-        _.partial(relCtrl.saveRelationship,
-            { rel: enums.relationships.friend, status: enums.statuses.active},
-            { rel: enums.relationships.friend, status: enums.statuses.active}, {updateOnly: true}));
+        relCtrlExt.acknowledgeFriendship);
 
     serverSvc.addRoute('DEL', '/users/:userName/friendships',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        _.partial(relCtrl.saveRelationship,
-            { rel: enums.relationships.friend, status: enums.statuses.inactive},
-            { rel: enums.relationships.friend, status: enums.statuses.inactive}, {}));
+        relCtrlExt.deactivateFriendship);
 
     serverSvc.addRoute('GET', '/users/:userName/friendships',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        _.partial(relCtrl.getRelationships, enums.relationships.friend));
+        relCtrlExt.getFriendships);
 
     serverSvc.addRoute('GET', '/users/:userName/friendships/:relUser',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        userCtrl.getUser);
-
+        relCtrlExt.getFriend);
 
 
     //Guardian
@@ -57,22 +47,15 @@ module.exports = function (serverSvc) {
     //Guardians can remove child accounts
 
     serverSvc.addRoute('POST', '/users/:userName/guardianships',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.currentUserAndAdult),
-        _.partial(relCtrl.saveRelationship,
-            { rel: enums.relationships.guardian, status: enums.statuses.active},
-            { rel: enums.relationships.child, status: enums.statuses.active}, { addSubordinate: true }));
+        relCtrlExt.addGuardianship);
 
     serverSvc.addRoute('GET', '/users/:userName/guardianships',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        _.partial(relCtrl.getRelationships, enums.relationships.guardian));
+        relCtrlExt.getGuardianships);
 
     serverSvc.addRoute('GET', '/users/:userName/guardianships/:relUser',
-        authCtrl.authenticateMethod(),
         authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
-        userCtrl.getUser);
-
-
+        relCtrlExt.getChild);
 
 };

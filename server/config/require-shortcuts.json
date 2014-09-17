@@ -5,6 +5,7 @@
     { "k":"ctrl-auth", "v": "controllers/authentication/authCtrl" },
     { "k":"ctrl-user", "v": "controllers/authentication/userCtrl" },
     { "k":"ctrl-rel", "v": "controllers/userRelationships/relCtrl" },
+    { "k":"ctrl-rel-ext", "v": "controllers/userRelationships/relCtrlExt" },
     { "k":"ctrl-uploads", "v": "controllers/userFiles/uploadsCtrl" },
     { "k":"enums", "v": "enums/enums" },
     { "k":"route-root", "v": "routes/routes" },
