@@ -17,6 +17,8 @@ function saveUser(options) {
             ctrlHelper.setBadRequest(res, 'No request body');
             next();
         } else {
+            //query param overrides userName in body
+            if (req.params.userName) req.body.userName = req.params.userName;
             userSvc.save({addOnly: addOnly}, req.body)
                 .then(function (user) {
                     if (!user) {

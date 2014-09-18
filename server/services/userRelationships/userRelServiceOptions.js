@@ -3,7 +3,7 @@ var cb = require('common-bundle')();
 var _ = cb._;
 var errSvc = cb.errSvc;
 var promise = cb.Promise;
-
+var enums = cb.enums;
 var resSvc = cb.rootRequire('svc-resource');
 
 function setSaveRelationshipOptions(opts) {
@@ -41,8 +41,8 @@ function setSaveRelationshipOptions(opts) {
             var changes = {};
 
             var noRevertActiveFriendToPending = function(reqData, prevData) {
-                if (reqData.rel === 'friend' && _.indexOf(['pending', 'pendingack'], reqData.status) > -1) {
-                    if (!prevData.status || prevData.status === 'inactive')
+                if (reqData.rel === enums.relationships.friend && _.indexOf([enums.statuses.pending, enums.statuses.pendingack], reqData.status) > -1) {
+                    if (!prevData.status || prevData.status === enums.statuses.inactive)
                         return [reqData.status, {}];
                     else
                         return [prevData.status, {}];
@@ -50,12 +50,12 @@ function setSaveRelationshipOptions(opts) {
             };
             var allowAckOfPendingFriendshipIfPendingAck = function(reqData, prevData, isSourceUser) {
 
-                if (reqData.rel === 'friend' && reqData.status === 'active') {
+                if (reqData.rel === enums.relationships.friend && reqData.status === enums.statuses.active) {
 
-                    if(prevData.status === 'pending' && isSourceUser)
+                    if(prevData.status === enums.statuses.pending && isSourceUser)
                         errSvc.error('The user who requested the friendship cannot acknowledge it');
 
-                    if (prevData.status === 'pendingack' && isSourceUser) {
+                    if (prevData.status === enums.statuses.pendingack && isSourceUser) {
                         return [reqData.status, { acknowledgement: true }];
                     } else {
                         return [prevData.status, {}];
@@ -64,7 +64,7 @@ function setSaveRelationshipOptions(opts) {
 
             };
             var noNonFriendRelationshipsCanBePending = function(reqData, prevData) {
-                if (reqData.rel !== 'friend' && _.indexOf(['pending','pendingack'], reqData.status) > -1) {
+                if (reqData.rel !== enums.relationships.friend && _.indexOf([enums.statuses.pending, enums.statuses.pendingack], reqData.status) > -1) {
                     return [prevData.status, {}];
                 }
             };
@@ -93,8 +93,8 @@ function setSaveRelationshipOptions(opts) {
         opts.participants[1].status = ret[0]; changes[1] = ret[1];
 
         //Set other participant to active if there was an acknowledgement
-        if (changes[0].acknowledgement) opts.participants[1].status = 'active';
-        if (changes[1].acknowledgement) opts.participants[0].status = 'active';
+        if (changes[0].acknowledgement) opts.participants[1].status = enums.statuses.active;
+        if (changes[1].acknowledgement) opts.participants[0].status = enums.statuses.active;
 
         document.participants = opts.participants;
 

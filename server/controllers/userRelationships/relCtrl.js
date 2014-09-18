@@ -45,8 +45,8 @@ function updateSubordinate(targetRel, req, res, next) {
 
     req.body.userName = req.params.relUser;
     saveSubordinate(req.body || {}, targetRel, { updateOnly: true })
-        .then(function(userName) {
-            if (!userName) {
+        .then(function(user) {
+            if (!user) {
                 ctrlHelper.setInternalError(res, 'An unexpected error occurred. Subordinate save was not properly completed');
             } else {
                 ctrlHelper.setOk(res);
@@ -65,40 +65,47 @@ function saveSubordinate(dataBody, targetRelationship, options) {
     return userSvc.save(dataBody, options)
         .then(function(user) {
             if (!user) errSvc.error("No subordinate user added", { userName: (dataBody && dataBody.userName)});
-            return cb.Promise(user.userName);
+            return cb.Promise(user);
         });
 
 }
 
 function saveRelationship(srcRel, targetRel, options, req, res, next) {
 
+    var needsSubordinate = cb.Promise.fbind(function(targetUser, srcRel) {
+        if (srcRel.rel !== enums.relationships.guardian) return false;
+        return !targetUser || targetUser.isMinor;
+    });
+
     options = options || {};
     var sourceUserName = (req.params && req.params.userName);
     var targetUserName = (req.body && req.body.userName);
     if (!sourceUserName)
         ctrlHelper.setBadRequest(res, 'Adding a relationship requires a source userName');
-    if (!targetUserName && !options.addSubordinate)
+    if (!targetUserName)
         ctrlHelper.setBadRequest(res, 'Adding a relationship requires a target userName');
     if (!srcRel || typeof srcRel !== 'object')
         ctrlHelper.setBadRequest(res, 'Adding a relationship requires a source relationship');
     if (!targetRel || typeof targetRel !== 'object')
         ctrlHelper.setBadRequest(res, 'Adding a relationship requires a target relationship');
 
-    //Allows a user to override operation for a subordinate
-    if (req.params && req.params.relUser) sourceUserName = req.params.relUser;
-
     if (sourceUserName && targetUserName && srcRel && targetRel) {
-
         srcRel.user = sourceUserName;
-        (options.addSubordinate ? saveSubordinate(req.body || {}, targetRel.rel, {addOnly: true}) : cb.Promise(targetUserName))
-            .then(function(userName) {
-                targetRel.user = userName;
-                userRelSvc.saveRelationship(srcRel, targetRel, options)
-                    .then(_.partial(ctrlHelper.setOk, res))
-                    .fail(_.partial(ctrlHelper.setInternalError, res))
-                    .fin(next)
-                    .done();
-            }).fail(_.partial(ctrlHelper.setInternalError, res));
+        return userSvc.getSingle(targetUserName)
+            .then(function(targetUser) {
+                (needsSubordinate(targetUser, srcRel)
+                    ? saveSubordinate(req.body || {}, targetRel.rel, {addOnly: true})
+                    : cb.Promise(targetUser))
+                        .then(function(user) {
+
+                            targetRel.user = user.userName;
+                            userRelSvc.saveRelationship(srcRel, targetRel, options)
+                                .then(_.partial(ctrlHelper.setOk, res))
+                                .fail(_.partial(ctrlHelper.setInternalError, res))
+                                .fin(next)
+                                .done();
+                        }).fail(_.partial(ctrlHelper.setInternalError, res));
+            })
 
     } else {
         return next();

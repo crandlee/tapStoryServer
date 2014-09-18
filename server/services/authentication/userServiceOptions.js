@@ -12,8 +12,10 @@ function saveUserOptions(opts) {
 
     opts.preValidation = function(opts, document) {
         if (!(!!document)) {
-            if (!opts.userName) errSvc.error('Adding a user requires userName');
-            if (!opts.password) errSvc.error('Adding a user requires a password');
+            if (!opts.userName) errSvc.error('Saving a user requires user name');
+            if (!opts.password) errSvc.error('Saving a user requires a password');
+            if (!opts.firstName) errSvc.error('Saving a user requires a first name');
+            if (!opts.lastName) errSvc.error('Saving a user requires a last name');
         }
         return opts;
     };
@@ -27,7 +29,7 @@ function saveUserOptions(opts) {
         if (opts.firstName) doc.firstName = opts.firstName;
         if (opts.lastName) doc.lastName = opts.lastName;
         if (opts.isMinor) doc.isMinor = opts.isMinor;
-        doc.userName = opts.userName;
+        if (!doc.userName) doc.userName = opts.userName;
         if (opts.password && opts.password.length > 0) {
             return encryptionSvc.saltAndHash(opts.password).then(function (token) {
                 doc.userSecret = token;

@@ -20,24 +20,10 @@ module.exports = {
     getFriend: userCtrl.getUser,
     addGuardianship: _.partial(relCtrl.saveRelationship,
         { rel: enums.relationships.guardian, status: enums.statuses.active},
-        { rel: enums.relationships.child, status: enums.statuses.active}, { addSubordinate: true }),
+        { rel: enums.relationships.child, status: enums.statuses.active}, {}),
     getGuardianships: _.partial(relCtrl.getRelationships, enums.relationships.guardian),
-    getChild: userCtrl.getUser,
-    updateChild: function(req, res, next) {
-      return relCtrl.updateSubordinate(enums.relationships.child, req, res, next);
-    },
-    deactivateChild: relCtrl.deactivateSubordinate,
-    activateChild: relCtrl.activateSubordinate,
-    getChildFriendships: _.partial(relCtrl.getRelationships, enums.relationships.friend),
-    addChildFriendship: _.partial(relCtrl.saveRelationship,
-        { rel: enums.relationships.friend, status: enums.statuses.pending},
-        { rel: enums.relationships.friend, status: enums.statuses.pendingack}, {}),
-    acknowledgeChildFriendship: _.partial(relCtrl.saveRelationship,
-        { rel: enums.relationships.friend, status: enums.statuses.active},
-        { rel: enums.relationships.friend, status: enums.statuses.active}, {updateOnly: true}),
-    deactivateChildFriendship: _.partial(relCtrl.saveRelationship,
-        { rel: enums.relationships.friend, status: enums.statuses.inactive},
-        { rel: enums.relationships.friend, status: enums.statuses.inactive}, {}),
-    getChildFriend: userCtrl.getUser
-
+    deactivateGuardianship: _.partial(relCtrl.saveRelationship,
+        { rel: enums.relationships.guardian, status: enums.statuses.inactive},
+        { rel: enums.relationships.child, status: enums.statuses.inactive}, {  }),
+    activateChild: relCtrl.activateSubordinate
 };

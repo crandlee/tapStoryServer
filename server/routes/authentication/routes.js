@@ -17,21 +17,21 @@ module.exports = function (serverSvc) {
         authCtrl.authorizeMethod(authCtrl.adminRoles),
         userCtrl.saveUser({addOnly: true}));
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrRelated),
         userCtrl.getUser);
     serverSvc.addRoute(enums.routeMethods.PUT, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentAdultOrGuardian),
         userCtrl.saveUser({addOnly: false}));
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesOrCurrent),
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrGuardian),
         userCtrl.deactivateUser);
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/activation',
-        authCtrl.authorizeMethod(cb.extend({ allowInactive: true }, authCtrl.adminRolesOrCurrent)),
+        authCtrl.authorizeMethod(cb.extend({ allowInactive: { val: true } }, authCtrl.adminRolesCurrentUserOrGuardian)),
         userCtrl.activateUser);
 
     //Roles
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/roles',
-        authCtrl.authorizeMethod(authCtrl.currentUser),
+        authCtrl.authorizeMethod(authCtrl.adminRoles),
         userCtrl.getRoles);
 
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/roles',
