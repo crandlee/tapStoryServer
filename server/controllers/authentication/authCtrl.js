@@ -30,9 +30,9 @@ function authorizeMethod(opts) {
                     }
                 };
 
-                var targetChild = (vals.relUser || vals.userName || '');
+                var target = (vals.relUser || vals.userName || '');
                 var getRelOpts = (authObj.allowInactive ? { allowInactive: true } : {});
-                return userRelSvc.getRelationship([vals.currentUser.userName, targetChild], getRelOpts)
+                return userRelSvc.getRelationship([vals.currentUser.userName, target], getRelOpts)
                     .then(function (rel) {
                         return relTypes && isValidRelationshipType(rel, relTypes) === testVal;
                     });
@@ -146,6 +146,5 @@ module.exports = {
     currentAdultOrGuardian: { isGuardian: { val: true }, currentUser: { val: true }, isAdult: { val: true, required: true } },
     currentUserAndAdult: { currentUser: { val: true, required: true }, isAdult: { val: true, required: true } },
     currentUserAndGuardian: { currentUser: { val: true, required: true } , isAdult: { val: true, required: true }, isGuardian: { val: true, required: true } },
-    currentUser: { currentUser: { val: true, required: true } },
-    adminRolesOrAnyCurrentUser: { currentUser: { val: true, required: true }, role: { val: ['admin', 'super-admin'] } }
+    currentUser: { currentUser: { val: true, required: true } }
 };

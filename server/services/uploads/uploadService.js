@@ -136,6 +136,23 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
 
 }
 
+function shareFileGroup(userName, groupId, targetUser) {
+
+    return userSvc.addShare(userName, groupId, targetUser)
+        .then(function() {
+            return { success: true };
+        });
+
+}
+
+function unshareFileGroup(userName, groupId, targetUser) {
+
+    return userSvc.removeShare(userName, groupId, targetUser)
+        .then(function() {
+            return { success: true };
+        });
+
+}
 
 function _setWriteService(service) {
     writeSvc = service;
@@ -156,6 +173,8 @@ module.exports = {
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     downloadFiles: downloadFiles,
+    shareFileGroup: shareFileGroup,
+    unshareFileGroup: unshareFileGroup,
     _setWriteService: _setWriteService,
     _setUserService: _setUserService,
     _setFs: _setFs

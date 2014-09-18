@@ -26,6 +26,9 @@ var schema = mongoose.Schema({
         {
             groupId: { type: String, default: uuid.v4() },
             groupName: { type: String },
+            shares: [
+                { user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }}
+            ],
             files: [
                 { fileName: { type: String } }
             ]

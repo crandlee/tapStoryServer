@@ -35,6 +35,23 @@ function addFiles(userName, fileNames, groupId, groupName, options) {
 
 }
 
+function addShare(userName, groupId, targetUser, options) {
+
+    return resSvc.processDocumentSave(
+        { userName: userName, groupId: groupId, targetUser: targetUser },
+        userSvcOptions.setAddShareGroupOptions, options);
+
+}
+
+function removeShare(userName, groupId, targetUser, options) {
+
+    return resSvc.processDocumentSave(
+        { userName: userName, groupId: groupId, targetUser: targetUser },
+        userSvcOptions.setRemoveShareGroupOptions, options);
+
+}
+
+
 function removeFile(userName, fileName, groupId, options) {
 
     return resSvc.processDocumentSave(
@@ -158,6 +175,8 @@ module.exports = {
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     getFileGroups: getFileGroups,
+    addShare: addShare,
+    removeShare: removeShare,
     getPermittedFiles:getPermittedFiles,
     optionsBuilder: userSvcOptions
 };

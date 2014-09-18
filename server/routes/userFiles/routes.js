@@ -54,4 +54,20 @@ module.exports = function (serverSvc) {
         uploadsCtrl.downloadFiles);
 
 
+    //File sharing
+
+    //TODO-Randy: Verify that only users that have existing relationship can participate in the share
+
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/fileShares',
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrGuardian),
+        uploadsCtrl.getFileGroupShares);
+
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/fileGroups/:groupId/fileShares',
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrGuardian),
+        uploadsCtrl.shareFileGroup);
+
+    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/fileGroups/:groupId/fileShares',
+        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrGuardian),
+        uploadsCtrl.unshareFileGroup);
+
 };

@@ -76,6 +76,42 @@ function setFileOptions(addOrRemove, opts) {
     return opts;
 }
 
+function setShareGroupOptions(addShare, opts) {
+
+    opts.updateOnly = true;
+    opts.preValidation = promise.fbind(function(opts) {
+        if (!opts.userName) errSvc.error('Sharing a file group requires a userName');
+        if (!opts.groupId) errSvc.error('Sharing a file group requires a groupId');
+        if (!opts.targetUser) errSvc.error('Sharing a file group requires a target user');
+        return resSvc.getSingle({ find: { userName: opts.targetUser }, modelName: 'User'})
+            .then(function(user) {
+                if (!user) errSvc.error('Could not locate the target user', { targetUser: opts.targetUser });
+                opts.targetUserId = user._id;
+                return opts;
+            });
+    });
+    opts.modelName = 'User';
+    opts.find = { userName: opts.userName };
+    opts.manualSave = function(opts) {
+        //Add/remove share
+        return resSvc.getSingle(opts)
+            .then(function(user) {
+                var fileGroup = (_(user.fileGroups).find(function(fg) { return fg.groupId === opts.groupId; } ));
+                if (!fileGroup) errSvc.error('Could not find the file group to share', { groupId: opts.groupId });
+                if (addShare) {
+                    if (_(fileGroup.shares).findIndex(function(share) { return share._id.toString() === opts.targetUserId.toString(); }) === -1)
+                        fileGroup.shares.push(opts.targetUserId);
+                } else {
+                    fileGroup.shares.splice(_(fileGroup.shares).findIndex(function(share) { return share._id.toString() === opts.targetUserId.toString(); }), 1);
+                }
+
+                return resSvc.saveDocument(user);
+            });
+    };
+
+    return opts;
+}
+
 function setRemoveFileGroupOptions(opts) {
 
     opts.preValidation = promise.fbind(function(opts) {
@@ -167,6 +203,8 @@ module.exports = {
     setRemoveRoleOptions: setRemoveRoleOptions,
     setRemoveFileGroupOptions: setRemoveFileGroupOptions,
     setSaveUserOptions: saveUserOptions,
+    setAddShareGroupOptions: _.partial(setShareGroupOptions, true),
+    setRemoveShareGroupOptions: _.partial(setShareGroupOptions, false),
     setActivateOptions: _.partial(setIsActive, true),
     setDeactivateOptions: _.partial(setIsActive, false)
 };
