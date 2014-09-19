@@ -35,7 +35,7 @@ function addFiles(userName, fileNames, groupId, groupName, options) {
 
 }
 
-function addShare(userName, groupId, targetUser, options) {
+function addFileGroupShare(userName, groupId, targetUser, options) {
 
     return resSvc.processDocumentSave(
         { userName: userName, groupId: groupId, targetUser: targetUser },
@@ -43,7 +43,7 @@ function addShare(userName, groupId, targetUser, options) {
 
 }
 
-function removeShare(userName, groupId, targetUser, options) {
+function removeFileGroupShare(userName, groupId, targetUser, options) {
 
     return resSvc.processDocumentSave(
         { userName: userName, groupId: groupId, targetUser: targetUser },
@@ -51,6 +51,29 @@ function removeShare(userName, groupId, targetUser, options) {
 
 }
 
+function getSharedFileGroup(userName, groupId, sharedUser) {
+
+    var getShare = function(user) {
+        if (!user) return cb.Promise(null);
+        var opts = {};
+        opts.find = { userName: userName, "fileGroups.groupId": groupId, "fileGroups.shares._id": user._id };
+        opts.select = { "fileGroups.$": 1 };
+        opts.modelName = 'User';
+        return resSvc.getSingle(opts).
+            then(function(user) {
+                if (!user) return cb.Promise(null);
+                return cb.Promise({ groupName: user.fileGroups[0].groupName, files: _(user.fileGroups[0].files).pluck('fileName').value() });
+            });
+    };
+
+    return getSingle(sharedUser)
+        .then(getShare);
+
+}
+
+function getSharedFileGroups(sharedUser) {
+
+}
 
 function removeFile(userName, fileName, groupId, options) {
 
@@ -175,8 +198,10 @@ module.exports = {
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     getFileGroups: getFileGroups,
-    addShare: addShare,
-    removeShare: removeShare,
+    addFileGroupShare: addFileGroupShare,
+    removeFileGroupShare: removeFileGroupShare,
     getPermittedFiles:getPermittedFiles,
+    getSharedFileGroup: getSharedFileGroup,
+    getSharedFileGroups: getSharedFileGroups,
     optionsBuilder: userSvcOptions
 };

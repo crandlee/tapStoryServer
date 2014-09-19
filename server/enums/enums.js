@@ -26,6 +26,18 @@ module.exports = {
        PUT: 'PUT',
        POST: 'POST',
        DEL: 'DEL'
+    }),
+    auth: Object.freeze({
+       Admin: {  role: ['admin', 'super-admin'], isAdult: true },
+       SuperAdmin: {  role: ['super-admin'], isAdult: true  },
+       CurrentAdult: {  currentUser: true, isAdult: true },
+       CurrentAny: {  currentUser: true },
+       Guest: {},
+       StrictGuardian: { isGuardian: 'strict', isAdult: true },
+       NonStrictGuardian: { isGuardian: 'non-strict', isAdult: true },
+       HasRelationship: { isRelated: true },
+       Subscribed: { isSubscribed: true },
+       AllowInactive: { allowInactive: true }
     })
 };
 

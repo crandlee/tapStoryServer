@@ -5,6 +5,7 @@ var uploads =  cb.rootRequire('svc-uploads');
 var linkSvc = cb.rootRequire('svc-link');
 var Encoder = require('node-html-encoder').Encoder;
 var ctrlHelper = cb.rootRequire('ctrl-helper');
+var userRelSvc = cb.rootRequire('svc-rel');
 
 function upload(req, res, next) {
 
@@ -179,11 +180,20 @@ function shareFileGroup(req, res, next) {
     if (!shareUser) ctrlHelper.setBadRequest(res, 'Sharing a file group requires a target user name');
 
     if (userName && groupId && shareUser) {
-        uploads.shareFileGroup(userName, groupId, shareUser)
-            .then(_.partial(ctrlHelper.setOk, res))
-            .fail(_.partial(ctrlHelper.setInternalError, res))
-            .fin(next)
-            .done();
+        userRelSvc.isRelated(null, userName, shareUser)
+            .then(function(isRelated) {
+                if (!isRelated) {
+                    ctrlHelper.setForbidden(res, 'User must have existing relationship to participate in sharing');
+                    next();
+                }
+                else {
+                    uploads.shareFileGroup(userName, groupId, shareUser)
+                        .then(_.partial(ctrlHelper.setOk, res))
+                        .fail(_.partial(ctrlHelper.setInternalError, res))
+                        .fin(next)
+                        .done();
+                }
+            });
     } else {
         return next();
     }
@@ -211,20 +221,31 @@ function unshareFileGroup(req, res, next) {
 
 }
 
-function getFileGroupShares(req, res, next) {
-
+function getSharedFileGroup(req, res, next) {
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
+    var shareUser = (req.user && req.user.userName);
+
     if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a source user name');
     if (!groupId) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a groupId');
-    if (userName && groupId) {
-        uploads.getFileGroupShares(userName, groupId)
-            .then(function(shares) {
-                ctrlHelper.setOk(res, shares);
-            })
-            .fail(_.partial(ctrlHelper.setInternalError, res))
-            .fin(next)
-            .done();
+    if (!shareUser) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a target user');
+
+    if (userName && groupId && shareUser) {
+        userRelSvc.isRelated(null, userName, shareUser)
+            .then(function(isRelated) {
+                if (!isRelated) {
+                    ctrlHelper.setForbidden(res, 'User must have existing relationship to participate in sharing');
+                    next();
+                } else {
+                    uploads.getSharedFileGroup(userName, groupId, shareUser)
+                        .then(function (shares) {
+                            ctrlHelper.setOk(res, shares);
+                        })
+                        .fail(_.partial(ctrlHelper.setInternalError, res))
+                        .fin(next)
+                        .done();
+                }
+            });
     } else {
         return next();
     }
@@ -272,7 +293,7 @@ module.exports = {
     removeFile: removeFile,
     downloadFiles: downloadFiles,
     shareFileGroup: shareFileGroup,
-    getFileGroupShares: getFileGroupShares,
+    getSharedFileGroup: getSharedFileGroup,
     unshareFileGroup: unshareFileGroup,
     _setUploadsService: _setUploadsService
 };

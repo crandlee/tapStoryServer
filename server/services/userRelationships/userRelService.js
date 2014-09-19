@@ -7,6 +7,7 @@ var promise = cb.Promise;
 var resSvc = cb.rootRequire('svc-resource');
 var relSvcOptions = cb.rootRequire('svc-opts-rel');
 var userSvc = cb.rootRequire('svc-user');
+var enums = cb.enums;
 
 function saveRelationship(sourceRel, targetRel, options) {
 
@@ -75,10 +76,31 @@ function canViewRelationshipUser(sourceUserName, relUserName) {
         });
 }
 
+function isRelated(relTypes, sourceUserName, targetUserName, options) {
+
+    options = options || {};
+    var isValidRelationshipType = function (rel, arrOfTypes) {
+        if (rel && rel.participants && rel.participants.length === 2) {
+            return _.every(rel.participants, function (p) {
+                return (p.status && p.status === enums.statuses.active) &&
+                    (p.rel && _.indexOf(arrOfTypes, p.rel) > -1);
+            });
+        }
+    };
+
+    var getRelOpts = (options.allowInactive ? { allowInactive: true } : {});
+    return getRelationship([sourceUserName, targetUserName], getRelOpts)
+        .then(function (rel) {
+            if (!relTypes) relTypes = _.values(enums.relationships);
+            return cb.Promise(relTypes && isValidRelationshipType(rel, relTypes));
+        });
+}
+
 module.exports = {
     saveRelationship: promise.fbind(saveRelationship),
     getRelationships: getRelationships,
     getRelationship: getRelationship,
+    isRelated: isRelated,
     canViewRelationshipUser: canViewRelationshipUser,
     getRelKey: getRelKey
 };

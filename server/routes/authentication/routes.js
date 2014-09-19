@@ -4,41 +4,64 @@ var cb = require('common-bundle')();
 var authCtrl = cb.rootRequire('ctrl-auth');
 var userCtrl = cb.rootRequire('ctrl-user');
 var enums = cb.enums;
-var passport = require('passport');
 
 module.exports = function (serverSvc) {
 
 
-    //User
+    //Retrieve All Users - Admins
+    //Authorize: Admins
     serverSvc.addRoute(enums.routeMethods.GET, '/users',
-        authCtrl.authorizeMethod(authCtrl.adminRoles),
+        authCtrl.authorize(authCtrl.adminRoles),
         userCtrl.getUsers);
+
+    //Add New User
+    //Authorize: Admins/Guest
+    //TODO-Randy: Add guest access/require acknowledgement of new user with anti-DDOS
     serverSvc.addRoute(enums.routeMethods.POST, '/users',
-        authCtrl.authorizeMethod(authCtrl.adminRoles),
+        authCtrl.authorize(authCtrl.adminRoles),
         userCtrl.saveUser({addOnly: true}));
+
+    //Get User
+    //Authorize: Admins/CurrentAny/Relationships
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrRelated),
+        authCtrl.authorize(authCtrl.adminRolesCurrentUserOrRelated),
         userCtrl.getUser);
+
+    //Update User
+    //Authorize: Admins/CurrentAdult/NoChild:StrictGuardian
     serverSvc.addRoute(enums.routeMethods.PUT, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentAdultOrGuardian),
+        authCtrl.authorize(authCtrl.adminRolesCurrentAdultOrGuardian),
         userCtrl.saveUser({addOnly: false}));
+
+    //Delete User
+    //Authorize: Admins/CurrentAdult/CurrentChild:NonStrictGuardian
+    //TODO-Randy: Delete relationship when user becomes inactive
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName',
-        authCtrl.authorizeMethod(authCtrl.adminRolesCurrentUserOrGuardian),
+        authCtrl.authorize(authCtrl.adminRolesCurrentUserOrGuardian),
         userCtrl.deactivateUser);
+
+    //Re-Activate User
+    //Authorize: Admins/Guest
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/activation',
-        authCtrl.authorizeMethod(cb.extend({ allowInactive: { val: true } }, authCtrl.adminRolesCurrentUserOrGuardian)),
+        authCtrl.authorize(cb.extend({ allowInactive: { val: true } }, authCtrl.adminRolesCurrentUserOrGuardian)),
         userCtrl.activateUser);
 
-    //Roles
+    //Get Roles
+    //Authorize: Admins
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/roles',
-        authCtrl.authorizeMethod(authCtrl.adminRoles),
+        authCtrl.authorize(authCtrl.adminRoles),
         userCtrl.getRoles);
 
+    //Add Roles
+    //Authorize: Super-Admins
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/roles',
-        authCtrl.authorizeMethod(authCtrl.superAdmin),
+        authCtrl.authorize(authCtrl.superAdmin),
         userCtrl.addRole);
+
+    //Remove Roles
+    //Authorize: Super-Admins
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/roles',
-        authCtrl.authorizeMethod(authCtrl.adminRoles),
+        authCtrl.authorize(authCtrl.superAdmin),
         userCtrl.removeRole);
 
 

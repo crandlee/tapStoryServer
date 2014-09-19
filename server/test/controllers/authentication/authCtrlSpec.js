@@ -43,12 +43,12 @@ describe.only('controllers/authentication/authCtrlSpec.js', function() {
         });
 
 
-        describe('authorizeMethod', function() {
+        describe('authorize', function() {
 
             var fn = null;
 
             it('returns a function', function() {
-                fn = authCtrl.authorizeMethod();
+                fn = authCtrl.authorize();
                 should.exist(fn);
                 fn.should.be.a('function');
             });
@@ -56,7 +56,7 @@ describe.only('controllers/authentication/authCtrlSpec.js', function() {
             it('passes a role to the hasRole method', function() {
 
                 var testRole = 'arbitraryRole';
-                fn = authCtrl.authorizeMethod(testRole);
+                fn = authCtrl.authorize(testRole);
                 fn(reqStub, resStub, nextStub);
                 sinon.assert.calledWith(reqStub.user.hasRole, testRole);
 
@@ -64,7 +64,7 @@ describe.only('controllers/authentication/authCtrlSpec.js', function() {
 
             it('returns the next function if user has role that is passed in as parameter', function() {
 
-                fn = authCtrl.authorizeMethod();
+                fn = authCtrl.authorize();
                 reqStub.user.hasRole.returns(true);
                 var nextRetVal = Math.random();
                 nextStub.returns(nextRetVal);
@@ -77,7 +77,7 @@ describe.only('controllers/authentication/authCtrlSpec.js', function() {
 
             it('returns unauthorized if no user', function() {
 
-                fn = authCtrl.authorizeMethod();
+                fn = authCtrl.authorize();
                 reqStub.user = null;
                 fn(reqStub, resStub, nextStub);
 
@@ -87,7 +87,7 @@ describe.only('controllers/authentication/authCtrlSpec.js', function() {
 
             it('returns unauthorized if role does not match', function() {
 
-                fn = authCtrl.authorizeMethod();
+                fn = authCtrl.authorize();
                 reqStub.user.hasRole.returns(false);
                 fn(reqStub, resStub, nextStub);
 
