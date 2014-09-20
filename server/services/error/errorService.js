@@ -7,10 +7,16 @@ var loggingBypassed = false;
 
 function error(msg, props, opts) {
 
+    throw new Error(logError(msg, props, opts));
+
+}
+
+function logError(msg, props, opts) {
+
     opts = opts || {};
     props = props || {};
     var internalCode = opts.internalCode || null;
-    throw new Error(JSON.stringify(stripDetailsFromFinal(buildAndLogError(msg, props, internalCode))));
+    return JSON.stringify(stripDetailsFromFinal(buildAndLogError(msg, props, internalCode)));
 
 }
 
@@ -78,6 +84,7 @@ module.exports = (function(logOptions) {
         error: error,
         warn: warn,
         buildAndLogError: buildAndLogError,
+        logError: logError,
         checkErrorCode: checkErrorCode,
         promiseError: promiseError
 

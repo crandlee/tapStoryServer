@@ -33,6 +33,7 @@ module.exports = {
        CurrentAdult: {  currentUser: true, isAdult: true },
        CurrentAny: {  currentUser: true },
        Guest: {},
+       Authenticated: { isAuth: true },
        StrictGuardian: { isGuardian: 'strict', isAdult: true },
        NonStrictGuardian: { isGuardian: 'non-strict', isAdult: true },
        HasRelationship: { isRelated: true },

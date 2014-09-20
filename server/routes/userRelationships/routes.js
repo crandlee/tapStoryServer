@@ -5,6 +5,7 @@ var _ = cb._;
 var authCtrl = cb.rootRequire('ctrl-auth');
 var relCtrlExt = cb.rootRequire('ctrl-rel-ext');
 var enums = cb.enums;
+var a = enums.auth;
 
 module.exports = function (serverSvc) {
 
@@ -38,7 +39,7 @@ module.exports = function (serverSvc) {
     //Add New Child
     //Authorize: CurrentAdult
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships',
-        authCtrl.authorize(authCtrl.currentUserAndAdult),
+        authCtrl.authorize([a.CurrentAdult]),
         relCtrlExt.addGuardianship);
 
     //View Guardianship
