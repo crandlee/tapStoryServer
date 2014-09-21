@@ -246,7 +246,6 @@ function getShares(req, res, next) {
     if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a user requires a source user name');
 
     if (userName) {
-        console.log(userName);
         uploads.getShares(userName)
             .then(function (shares) {
                 if (shares)

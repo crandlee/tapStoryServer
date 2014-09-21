@@ -6,7 +6,6 @@ var promise = cb.Promise;
 
 var resSvc = cb.rootRequire('svc-resource');
 var relSvcOptions = cb.rootRequire('svc-opts-rel');
-var userSvc = cb.rootRequire('svc-user');
 var enums = cb.enums;
 
 function saveRelationship(sourceRel, targetRel, options) {
@@ -17,7 +16,7 @@ function saveRelationship(sourceRel, targetRel, options) {
 }
 
 function getRelationships(sourceUser, relationship, statuses) {
-
+    var userSvc = cb.rootRequire('svc-user');
     return userSvc.getSingle(sourceUser)
         .then(function(user) {
             if (!user) errSvc.error('Could not find user to get relationships', { userName: sourceUser });
@@ -27,8 +26,6 @@ function getRelationships(sourceUser, relationship, statuses) {
             if (statuses) find = cb.extend(find, { "participants.status" : { $in: statuses }});
             return resSvc.getList({ find: find, populate: ['participants.user'], model: 'UserRelationship'  })
                 .then(function(relationships) {
-                    //TODO-Randy: filter out records where the relationship string is
-                    //"on the other side" of the relationship
                     return relationships;
                 });
         });
@@ -36,6 +33,7 @@ function getRelationships(sourceUser, relationship, statuses) {
 }
 
 function getRelationship(userNames, options) {
+    var userSvc = cb.rootRequire('svc-user');
     var getUser = function (userName, options) {
         return userSvc.getSingle(userName, options);
     };
@@ -76,19 +74,18 @@ function canViewRelationshipUser(sourceUserName, relUserName) {
 }
 
 function isRelated(relTypes, sourceUserName, targetUserName, options) {
-
     options = options || {};
     var isValidRelationshipType = function (rel, arrOfTypes) {
         if (rel && rel.participants && rel.participants.length === 2) {
             return _.every(rel.participants, function (p) {
-                return (p.status && p.status === enums.statuses.active) &&
+                return (p.status && p.status === cb.enums.statuses.active) &&
                     (p.rel && _.indexOf(arrOfTypes, p.rel) > -1);
             });
         }
     };
 
     var getRelOpts = (options.allowInactive ? { allowInactive: true } : {});
-    if (!relTypes) relTypes = _.values(enums.relationships);
+    if (!relTypes) relTypes = _.values(cb.enums.relationships);
     return getRelationship([sourceUserName, targetUserName], getRelOpts)
         .then(function (rel) {
             return cb.Promise(relTypes && isValidRelationshipType(rel, relTypes));

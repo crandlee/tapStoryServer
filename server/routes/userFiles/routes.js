@@ -30,7 +30,7 @@ module.exports = function (serverSvc) {
         authMdl.authorize([a.CurrentAdult, a.StrictGuardian]),
         uploadsCtrl.shareFileGroup);
 
-    //Unsubscribe to a File Group
+    //Unsubscribe from a File Group
     //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian/SubscribedUser
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/fileGroups/:groupId/fileSubs/:relUser',
         authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian, a.Subscribed]),

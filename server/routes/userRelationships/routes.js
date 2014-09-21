@@ -24,7 +24,6 @@ module.exports = function (serverSvc) {
 
     //Deactivate Friend
     //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian
-    //TODO-Randy: Delete subscriptions when relationship becomes inactive
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/friendships',
         authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian]),
         relCtrlExt.deactivateFriendship);

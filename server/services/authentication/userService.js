@@ -53,6 +53,15 @@ function removeFileGroupShare(userName, groupId, targetUser, options) {
 
 function getShares(userName, groupId, sharedUser) {
 
+    var userRelSvc = cb.rootRequire('svc-rel');
+    var hasRelationship = function(sourceUser, targetUser, rels) {
+        return _.filter(rels, function(rel) {
+            return rel.participants.length === 2
+                && ((rel.relKey === sourceUser.toLowerCase() + '||' + targetUser.toLowerCase())
+                    || rel.relKey === targetUser.toLowerCase() + '||' + sourceUser.toLowerCase())
+                && rel.participants[0].status === cb.enums.statuses.active && rel.participants[1].status === cb.enums.statuses.active;
+        }).length > 0;
+    };
     var getShares = function(user) {
         if (sharedUser && !user) return cb.Promise(null);
         var opts = {};
@@ -64,14 +73,18 @@ function getShares(userName, groupId, sharedUser) {
         else
             opts.select = { "fileGroups": 1 };
         opts.modelName = 'User';
-        return resSvc.getSingle(opts).
-            then(function(user) {
-                if (!user) return cb.Promise(null);
-                return cb.Promise(_.map(user.fileGroups, function(fg) {
-                    return { groupName: fg.groupName, files: _.pluck(fg.files, 'fileName'),
-                        users: _(fg.shares).filter(function(share)
-                            { return !sharedUser || share.userName === sharedUser }).pluck('userName').value() };
-                }));
+        return resSvc.getSingle(opts)
+            .then(function(user) {
+                return userRelSvc.getRelationships(userName, null, cb.enums.statuses.active)
+                    .then(function(rels) {
+                        if (!user) return cb.Promise(null);
+                        return cb.Promise(_(user.fileGroups).map(function(fg) {
+                            return { groupName: fg.groupName, files: _.pluck(fg.files, 'fileName'),
+                                users: _(fg.shares).filter(function(share)
+                                { return hasRelationship(userName, share.userName, rels)
+                                    && (!sharedUser || share.userName === sharedUser) }).pluck('userName').value() };
+                        }).filter(function(fg) { return fg.users.length > 0 }).value());
+                    });
 
             });
     };
