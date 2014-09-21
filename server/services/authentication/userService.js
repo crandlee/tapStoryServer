@@ -51,29 +51,36 @@ function removeFileGroupShare(userName, groupId, targetUser, options) {
 
 }
 
-function getSharedFileGroup(userName, groupId, sharedUser) {
+function getShares(userName, groupId, sharedUser) {
 
-    var getShare = function(user) {
-        if (!user) return cb.Promise(null);
+    var getShares = function(user) {
+        if (sharedUser && !user) return cb.Promise(null);
         var opts = {};
-        opts.find = { userName: userName, "fileGroups.groupId": groupId, "fileGroups.shares._id": user._id };
-        opts.select = { "fileGroups.$": 1 };
+        opts.find = { userName: userName };
+        if (groupId) opts.find["fileGroups.groupId"] = groupId;
+        if (sharedUser) opts.find["fileGroups.shares.userName"] = user.userName;
+        if (groupId)
+            opts.select = { "fileGroups.$": 1 };
+        else
+            opts.select = { "fileGroups": 1 };
         opts.modelName = 'User';
         return resSvc.getSingle(opts).
             then(function(user) {
                 if (!user) return cb.Promise(null);
-                return cb.Promise({ groupName: user.fileGroups[0].groupName, files: _(user.fileGroups[0].files).pluck('fileName').value() });
+                return cb.Promise(_.map(user.fileGroups, function(fg) {
+                    return { groupName: fg.groupName, files: _.pluck(fg.files, 'fileName'),
+                        users: _(fg.shares).filter(function(share)
+                            { return !sharedUser || share.userName === sharedUser }).pluck('userName').value() };
+                }));
+
             });
     };
 
-    return getSingle(sharedUser)
-        .then(getShare);
+    if (sharedUser) return getSingle(sharedUser).then(getShares);
+    return getShares(null);
 
 }
 
-function getSharedFileGroups(sharedUser) {
-
-}
 
 function removeFile(userName, fileName, groupId, options) {
 
@@ -201,7 +208,6 @@ module.exports = {
     addFileGroupShare: addFileGroupShare,
     removeFileGroupShare: removeFileGroupShare,
     getPermittedFiles:getPermittedFiles,
-    getSharedFileGroup: getSharedFileGroup,
-    getSharedFileGroups: getSharedFileGroups,
+    getShares: getShares,
     optionsBuilder: userSvcOptions
 };

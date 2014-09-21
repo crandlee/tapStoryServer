@@ -32,13 +32,15 @@ module.exports = {
        SuperAdmin: {  role: ['super-admin'], isAdult: true  },
        CurrentAdult: {  currentUser: true, isAdult: true },
        CurrentAny: {  currentUser: true },
+       CurrentChild: {  currentUser: true, isAdult: false },
        Guest: {},
        Authenticated: { isAuth: true },
        StrictGuardian: { isGuardian: 'strict', isAdult: true },
        NonStrictGuardian: { isGuardian: 'non-strict', isAdult: true },
        HasRelationship: { isRelated: true },
        Subscribed: { isSubscribed: true },
-       AllowInactive: { allowInactive: true }
+       AllowInactive: { allowInactive: true },
+       StrictOneOfMultipleGuardians: { isGuardian: 'strict', isAdult: true, hasMultipleGuardians: true }
     })
 };
 

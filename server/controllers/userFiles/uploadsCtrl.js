@@ -16,10 +16,8 @@ function upload(req, res, next) {
     if (!groupId && !groupName)
         ctrlHelper.setBadRequest('Uploading a file/files requires either a groupName or a groupId');
     if (userName && (groupId || groupName)) {
-        uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
-            .then(function () {
-                ctrlHelper.setOk(res);
-            })
+        return uploads.uploadFiles(groupName, req.files, { userName: userName, groupId: groupId })
+            .then(_.partial(ctrlHelper.setOk, res))
             .fail(_.partial(ctrlHelper.setInternalError, res))
             .fin(next)
             .done();
@@ -135,9 +133,7 @@ function removeFileGroup(req, res, next) {
 
     if (userName && groupId) {
         uploads.removeFileGroup(userName, groupId, options)
-            .then(function () {
-                ctrlHelper.setOk(res);
-            })
+            .then(_.partial(ctrlHelper.setOk, res))
             .fail(_.partial(ctrlHelper.setInternalError, res))
             .fin(next)
             .done();
@@ -158,9 +154,7 @@ function removeFile(req, res, next) {
 
     if (userName && groupId && fileName) {
         uploads.removeFile(userName, groupId, fileName)
-            .then(function (groups) {
-                ctrlHelper.setOk(res, groups);
-            })
+            .then(_.partial(ctrlHelper.setOk, res))
             .fail(_.partial(ctrlHelper.setInternalError, res))
             .fin(next)
             .done();
@@ -174,7 +168,7 @@ function shareFileGroup(req, res, next) {
 
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    var shareUser = (req.body && req.body.userName);
+    var shareUser = (req.params && req.params.relUser);
     if (!userName) ctrlHelper.setBadRequest(res, 'Sharing a file group requires a source user name');
     if (!groupId) ctrlHelper.setBadRequest(res, 'Sharing a file group requires a groupId');
     if (!shareUser) ctrlHelper.setBadRequest(res, 'Sharing a file group requires a target user name');
@@ -204,7 +198,7 @@ function unshareFileGroup(req, res, next) {
 
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    var shareUser = (req.body && req.body.userName);
+    var shareUser = (req.params && req.params.relUser);
     if (!userName) ctrlHelper.setBadRequest(res, 'Unsharing a file group requires a source user name');
     if (!groupId) ctrlHelper.setBadRequest(res, 'Unsharing a file group requires a groupId');
     if (!shareUser) ctrlHelper.setBadRequest(res, 'Unsharing a file group requires a target user name');
@@ -221,10 +215,61 @@ function unshareFileGroup(req, res, next) {
 
 }
 
-function getSharedFileGroup(req, res, next) {
+function getSharesFileGroup(req, res, next) {
+
     var userName = (req.params && req.params.userName);
     var groupId = (req.params && req.params.groupId);
-    var shareUser = (req.user && req.user.userName);
+    if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a source user name');
+    if (!groupId) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a groupId');
+
+    if (userName && groupId) {
+        uploads.getShares(userName, groupId)
+            .then(function (shares) {
+                if (shares)
+                    ctrlHelper.setOk(res, shares);
+                else
+                    ctrlHelper.setNotFound(res);
+
+            })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
+            .done();
+    } else {
+        return next();
+    }
+
+}
+
+function getShares(req, res, next) {
+
+    var userName = (req.params && req.params.userName);
+    if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a user requires a source user name');
+
+    if (userName) {
+        console.log(userName);
+        uploads.getShares(userName)
+            .then(function (shares) {
+                if (shares)
+                    ctrlHelper.setOk(res, shares);
+                else
+                    ctrlHelper.setNotFound(res);
+
+            })
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
+            .done();
+    } else {
+        return next();
+    }
+
+}
+
+
+function getSharedFileGroupForUser(req, res, next) {
+
+    var userName = (req.params && req.params.userName);
+    var groupId = (req.params && req.params.groupId);
+    var shareUser = (req.params && req.params.relUser);
 
     if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a source user name');
     if (!groupId) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a groupId');
@@ -237,9 +282,13 @@ function getSharedFileGroup(req, res, next) {
                     ctrlHelper.setForbidden(res, 'User must have existing relationship to participate in sharing');
                     next();
                 } else {
-                    uploads.getSharedFileGroup(userName, groupId, shareUser)
+                    uploads.getShares(userName, groupId, shareUser)
                         .then(function (shares) {
-                            ctrlHelper.setOk(res, shares);
+                            if (shares)
+                                ctrlHelper.setOk(res, shares);
+                            else
+                                ctrlHelper.setNotFound(res);
+
                         })
                         .fail(_.partial(ctrlHelper.setInternalError, res))
                         .fin(next)
@@ -292,8 +341,10 @@ module.exports = {
     removeFileGroup: removeFileGroup,
     removeFile: removeFile,
     downloadFiles: downloadFiles,
+    getSharesFileGroup: getSharesFileGroup,
+    getShares: getShares,
     shareFileGroup: shareFileGroup,
-    getSharedFileGroup: getSharedFileGroup,
+    getSharedFileGroupForUser: getSharedFileGroupForUser,
     unshareFileGroup: unshareFileGroup,
     _setUploadsService: _setUploadsService
 };

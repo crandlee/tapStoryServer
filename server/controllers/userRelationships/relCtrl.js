@@ -45,7 +45,7 @@ function updateSubordinate(targetRel, req, res, next) {
 
     req.body.userName = req.params.relUser;
     saveSubordinate(req.body || {}, targetRel, { updateOnly: true })
-        .then(function(user) {
+        .then(function (user) {
             if (!user) {
                 ctrlHelper.setInternalError(res, 'An unexpected error occurred. Subordinate save was not properly completed');
             } else {
@@ -63,49 +63,73 @@ function saveSubordinate(dataBody, targetRelationship, options) {
     options = options || {};
     if (targetRelationship === enums.relationships.child) dataBody.isMinor = true;
     return userSvc.save(dataBody, options)
-        .then(function(user) {
+        .then(function (user) {
             if (!user) errSvc.error("No subordinate user added", { userName: (dataBody && dataBody.userName)});
             return cb.Promise(user);
         });
 
 }
 
+function addAdditionalGuardian(req, res, next) {
+
+    var childName = (req.params && req.params.userName);
+    var guardianName = (req.body && req.body.userName);
+    if (!childName)
+        ctrlHelper.setBadRequest(res, 'Adding an additional guardian requires a source child user name');
+    if (!guardianName)
+        ctrlHelper.setBadRequest(res, 'Adding an additional guardian requires a target guardian user name');
+
+    if (childName && guardianName) {
+        userRelSvc.saveRelationship(
+            { rel: enums.relationships.child, status: enums.statuses.active, user: childName },
+            { rel: enums.relationships.guardian, status: enums.statuses.active, user: guardianName },
+            { })
+            .then(_.partial(ctrlHelper.setOk, res))
+            .fail(_.partial(ctrlHelper.setInternalError, res))
+            .fin(next)
+            .done();
+    }
+}
+
 function saveRelationship(srcRel, targetRel, options, req, res, next) {
 
-    var needsSubordinate = cb.Promise.fbind(function(targetUser, srcRel) {
+    var needsSubordinate = function (targetUser, srcRel) {
         if (srcRel.rel !== enums.relationships.guardian) return false;
         return !targetUser || targetUser.isMinor;
-    });
+    };
 
     options = options || {};
     var sourceUserName = (req.params && req.params.userName);
     var targetUserName = (req.body && req.body.userName);
     if (!sourceUserName)
-        ctrlHelper.setBadRequest(res, 'Adding a relationship requires a source userName');
+        ctrlHelper.setBadRequest(res, 'Modifying a relationship requires a source userName');
     if (!targetUserName)
-        ctrlHelper.setBadRequest(res, 'Adding a relationship requires a target userName');
+        ctrlHelper.setBadRequest(res, 'Modifying a relationship requires a target userName');
     if (!srcRel || typeof srcRel !== 'object')
-        ctrlHelper.setBadRequest(res, 'Adding a relationship requires a source relationship');
+        ctrlHelper.setBadRequest(res, 'Modifying a relationship requires a source relationship type');
     if (!targetRel || typeof targetRel !== 'object')
-        ctrlHelper.setBadRequest(res, 'Adding a relationship requires a target relationship');
+        ctrlHelper.setBadRequest(res, 'Modifying a relationship requires a target relationship type');
 
     if (sourceUserName && targetUserName && srcRel && targetRel) {
         srcRel.user = sourceUserName;
-        return userSvc.getSingle(targetUserName)
-            .then(function(targetUser) {
+        userSvc.getSingle(targetUserName)
+            .then(function (targetUser) {
                 (needsSubordinate(targetUser, srcRel)
                     ? saveSubordinate(req.body || {}, targetRel.rel, {addOnly: true})
                     : cb.Promise(targetUser))
-                        .then(function(user) {
-
+                    .then(function (user) {
+                        if (!user)  {
+                            ctrlHelper.setBadRequest(res, 'Target user does not exist or is inactive');
+                        } else {
                             targetRel.user = user.userName;
                             userRelSvc.saveRelationship(srcRel, targetRel, options)
                                 .then(_.partial(ctrlHelper.setOk, res))
                                 .fail(_.partial(ctrlHelper.setInternalError, res))
-                                .fin(next)
-                                .done();
-                        }).fail(_.partial(ctrlHelper.setInternalError, res));
+                        }
+                    }).fail(_.partial(ctrlHelper.setInternalError, res));
             })
+            .fin(next)
+            .done();
 
     } else {
         return next();
@@ -126,8 +150,8 @@ function getRelationships(relationship, req, res, next) {
         userRelSvc.getRelationships(userName, relationship, [enums.statuses.pending, enums.statuses.pendingack, enums.statuses.active])
             .then(function (rels) {
                 rels = rels || [];
-                var relsVm = rels.map(function(rel) {
-                   return rel.viewModel('relationship', req.path(), { sourceName: userName });
+                var relsVm = rels.map(function (rel) {
+                    return rel.viewModel('relationship', req.path(), { sourceName: userName });
                 });
                 relsVm = getRelationshipLinks(relationship, req, relsVm);
                 ctrlHelper.setOk(res, relsVm);
@@ -168,5 +192,6 @@ module.exports = {
     getRelationships: getRelationships,
     updateSubordinate: updateSubordinate,
     deactivateSubordinate: deactivateSubordinate,
-    activateSubordinate: activateSubordinate
+    activateSubordinate: activateSubordinate,
+    addAdditionalGuardian: addAdditionalGuardian
 };

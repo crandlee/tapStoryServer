@@ -21,6 +21,7 @@ module.exports = {
     addGuardianship: _.partial(relCtrl.saveRelationship,
         { rel: enums.relationships.guardian, status: enums.statuses.active},
         { rel: enums.relationships.child, status: enums.statuses.active}, {}),
+    addAdditionalGuardian: relCtrl.addAdditionalGuardian,
     getGuardianships: _.partial(relCtrl.getRelationships, enums.relationships.guardian),
     deactivateGuardianship: _.partial(relCtrl.saveRelationship,
         { rel: enums.relationships.guardian, status: enums.statuses.inactive},

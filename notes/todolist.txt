@@ -6,6 +6,7 @@
   API Versioning
   Logging history of data changes
   API Keys for valid clients of api
+  Some way to set HttpResponse codes or a category of errors from service layers
 
 
 Questions for Owen:

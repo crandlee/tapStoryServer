@@ -86,7 +86,7 @@ function setShareGroupOptions(addShare, opts) {
         return resSvc.getSingle({ find: { userName: opts.targetUser }, modelName: 'User'})
             .then(function(user) {
                 if (!user) errSvc.error('Could not locate the target user', { targetUser: opts.targetUser });
-                opts.targetUserId = user._id;
+                opts.targetUserName = user.userName;
                 return opts;
             });
     });
@@ -99,12 +99,14 @@ function setShareGroupOptions(addShare, opts) {
                 var fileGroup = (_(user.fileGroups).find(function(fg) { return fg.groupId === opts.groupId; } ));
                 if (!fileGroup) errSvc.error('Could not find the file group to share', { groupId: opts.groupId });
                 if (addShare) {
-                    if (_(fileGroup.shares).findIndex(function(share) { return share._id.toString() === opts.targetUserId.toString(); }) === -1)
-                        fileGroup.shares.push(opts.targetUserId);
+                    if (_(fileGroup.shares).findIndex(function(share)
+                        { return share.userName.toString() === opts.targetUserName.toString(); }) === -1) {
+                        fileGroup.shares.push({ userName: opts.targetUserName });
+                    }
                 } else {
-                    fileGroup.shares.splice(_(fileGroup.shares).findIndex(function(share) { return share._id.toString() === opts.targetUserId.toString(); }), 1);
+                    fileGroup.shares.splice(_(fileGroup.shares).findIndex(function(share)
+                        { return share.userName.toString() === opts.targetUserName.toString(); }), 1);
                 }
-
                 return resSvc.saveDocument(user);
             });
     };

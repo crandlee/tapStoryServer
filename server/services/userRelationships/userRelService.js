@@ -39,7 +39,6 @@ function getRelationship(userNames, options) {
     var getUser = function (userName, options) {
         return userSvc.getSingle(userName, options);
     };
-
     if (userNames && Array.isArray(userNames) && userNames.length === 2 && userNames[0] && userNames[1]) {
         return promise.all([getUser(userNames[0], options), getUser(userNames[1], options)])
             .then(function (users) {
@@ -89,9 +88,9 @@ function isRelated(relTypes, sourceUserName, targetUserName, options) {
     };
 
     var getRelOpts = (options.allowInactive ? { allowInactive: true } : {});
+    if (!relTypes) relTypes = _.values(enums.relationships);
     return getRelationship([sourceUserName, targetUserName], getRelOpts)
         .then(function (rel) {
-            if (!relTypes) relTypes = _.values(enums.relationships);
             return cb.Promise(relTypes && isValidRelationshipType(rel, relTypes));
         });
 }

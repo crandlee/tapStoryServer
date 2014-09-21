@@ -3,7 +3,7 @@ var cb = require('common-bundle')();
 
 var fileSystemUtility = cb.rootRequire('util-filesystem');
 var coreCtrl = cb.rootRequire('ctrl-core');
-var authCtrl = cb.rootRequire('ctrl-auth');
+var authMdl = cb.rootRequire('mdl-auth');
 var enums = cb.enums;
 var a = enums.auth;
 
@@ -28,7 +28,7 @@ function initialize(serverSvc, fileSystemSvc) {
 
     //Add core routes
     serverSvc.addRoute(enums.routeMethods.GET, '/',
-        authCtrl.authorize([a.Guest]),
+        authMdl.authorize([a.Guest]),
         coreCtrl.core);
 
 }

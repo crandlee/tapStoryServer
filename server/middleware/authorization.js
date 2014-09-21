@@ -51,7 +51,6 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
     };
 
     var possibleTests = function (options, d) {
-        var targetUser = (d.body.relUser || d.body.userName || '');
 
         return {
             isAuth: function (testVal) {
@@ -89,6 +88,15 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
                     return false;
                 }
             },
+            hasMultipleGuardians: function(testVal) {
+                if (!d.params || !d.params.userName) return (testVal === false);
+                return userRelSvc.getRelationships(d.params.userName,
+                    enums.relationships.guardian,
+                    [enums.statuses.pending, enums.statuses.pendingack, enums.statuses.active])
+                    .then(function(rels) {
+                       return (rels.length > 1) === testVal;
+                    });
+            },
 //            isFriend: function(testVal) {
 //                return userRelSvc.isRelated([enums.relationships.friend], d.currentUser.userName, targetUser, options)
 //                    .then(function(isFriend) { return isFriend === testVal});
@@ -102,8 +110,10 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
                     });
             },
             isSubscribed: function (testVal) {
-                if (!d.params.groupId) return false;
-                return userSvc.getSharedFileGroup(d.params.userName, d.params.groupId, d.currentUser.userName)
+                if (!d.params || !d.params.groupId) return false;
+                if (!d.params || !d.params.relUser) return false;
+                if (!d.currentUser || !d.currentUser.userName) return false;
+                return userSvc.getShares(d.params.userName, d.params.groupId, d.params.relUser || d.currentUser.userName)
                     .then(function (fileGroup) {
                         return (!!fileGroup === testVal);
                     })
@@ -111,29 +121,6 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
         };
     };
 
-//    var authorizationPasses = function(testCluster, dataToCheck) {
-//
-//
-//        var testInvocationList = [];
-//        var testLibrary = possibleTests(authObj, vals);
-//        _(authObj).forOwn(function(obj, key) {
-//            testsRun.push(key);
-//            testInvocationList.push(
-//                cb.Promise.fcall(testLibrary[key],(obj.val))
-//                    .then(function(passed) {
-//                        if (!passed && obj.required) return cb.Promise(authStatuses.requireFailed);
-//                        return cb.Promise(passed);
-//                    })
-//            );
-//        });
-//        return cb.Promise.all(testInvocationList)
-//            .then(function(allTests) {
-//                testsRun = _.zipObject(testsRun, allTests);
-//                return (!_(allTests).some(function(status) { return status === authStatuses.requireFailed; })
-//                    && (_(allTests).some(function(status) { return status === authStatuses.passed })));
-//            });
-//
-//    };
 
     var afterAuthenticate = function (req, res, next, opts) {
         var user = req.user;
@@ -184,15 +171,4 @@ function authorize(neededTestList, options) {
 module.exports = {
     authenticate: authenticate,
     authorize: authorize
-//    Admin: { role: { val: ['admin', 'super-admin'], required: true },
-//    adminRoles: { role: { val: ['admin', 'super-admin'], required: true } , isAdult: { val: true, required: true } },
-//    superAdmin: { role: { val: ['super-admin'], required: true } , isAdult: { val: true, required: true } },
-//    adminRolesOrCurrentAdult: { currentUser: { val: true }, role: { val: ['admin', 'super-admin'] }, isAdult: { val: true, required: true } },
-//    adminRolesCurrentAdultOrGuardian: { isGuardian: { val: true }, currentUser: { val: true }, role: { val: ['admin', 'super-admin'] }, isAdult: { val: true, required: true } },
-//    adminRolesCurrentUserOrGuardian: { isGuardian: { val: true }, currentUser: { val: true }, role: { val: ['admin', 'super-admin'] } },
-//    adminRolesCurrentUserOrRelated: { isGuardian: { val: true }, isFriend: { val: true }, currentUser: { val: true }, role: { val: ['admin', 'super-admin'] } },
-//    currentAdultOrGuardian: { isGuardian: { val: true }, currentUser: { val: true }, isAdult: { val: true, required: true } },
-//    currentUserAndAdult: { currentUser: { val: true, required: true }, isAdult: { val: true, required: true } },
-//    currentUserAndGuardian: { currentUser: { val: true, required: true } , isAdult: { val: true, required: true }, isGuardian: { val: true, required: true } },
-//    currentUser: { currentUser: { val: true, required: true } }
 };

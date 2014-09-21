@@ -152,7 +152,7 @@ function setSaveRelationshipOptions(opts) {
             };
 
             if (!users || !Array.isArray(users) || users.length !== 2)
-                errSvc.error('Attempted to create a user relationship without two distinct existing user names');
+                errSvc.error('Attempted to save a user relationship with fewer than two participants');
 
             prepareUsersAndRelKey(opts, users);
 

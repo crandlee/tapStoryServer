@@ -71,7 +71,10 @@ function uploadFiles(groupName, filesFromRequest, options) {
     }
     return promise.all(promiseArr)
         .then(function(fileArr) {
-            return userSvc.addFiles(userName, fileArr, groupId, groupName, options);
+            return userSvc.addFiles(userName, fileArr, groupId, groupName, options)
+                .then(function() {
+                    return getFileGroups(userName, { groupId: groupId });
+                });
         });
 
 }
@@ -79,20 +82,33 @@ function uploadFiles(groupName, filesFromRequest, options) {
 function removeFileGroup(userName, groupId, options) {
 
     options = options || {};
-    return userSvc.removeFileGroup(userName, groupId, options)
-        .then(_.partial(writeSvc.removeFileGroup, groupId))
-        .fail(errSvc.promiseError("Could not remove file group",
-            { userName: userName, groupId: groupId } ));
+    return userSvc.getFileGroups(userName, { groupId: groupId })
+        .then(function(fg) {
+            if (fg.length === 0) errSvc.error('This file group does not match this user', { groupId: groupId });
+            return userSvc.removeFileGroup(userName, groupId, options)
+                .then(_.partial(writeSvc.removeFileGroup, groupId))
+                .then(function() {
+                    return { success: true }
+                })
+                .fail(errSvc.promiseError("Could not remove file group",
+                    { userName: userName, groupId: groupId } ));
+        });
 }
 
 function removeFile(userName, groupId, fileName, options) {
 
     options = options || {};
-    return userSvc.removeFile(userName, fileName, groupId, options)
-        .then(_.partial(writeSvc.removeFile, groupId, fileName))
-        .fail(errSvc.promiseError("Could not remove file",
-            { userName: userName, fileName: fileName } ));
-
+    return userSvc.getFileGroups(userName, { groupId: groupId })
+        .then(function(fg) {
+            if (fg.length === 0) errSvc.error('This file group does not match this user', { groupId: groupId });
+            return userSvc.removeFile(userName, fileName, groupId, options)
+                .then(_.partial(writeSvc.removeFile, groupId, fileName))
+                .then(function() {
+                    return userSvc.getFileGroups(userName, { groupId: groupId })
+                })
+                .fail(errSvc.promiseError("Could not remove file",
+                    { userName: userName, fileName: fileName }));
+        });
 }
 
 function downloadFiles(currentUser, groupId, fileName, callbackForData) {
@@ -154,18 +170,9 @@ function unshareFileGroup(userName, groupId, targetUser) {
 
 }
 
-function getSharedFileGroup(userName, groupId, sharedUser) {
+function getShares(userName, groupId, sharedUser) {
 
-    return userSvc.getSharedFileGroup(userName, groupId, sharedUser);
-
-}
-
-function getSharedFileGroups(sharedUser) {
-
-    return userSvc.getSharedFileGroups(sharedUser)
-        .then(function(groups){
-            return groups;
-        });
+    return userSvc.getShares(userName, groupId, sharedUser);
 
 }
 
@@ -191,8 +198,7 @@ module.exports = {
     downloadFiles: downloadFiles,
     shareFileGroup: shareFileGroup,
     unshareFileGroup: unshareFileGroup,
-    getSharedFileGroup: getSharedFileGroup,
-    getSharedFileGroups: getSharedFileGroups,
+    getShares: getShares,
     _setWriteService: _setWriteService,
     _setUserService: _setUserService,
     _setFs: _setFs

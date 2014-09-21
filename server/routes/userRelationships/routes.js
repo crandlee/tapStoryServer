@@ -2,7 +2,7 @@
 var cb = require('common-bundle')();
 var _ = cb._;
 
-var authCtrl = cb.rootRequire('ctrl-auth');
+var authMdl = cb.rootRequire('mdl-auth');
 var relCtrlExt = cb.rootRequire('ctrl-rel-ext');
 var enums = cb.enums;
 var a = enums.auth;
@@ -13,65 +13,58 @@ module.exports = function (serverSvc) {
     //Add friends
     //Authorize: CurrentAdult/NoChild:StrictGuardian
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships',
-        authCtrl.authorize(authCtrl.currentAdultOrGuardian),
+        authMdl.authorize([a.CurrentAdult, a.StrictGuardian]),
         relCtrlExt.addFriendship);
 
     //Acknowledge Friend
     //Authorize: CurrentAdult/NoChild:StrictGuardian
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships/acknowledgement',
-        authCtrl.authorize(authCtrl.currentAdultOrGuardian),
+        authMdl.authorize([a.CurrentAdult, a.StrictGuardian]),
         relCtrlExt.acknowledgeFriendship);
 
     //Deactivate Friend
     //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian
     //TODO-Randy: Delete subscriptions when relationship becomes inactive
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/friendships',
-        authCtrl.authorize(authCtrl.adminRolesCurrentAdultOrGuardian),
+        authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian]),
         relCtrlExt.deactivateFriendship);
 
     //View friendships
     //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/friendships',
-        authCtrl.authorize(authCtrl.adminRolesCurrentAdultOrGuardian),
+        authMdl.authorize([a.Admin, a.CurrentAny, a.StrictGuardian]),
         relCtrlExt.getFriendships);
 
 
     //Add New Child
     //Authorize: CurrentAdult
     serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships',
-        authCtrl.authorize([a.CurrentAdult]),
+        authMdl.authorize([a.CurrentAdult]),
         relCtrlExt.addGuardianship);
 
     //View Guardianship
     //Authorize: Admin/CurrentAdult
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships',
-        authCtrl.authorize(authCtrl.adminRolesOrCurrentAdult),
+        authMdl.authorize([a.Admin, a.CurrentAdult]),
         relCtrlExt.getGuardianships);
-
 
 
     //View Guardians (User name assumed child)
     //Authorize: Admin/CurrentChild:NonStrictGuardian
-    //TODO-Randy: Add this route
-//    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardians',
-//        authCtrl.authorize(authCtrl.adminRolesOrCurrentAdult),
-//        relCtrlExt.getGuardians);
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardians',
+        authMdl.authorize([a.Admin, a.CurrentChild, a.NonStrictGuardian]),
+        relCtrlExt.getGuardianships);
 
     //Add guardian (User name assumed child)
     //Authorize: NoChild:StrictGuardian
-    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardians',
-        authCtrl.authorize(authCtrl.adminRolesOrCurrentAdult),
-        relCtrlExt.getGuardianships);
+    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardians',
+        authMdl.authorize([a.StrictGuardian]),
+        relCtrlExt.addAdditionalGuardian);
 
     //De-activate Guardianship (User name assumed child)
     //Authorize: NoChild:StrictGuardian
-    //TODO-Randy: Delete subscriptions when relationship becomes inactive
-    //TODO-Randy: Disallow removing last guardian
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/guardians',
-        authCtrl.authorize(cb.extend({ allowInactive: { val: true } }, authCtrl.currentUserAndGuardian)),
+        authMdl.authorize([a.StrictOneOfMultipleGuardians]),
         relCtrlExt.deactivateGuardianship);
-
-
-
 
 };
