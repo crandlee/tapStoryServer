@@ -91,8 +91,7 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
             hasMultipleGuardians: function(testVal) {
                 if (!d.params || !d.params.userName) return (testVal === false);
                 return userRelSvc.getRelationships(d.params.userName,
-                    enums.relationships.guardian,
-                    [enums.statuses.pending, enums.statuses.pendingack, enums.statuses.active])
+                    enums.relationships.guardian, [enums.statuses.active])
                     .then(function(rels) {
                        return (rels.length > 1) === testVal;
                     });
@@ -111,7 +110,6 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
             },
             isSubscribed: function (testVal) {
                 if (!d.params || !d.params.groupId) return false;
-                if (!d.params || !d.params.relUser) return false;
                 if (!d.currentUser || !d.currentUser.userName) return false;
                 return userSvc.getShares(d.params.userName, d.params.groupId, d.params.relUser || d.currentUser.userName)
                     .then(function (fileGroup) {

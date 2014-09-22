@@ -51,17 +51,19 @@ function removeFileGroupShare(userName, groupId, targetUser, options) {
 
 }
 
-function getShares(userName, groupId, sharedUser) {
+function getShares(userName, groupId, sharedUser, currentUser) {
 
     var userRelSvc = cb.rootRequire('svc-rel');
     var hasRelationship = function(sourceUser, targetUser, rels) {
         return _.filter(rels, function(rel) {
-            return rel.participants.length === 2
+            return (!currentUser || currentUser === sourceUser || currentUser === targetUser)
+                &&  rel.participants.length === 2
                 && ((rel.relKey === sourceUser.toLowerCase() + '||' + targetUser.toLowerCase())
                     || rel.relKey === targetUser.toLowerCase() + '||' + sourceUser.toLowerCase())
                 && rel.participants[0].status === cb.enums.statuses.active && rel.participants[1].status === cb.enums.statuses.active;
         }).length > 0;
     };
+
     var getShares = function(user) {
         if (sharedUser && !user) return cb.Promise(null);
         var opts = {};
@@ -161,50 +163,6 @@ function getFileGroups(userName, options) {
             { userName: userName } ));
 }
 
-function getPermittedFiles(currentUser, groupId, file) {
-
-    var checkGroupOwnership = promise.fbind(function(resource, groupId) {
-        var fg = resource.getFileGroup(groupId);
-        fg = fg || { files: [] };
-        if (file)
-            return { user: resource, files: [_.find(fg.files, function(testFile) {
-                return testFile.fileName.toLowerCase() === file.toLowerCase();
-            })] || [] };
-        else
-            return { user: resource, files: fg.files || []};
-    });
-
-    var checkCurrentUserRole = promise.fbind(function(resFileStruct, currentUser) {
-
-        if (resFileStruct.files.length === 0 && currentUser.hasRole('super-admin')) {
-            return getSingle({ "fileGroups.groupId" : groupId })
-                .then(function(resource) {
-                    if (resource) {
-                        var fg = resource.getFileGroup(groupId);
-                        resFileStruct.files = (fg && fg.files);
-                    } else {
-                        resFileStruct.files =  [];
-                    }
-                    return resFileStruct;
-                })
-                .fail(errSvc.promiseError("Could not locate user for file group"),
-                    { groupId: groupId });
-        } else {
-            return resFileStruct;
-        }
-
-    });
-
-    return getSingle(currentUser.userName)
-        .then(_.partialRight(checkGroupOwnership, groupId))
-        .then(_.partialRight(checkCurrentUserRole, currentUser))
-        .then(function(userFileStruct) {
-            if (userFileStruct.files.length === 0) throw new Error('Unable to authorize user for download');
-            delete userFileStruct.resource;
-            return promise(userFileStruct.files);
-        });
-
-}
 
 module.exports = {
     save: save,
@@ -220,7 +178,6 @@ module.exports = {
     getFileGroups: getFileGroups,
     addFileGroupShare: addFileGroupShare,
     removeFileGroupShare: removeFileGroupShare,
-    getPermittedFiles:getPermittedFiles,
     getShares: getShares,
     optionsBuilder: userSvcOptions
 };

@@ -111,7 +111,7 @@ function removeFile(userName, groupId, fileName, options) {
         });
 }
 
-function downloadFiles(currentUser, groupId, fileName, callbackForData) {
+function downloadFiles(userName, groupId, fileName, callbackForData) {
 
     var archiveStreams = function (streamContainerArr) {
 
@@ -131,12 +131,17 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
 
     };
 
-    var routeDownloadsToArchiver = function(files, groupId) {
+    var routeDownloadsToArchiver = function(fg, groupId, fileName) {
 
+        var files = fg[0].files;
         if (files && Array.isArray(files)) {
-            return promise.all(_.map(files, function (file) {
-                return promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
-            })).then(function (streamArr) {
+            return promise.all(_(files)
+                .filter(function(file) { return (!fileName) || file.fileName === fileName; })
+                .map(function (file) {
+                    console.log(file);
+                    return promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
+                }).value()
+            ).then(function (streamArr) {
                 return promise.fcall(archiveStreams, streamArr);
             });
         } else {
@@ -145,10 +150,10 @@ function downloadFiles(currentUser, groupId, fileName, callbackForData) {
 
     };
 
-    return userSvc.getPermittedFiles(currentUser, groupId, fileName)
-        .then(_.partialRight(routeDownloadsToArchiver, groupId))
+    return userSvc.getFileGroups(userName, { groupId: groupId })
+        .then(_.partialRight(routeDownloadsToArchiver, groupId, fileName))
         .fail(errSvc.promiseError("Could not download files",
-            { userName: currentUser.userName, groupId: groupId, files: fileName } ));
+            { userName: userName.userName, groupId: groupId, files: fileName } ));
 
 }
 
@@ -170,9 +175,9 @@ function unshareFileGroup(userName, groupId, targetUser) {
 
 }
 
-function getShares(userName, groupId, sharedUser) {
+function getShares(userName, groupId, sharedUser, currentUser) {
 
-    return userSvc.getShares(userName, groupId, sharedUser);
+    return userSvc.getShares(userName, groupId, sharedUser, currentUser);
 
 }
 

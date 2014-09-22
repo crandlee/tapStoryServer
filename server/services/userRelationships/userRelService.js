@@ -26,7 +26,9 @@ function getRelationships(sourceUser, relationship, statuses) {
             if (statuses) find = cb.extend(find, { "participants.status" : { $in: statuses }});
             return resSvc.getList({ find: find, populate: ['participants.user'], model: 'UserRelationship'  })
                 .then(function(relationships) {
-                    return relationships;
+                    return _.filter(relationships, function(rel) {
+                        return rel.participants[0].user.isActive && rel.participants[1].user.isActive;
+                    });
                 });
         });
 

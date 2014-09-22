@@ -7,6 +7,8 @@ var promise = cb.Promise;
 var authorizeSvc = cb.rootRequire('svc-auth');
 var encryptionSvc = cb.rootRequire('util-encryption');
 var resSvc = cb.rootRequire('svc-resource');
+var userRelSvc = cb.rootRequire('svc-rel');
+var enums = cb.enums;
 
 function saveUserOptions(opts) {
 
@@ -178,10 +180,52 @@ function setRemoveRoleOptions(opts) {
 
 function setIsActive(isActive, opts) {
 
+    var isOnlyGuardian = function(guardianName) {
+
+        var getChildGuardianCount = function(childName) {
+            return userRelSvc.getRelationships(childName, enums.relationships.child, [enums.statuses.active])
+                .then(function(rels) {
+                    return cb.Promise(_.reduce(rels, function(sum, rel) {
+                        var retVal = (rel.participants[0].user.userName === childName && rel.participants[0].rel === enums.relationships.child ||
+                                rel.participants[1].user.userName === childName && rel.participants[1].rel === enums.relationships.child)
+                                    ? 1 : 0;
+                        return retVal + sum;
+                    }, 0));
+                });
+        };
+        return userRelSvc.getRelationships(guardianName,
+            enums.relationships.guardian, [enums.statuses.active])
+            .then(function(rels) {
+                var childTests = [];
+
+                _.forEach(rels, function(rel) {
+                    if (rel.participants[0].user.userName === guardianName && rel.participants[0].rel === enums.relationships.guardian)
+                        childTests.push(getChildGuardianCount(rel.participants[1].user.userName));
+                    if (rel.participants[1].user.userName === guardianName && rel.participants[1].rel === enums.relationships.guardian)
+                        childTests.push(getChildGuardianCount(rel.participants[0].user.userName));
+                });
+                return cb.Promise.all(childTests)
+                    .then(function(counts) {
+                        console.log(counts);
+                        return (_.some(counts, function(count) { return count === 1 }));
+                    })
+            });
+
+    };
+
     opts.updateOnly = true;
     opts.preValidation = function(opts) {
         if (!opts.userName) errSvc.error('Setting user active state requires a userName');
-        return opts;
+        if (!isActive) {
+            //Verify that being inactive does not leave a "child" relationship stranded
+            //without a backup guardian.
+            return isOnlyGuardian(opts.userName).then(function(isOnlyGuardian) {
+               if (isOnlyGuardian) errSvc.error('This user is currently a sole guardian to a child.  Please add a new guardian before deactivating.')
+               return opts;
+            });
+        } else {
+            return opts;
+        }
     };
     opts.modelName = 'User';
     opts.find = { userName: opts.userName };

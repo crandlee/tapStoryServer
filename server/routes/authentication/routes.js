@@ -36,7 +36,6 @@ module.exports = function (serverSvc) {
 
     //Delete User
     //Authorize: Admins/CurrentAdult/CurrentChild:NonStrictGuardian
-    //TODO-Randy: Active relationships on disabled users don't pull up on any relationship queries
     serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName',
         authMdl.authorize([a.Admin, a.CurrentAdult, a.NonStrictGuardian]),
         userCtrl.deactivateUser);

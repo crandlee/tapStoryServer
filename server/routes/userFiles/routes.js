@@ -13,7 +13,6 @@ module.exports = function (serverSvc) {
     //File sharing
     //View Subscriptions to a File Group
     //Authorize: Admins/CurrentAdult/CurrentChild:NonStrictGuardian
-    //TODO-Randy: Need to filter out disabled from various subscription checks ( getShared on the userService )
     serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/fileSubs/:relUser',
         authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian, a.Subscribed]),
         uploadsCtrl.getSharedFileGroupForUser);
@@ -98,7 +97,7 @@ module.exports = function (serverSvc) {
 
     //Downloading file
     //Authorize: CurrentAdult/CurrentChild:StrictGuardian/SubscribedUser
-    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/:fileName',
+    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/fileGroups/:groupId/files/:fileName',
         authMdl.authorize([a.CurrentAny, a.NonStrictGuardian, a.Subscribed]),
         uploadsCtrl.downloadFiles);
 

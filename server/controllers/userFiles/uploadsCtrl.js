@@ -223,7 +223,7 @@ function getSharesFileGroup(req, res, next) {
     if (!groupId) ctrlHelper.setBadRequest(res, 'Viewing shares for a file group requires a groupId');
 
     if (userName && groupId) {
-        uploads.getShares(userName, groupId)
+        uploads.getShares(userName, groupId, null, req.user.userName)
             .then(function (shares) {
                 if (shares)
                     ctrlHelper.setOk(res, shares);
@@ -246,7 +246,7 @@ function getShares(req, res, next) {
     if (!userName) ctrlHelper.setBadRequest(res, 'Viewing shares for a user requires a source user name');
 
     if (userName) {
-        uploads.getShares(userName)
+        uploads.getShares(userName, null, null, req.user.userName)
             .then(function (shares) {
                 if (shares)
                     ctrlHelper.setOk(res, shares);
@@ -281,7 +281,7 @@ function getSharedFileGroupForUser(req, res, next) {
                     ctrlHelper.setForbidden(res, 'User must have existing relationship to participate in sharing');
                     next();
                 } else {
-                    uploads.getShares(userName, groupId, shareUser)
+                    uploads.getShares(userName, groupId, shareUser, req.user.userName)
                         .then(function (shares) {
                             if (shares)
                                 ctrlHelper.setOk(res, shares);
@@ -312,13 +312,11 @@ function downloadFiles(req, res, next) {
         res.write(data);
         res.end();
     };
-    var currentUser = req.user;
     if (!userName) ctrlHelper.setBadRequest(res, 'Downloading requires a userName');
     if (!groupId) ctrlHelper.setBadRequest(res, 'Downloading requires a groupId');
-    if (!currentUser) ctrlHelper.setBadRequest(res, 'Downloading requires a currently logged in user');
 
-    if (userName && groupId && currentUser) {
-        uploads.downloadFiles(currentUser, groupId, fileName, sendDownload)
+    if (userName && groupId) {
+        uploads.downloadFiles(userName, groupId, fileName, sendDownload)
             .fail(_.partial(ctrlHelper.setInternalError, res))
             .fin(next)
             .done();
