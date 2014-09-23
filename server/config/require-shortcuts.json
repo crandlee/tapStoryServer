@@ -37,6 +37,7 @@
     { "k":"util-function", "v": "utilities/functionUtilities" },
     { "k":"util-test", "v": "test/utilities/testUtilities"},
     { "k":"vm-user", "v": "models/authentication/userViewModels"},
-    { "k":"vm-rel", "v": "models/userRelationships/userRelViewModels"}
+    { "k":"vm-rel", "v": "models/userRelationships/userRelViewModels"},
+    { "k":"route-builder", "v": "services/hypermedia/routeBuilder"}
 
 ]

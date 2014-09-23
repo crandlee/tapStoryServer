@@ -15,7 +15,7 @@ function attachLinksToObject(obj, linkArr, path) {
     return obj;
 }
 
-function addLink(uri, rel, method, isSelf, path) {
+function addLink(uri, rel, method, isSelf, path, host) {
 
     isSelf = isSelf || false;
     method = method || 'GET';

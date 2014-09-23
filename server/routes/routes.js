@@ -26,10 +26,13 @@ function initialize(serverSvc, fileSystemSvc) {
 
     });
 
-    //Add core routes
-    serverSvc.addRoute(enums.routeMethods.GET, '/',
-        authMdl.authorize([a.Guest]),
-        coreCtrl.core);
+
+    var rs = cb.rootRequire('route-builder')(serverSvc.addRoute,
+        require('url').format({ protocol: cb.config.protocol, hostname: cb.config.hostname,
+            port: cb.config.port, pathname: cb.config.baseUri}));
+
+    rs.addResource({ uri: '', name: 'root'} )
+        .addMethod(rs.resourceMethods.GET, authMdl.authorize([a.Guest]), coreCtrl.core);
 
 }
 

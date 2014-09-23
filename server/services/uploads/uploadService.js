@@ -138,7 +138,6 @@ function downloadFiles(userName, groupId, fileName, callbackForData) {
             return promise.all(_(files)
                 .filter(function(file) { return (!fileName) || file.fileName === fileName; })
                 .map(function (file) {
-                    console.log(file);
                     return promise.fcall(writeSvc.downloadFile, file.fileName, groupId);
                 }).value()
             ).then(function (streamArr) {

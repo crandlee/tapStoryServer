@@ -6,64 +6,41 @@ var authMdl = cb.rootRequire('mdl-auth');
 var relCtrlExt = cb.rootRequire('ctrl-rel-ext');
 var enums = cb.enums;
 var a = enums.auth;
+var rs = cb.rootRequire('route-builder')();
 
-module.exports = function (serverSvc) {
-
-
-    //Add friends
-    //Authorize: CurrentAdult/NoChild:StrictGuardian
-    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships',
-        authMdl.authorize([a.CurrentAdult, a.StrictGuardian]),
-        relCtrlExt.addFriendship);
-
-    //Acknowledge Friend
-    //Authorize: CurrentAdult/NoChild:StrictGuardian
-    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/friendships/acknowledgement',
-        authMdl.authorize([a.CurrentAdult, a.StrictGuardian]),
-        relCtrlExt.acknowledgeFriendship);
-
-    //Deactivate Friend
-    //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian
-    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/friendships',
-        authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian]),
-        relCtrlExt.deactivateFriendship);
-
-    //View friendships
-    //Authorize: Admin/CurrentAdult/CurrentChild:NonStrictGuardian
-    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/friendships',
-        authMdl.authorize([a.Admin, a.CurrentAny, a.StrictGuardian]),
-        relCtrlExt.getFriendships);
+module.exports = function () {
 
 
-    //Add New Child
-    //Authorize: CurrentAdult
-    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardianships',
-        authMdl.authorize([a.CurrentAdult]),
-        relCtrlExt.addGuardianship);
+    //Friendships
+    rs.getResource('user')
+        .addResource({ uri: 'friendships' })
+            .addMethod(rs.resourceMethods.GET,
+                authMdl.authorize([a.Admin, a.CurrentAny, a.StrictGuardian]), relCtrlExt.getFriendships)
+            .addMethod(rs.resourceMethods.POST,
+                authMdl.authorize([a.CurrentAdult, a.StrictGuardian]), relCtrlExt.addFriendship)
+            .addMethod(rs.resourceMethods.DEL,
+                authMdl.authorize([a.Admin, a.CurrentAny, a.NonStrictGuardian]), relCtrlExt.deactivateFriendship)
+        .addResource({ uri: 'acknowledgement' })
+            .addMethod(rs.resourceMethods.POST,
+                authMdl.authorize([a.CurrentAdult, a.StrictGuardian]), relCtrlExt.acknowledgeFriendship);
 
-    //View Guardianship
-    //Authorize: Admin/CurrentAdult
-    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardianships',
-        authMdl.authorize([a.Admin, a.CurrentAdult]),
-        relCtrlExt.getGuardianships);
+    //Guardianships/Guardians
+    rs.getResource('user')
+        .addResource({ uri: 'guardianships'})
+            .addMethod(rs.resourceMethods.GET,
+                authMdl.authorize([a.Admin, a.CurrentAdult]), relCtrlExt.getGuardianships)
+            .addMethod(rs.resourceMethods.POST,
+                authMdl.authorize([a.CurrentAdult]), relCtrlExt.addGuardianship);
 
 
-    //View Guardians (User name assumed child)
-    //Authorize: Admin/CurrentChild:NonStrictGuardian
-    serverSvc.addRoute(enums.routeMethods.GET, '/users/:userName/guardians',
-        authMdl.authorize([a.Admin, a.CurrentChild, a.NonStrictGuardian]),
-        relCtrlExt.getGuardianships);
+    rs.getResource('user')
+        .addResource({ uri: 'guardians'})
+            .addMethod(rs.resourceMethods.GET,
+                authMdl.authorize([a.Admin, a.CurrentChild, a.NonStrictGuardian]), relCtrlExt.getGuardianships)
+            .addMethod(rs.resourceMethods.POST,
+                authMdl.authorize([a.StrictGuardian]), relCtrlExt.addAdditionalGuardian)
+            .addMethod(rs.resourceMethods.DEL,
+                authMdl.authorize([a.StrictOneOfMultipleGuardians]), relCtrlExt.deactivateGuardianship);
 
-    //Add guardian (User name assumed child)
-    //Authorize: NoChild:StrictGuardian
-    serverSvc.addRoute(enums.routeMethods.POST, '/users/:userName/guardians',
-        authMdl.authorize([a.StrictGuardian]),
-        relCtrlExt.addAdditionalGuardian);
-
-    //De-activate Guardianship (User name assumed child)
-    //Authorize: NoChild:StrictGuardian
-    serverSvc.addRoute(enums.routeMethods.DEL, '/users/:userName/guardians',
-        authMdl.authorize([a.StrictOneOfMultipleGuardians]),
-        relCtrlExt.deactivateGuardianship);
 
 };

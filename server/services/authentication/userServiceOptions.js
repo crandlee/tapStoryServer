@@ -206,7 +206,6 @@ function setIsActive(isActive, opts) {
                 });
                 return cb.Promise.all(childTests)
                     .then(function(counts) {
-                        console.log(counts);
                         return (_.some(counts, function(count) { return count === 1 }));
                     })
             });
