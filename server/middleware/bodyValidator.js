@@ -7,7 +7,6 @@ function validateBody(bodyParams, req, res, next) {
 
     req.body = req.body || {};
     if (!_.isPlainObject(req.body)) return next();
-
     var removeInvalidBodyParams = function(bodyParams, body) {
         var tempBody = _.clone(body);
         _.each(_.partial(_.without,_.keys(body)).apply(null,_.map(bodyParams, function(param) {

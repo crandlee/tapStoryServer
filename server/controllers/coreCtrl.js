@@ -6,8 +6,7 @@ var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function core(req, res, next) {
 
-    //Add top level hypermedia
-    ctrlHelper.setOk(res, {}, next);
+    ctrlHelper.setOk(res, next, {});
 
 }
 

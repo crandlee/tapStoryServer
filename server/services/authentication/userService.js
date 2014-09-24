@@ -145,7 +145,6 @@ function getSingle(userName, options) {
 }
 
 function getFileGroups(userName, options) {
-
     function getFileGroupsFromUserResource(options, user) {
         var groups = user.fileGroups || [];
         if (options.groupId) {

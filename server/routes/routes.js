@@ -31,7 +31,8 @@ function initialize(serverSvc, fileSystemSvc) {
             port: cb.config.port, pathname: cb.config.baseUri}));
 
     rs.addResource({ uri: '', name: 'root', rel: 'root'} )
-        .addMethod(rs.resourceMethods.GET, { rules: [a.Guest]}, coreCtrl.core, { self: true });
+        .addMethod(rs.resourceMethods.GET, { rules: [a.Guest]}, coreCtrl.core,
+            { self: true });
 
 }
 

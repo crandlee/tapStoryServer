@@ -24,9 +24,8 @@ function getFileGroups(userName, options) {
 }
 
 function transformFileGroupsViewModel(userFileGroups) {
-
     return promise(_.map(userFileGroups, function(userFileGroup) {
-        return userFileGroup.parent().viewModel('fileGroup');
+        return userFileGroup.parent().viewModel('fileGroup', { doc: userFileGroup });
     }));
 
 }

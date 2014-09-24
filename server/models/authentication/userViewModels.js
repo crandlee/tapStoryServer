@@ -13,7 +13,6 @@ function getBaseUserVm(userDoc) {
 }
 
 function getBaseFileGroupVm(fgDoc) {
-
     return {
         groupId: fgDoc.groupId,
         groupName: fgDoc.groupName,

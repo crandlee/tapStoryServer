@@ -61,7 +61,6 @@ function writeFile(destFile, data, options) {
 }
 
 function verifyFileGroups(fileGroups) {
-
     return promise.all(_.map(fileGroups, function (fileGroup) {
         return verifyFileGroup(fileGroup)
             .then(verifyFiles);

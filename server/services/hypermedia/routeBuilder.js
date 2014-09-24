@@ -37,7 +37,6 @@ Resource.prototype.getRelUri = function () {
 };
 
 Resource.prototype.getAbsUri = function (params) {
-
     return baseUri + applyParamsToUri(params, this.getRelUri());
 
 };
@@ -135,11 +134,18 @@ function getBaseLinks() {
     return obj;
 }
 
-function getBaseLink(rel, uri, method, options) {
+function getBaseLink(req, rel, uri, method, options, params) {
 
     var optional = {};
-    if (options.description) optional.description = options.description;
     if (options.bodyParams) optional.bodyParams = options.bodyParams;
+    if (req.params['minimal'] && req.params['minimal'].toLowerCase() === 'true')
+        return { href: uri, name: rel.toLowerCase() + '-' + method.toLowerCase() };
+
+    try {
+        if (options.description) optional.description = _.template(options.description, params);
+    } catch(e) {
+        throw new Error("Unable to process the description template for the route.  Error returned was: " + e.message);
+    }
 
     return _.extend({
         name: rel.toLowerCase() + '-' + method.toLowerCase(),
@@ -150,7 +156,7 @@ function getBaseLink(rel, uri, method, options) {
 
 }
 
-function getTopLevelLinks(req, resource) {
+function getTopLevelLinks(req, resource, documentResource) {
 
     if (!resource || !(resource instanceof Resource)) throw new Error("Cannot get root links without a proper resource");
 
@@ -159,6 +165,8 @@ function getTopLevelLinks(req, resource) {
     var nextResMethods = _.reduce(resource.nextResources, function (arr, nextRes) {
         return (!nextRes.options.collectionChild) ? _.union(arr, _.toArray(nextRes.methods)) : arr;
     }, []);
+    var params = getCurrentLevelKeys(req, documentResource);
+
     links[getLinkKey()] = _.union(links[getLinkKey()], _(currentResMethods)
         .filter(function (method) {
             return (!method.options || !method.options.self);
@@ -169,13 +177,21 @@ function getTopLevelLinks(req, resource) {
                 || !(method.resource.options.collectionChild && method.options.self));
         })
         .map(function (method) {
-            return getBaseLink(method.resource.rel, method.resource.getAbsUri(req.params), method.method, method.options)
+            return getBaseLink(req, method.resource.rel, method.resource.getAbsUri(params), method.method, method.options, params)
         })
         .value());
     return links;
 }
 
-function getDetailLinks(resource, collection) {
+function getCurrentLevelKeys(req, documentResource) {
+
+    var doc = documentResource;
+    if (_.isArray(documentResource) && _.size(documentResource) === 1) doc = documentResource[0];
+    return _.assign(_.clone(req.params), _.assign(_.clone(req.body), _.clone(doc)));
+
+}
+
+function getDetailLinks(req, resource, collection) {
 
     if (!collection || !(_.isArray(collection))) throw new Error("Cannot get detail links without a collection of resources");
 
@@ -194,20 +210,19 @@ function getDetailLinks(resource, collection) {
         return collection;
     if (!selfMethod) return collection;
 
-    return _.map(collection, function (resource) {
+
+    return _.map(collection, function (documentResource) {
+        var params = getCurrentLevelKeys(req, documentResource);
         var links = getBaseLinks();
-        var params = {};
-        params[selfMethod.resource.options.key] = resource[selfMethod.resource.options.key];
-        links[getLinkKey()] = getBaseLink('self',
-            selfMethod.resource.getAbsUri(params), selfMethod.method, selfMethod.options);
-        return _.extend(resource, links);
+        links[getLinkKey()] = getBaseLink(req, 'self',
+            selfMethod.resource.getAbsUri(params), selfMethod.method, selfMethod.options, params);
+        return _.extend(documentResource, links);
     });
 
 
 }
 
 function addLinks(resource, options, req, res, next) {
-
     var apiObject = res._tempData || res._body;
     if (apiObject) {
 
@@ -218,7 +233,7 @@ function addLinks(resource, options, req, res, next) {
             if (!isHtml) {
                 var hypObject = {};
                 hypObject[resource.rel || 'resource'] = apiObject;
-                if (_.isArray(apiObject)) apiObject = getDetailLinks(resource, apiObject);
+                if (_.isArray(apiObject)) apiObject = getDetailLinks(req, resource, apiObject);
                 hypObject = _.extend(hypObject, getTopLevelLinks(req, resource, apiObject));
                 res.json(hypObject);
             } else {
