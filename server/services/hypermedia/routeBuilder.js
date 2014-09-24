@@ -1,5 +1,8 @@
 "use strict";
-var _ = require("lodash");
+var cb = require('common-bundle')();
+var authMdl = cb.rootRequire('mdl-auth');
+var _ = cb._;
+
 var addRouteFn;
 var baseUri;
 var resources = {};
@@ -77,9 +80,9 @@ Resource.prototype.addResource = function (defaults, options) {
 
 };
 
-Resource.prototype.addMethod = function (method) {
+Resource.prototype.addMethod = function (method, authOptions) {
 
-    var fns = Array.prototype.slice.call(arguments, 1);
+    var fns = Array.prototype.slice.call(arguments, 2);
     var options = _.chain(fns).filter(function (val) {
         return !_.isFunction(val);
     }).last().value() || {};
@@ -91,6 +94,8 @@ Resource.prototype.addMethod = function (method) {
         return _.isFunction(fn);
     })) {
         console.log('Adding method ' + method + ' to ' + this.getAbsUri());
+        //Add global pre- and post-controller functions
+        fns.splice(0, 0, _.partial(authMdl.authorize, authOptions.rules, authOptions.options));
         fns.push(_.partial(addLinks, this, options));
         this.methods[method] = { fns: fns, method: method, options: options, resource: this };
         addRouteFn(method, this.getRelUri(), fns);

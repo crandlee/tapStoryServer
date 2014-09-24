@@ -13,7 +13,7 @@ function authenticate() {
     return authSvc.authenticateMethod();
 }
 
-function authorizeMethod(listTestClusters, options, req, res, next) {
+function authorize(listTestClusters, options, req, res, next) {
 
     listTestClusters = listTestClusters || {};
     options = options || {};
@@ -154,13 +154,6 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
         var auth = authSvc.authenticateMethod(req, res, next);
         auth(req, res, _.partial(afterAuthenticate, req, res, next, { checkUser: true }));
     }
-
-}
-
-
-function authorize(neededTestList, options) {
-
-    return _.partial(authorizeMethod, neededTestList, options);
 
 }
 

@@ -3,7 +3,6 @@ var cb = require('common-bundle')();
 
 var fileSystemUtility = cb.rootRequire('util-filesystem');
 var coreCtrl = cb.rootRequire('ctrl-core');
-var authMdl = cb.rootRequire('mdl-auth');
 var enums = cb.enums;
 var a = enums.auth;
 
@@ -32,7 +31,7 @@ function initialize(serverSvc, fileSystemSvc) {
             port: cb.config.port, pathname: cb.config.baseUri}));
 
     rs.addResource({ uri: '', name: 'root', rel: 'root'} )
-        .addMethod(rs.resourceMethods.GET, authMdl.authorize([a.Guest]), coreCtrl.core, { self: true });
+        .addMethod(rs.resourceMethods.GET, { rules: [a.Guest]}, coreCtrl.core, { self: true });
 
 }
 
