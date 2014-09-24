@@ -31,8 +31,8 @@ function initialize(serverSvc, fileSystemSvc) {
         require('url').format({ protocol: cb.config.protocol, hostname: cb.config.hostname,
             port: cb.config.port, pathname: cb.config.baseUri}));
 
-    rs.addResource({ uri: '', name: 'root'} )
-        .addMethod(rs.resourceMethods.GET, authMdl.authorize([a.Guest]), coreCtrl.core);
+    rs.addResource({ uri: '', name: 'root', rel: 'root'} )
+        .addMethod(rs.resourceMethods.GET, authMdl.authorize([a.Guest]), coreCtrl.core, { self: true });
 
 }
 

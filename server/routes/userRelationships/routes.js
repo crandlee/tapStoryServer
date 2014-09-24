@@ -15,7 +15,7 @@ module.exports = function () {
     rs.getResource('user')
         .addResource({ uri: 'friendships' })
             .addMethod(rs.resourceMethods.GET,
-                authMdl.authorize([a.Admin, a.CurrentAny, a.StrictGuardian]), relCtrlExt.getFriendships)
+                authMdl.authorize([a.Admin, a.CurrentAny, a.StrictGuardian]), relCtrlExt.getFriendships, { self: true })
             .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.CurrentAdult, a.StrictGuardian]), relCtrlExt.addFriendship)
             .addMethod(rs.resourceMethods.DEL,
@@ -28,7 +28,7 @@ module.exports = function () {
     rs.getResource('user')
         .addResource({ uri: 'guardianships'})
             .addMethod(rs.resourceMethods.GET,
-                authMdl.authorize([a.Admin, a.CurrentAdult]), relCtrlExt.getGuardianships)
+                authMdl.authorize([a.Admin, a.CurrentAdult]), relCtrlExt.getGuardianships, { self: true })
             .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.CurrentAdult]), relCtrlExt.addGuardianship);
 
@@ -36,7 +36,7 @@ module.exports = function () {
     rs.getResource('user')
         .addResource({ uri: 'guardians'})
             .addMethod(rs.resourceMethods.GET,
-                authMdl.authorize([a.Admin, a.CurrentChild, a.NonStrictGuardian]), relCtrlExt.getGuardianships)
+                authMdl.authorize([a.Admin, a.CurrentChild, a.NonStrictGuardian]), relCtrlExt.getGuardianships, { self: true })
             .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.StrictGuardian]), relCtrlExt.addAdditionalGuardian)
             .addMethod(rs.resourceMethods.DEL,

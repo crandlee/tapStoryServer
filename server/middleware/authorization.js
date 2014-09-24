@@ -135,12 +135,12 @@ function authorizeMethod(listTestClusters, options, req, res, next) {
                 .then(function (passed) {
                     if (cb.env === 'development') res.setHeader('X-Auth-Tested', JSON.stringify(testsRun));
                     if (!passed) {
-                        ctrlHelper.setForbidden(res,
+                        ctrlHelper.setForbidden(res, next,
                             'The current user is not authorized to run this operation on this resource');
                     }
                     next(passed);
                 })
-                .fail(_.partial(ctrlHelper.setInternalError, res))
+                .fail(_.partial(ctrlHelper.setInternalError, res, next))
                 .done();
 
         }

@@ -11,16 +11,15 @@ describe('controllers/authentication/userCtrl.js', function () {
     var sandbox;
 
     var userSvcStub, userCtrl,
-        linkSvcStub, resStub, reqStub, nextStub, optionsStub;
+        resStub, reqStub, nextStub, optionsStub;
     var addOnly = false;
 
     beforeEach(function () {
 
         sandbox = sinon.sandbox.create();
-        linkSvcStub = sandbox.stub(cb.rootRequire('svc-link'));
         userSvcStub = sandbox.stub(cb.rootRequire('svc-user'));
         userCtrl = cb.proxyquire(cb.getRoutePathFromKey('ctrl-user'),
-            { linkSvc: linkSvcStub });
+            {  });
 
         resStub = sandbox.stub({
             status: function () {
@@ -328,7 +327,7 @@ describe('controllers/authentication/userCtrl.js', function () {
             userSvcStub.getList()
                 .then(function(users) {
                     var viewModels = _.map(users, function (user) {
-                        return user.viewModel('users');
+                        return user.viewModel('user');
                     });
                     sinon.assert.calledWithExactly(resStub.send, 200, viewModels);
                 })
@@ -441,7 +440,6 @@ describe('controllers/authentication/userCtrl.js', function () {
                 roles: rolesStub,
                 userName: testUtils.getRandomString(10)
             };
-            linkSvcStub.attachLinksToObject.returnsArg(0);
             userSvcStub.addRole = promiseUtils.getResolveExactlyPromiseStub(userStub);
             userCtrl._setUserService(userSvcStub);
             userCtrl.addRole(reqStub, resStub, nextStub);
@@ -558,7 +556,6 @@ describe('controllers/authentication/userCtrl.js', function () {
                 roles: rolesStub,
                 userName: testUtils.getRandomString(10)
             };
-            linkSvcStub.attachLinksToObject.returnsArg(0);
             userSvcStub.removeRole = promiseUtils.getResolveExactlyPromiseStub(userStub);
             userCtrl._setUserService(userSvcStub);
             userCtrl.removeRole(reqStub, resStub, nextStub);
@@ -638,7 +635,6 @@ describe('controllers/authentication/userCtrl.js', function () {
             var userName = testUtils.getRandomString(10);
             var testRes = { userName: userName, roles: [testUtils.getRandomString(10), testUtils.getRandomString(10)] };
             reqStub.params.userName = userName;
-            linkSvcStub.attachLinksToObject.returnsArg(0);
             userSvcStub.getSingle = promiseUtils.getResolveExactlyPromiseStub(testRes);
             userCtrl._setUserService(userSvcStub);
             userCtrl.getRoles(reqStub, resStub, nextStub);

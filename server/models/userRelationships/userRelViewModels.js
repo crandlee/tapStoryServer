@@ -1,7 +1,6 @@
 'use strict';
 var cb = require('common-bundle')();
 var _ = cb._;
-var linkSvc = cb.rootRequire('svc-link');
 
 function getBaseRelationshipVm(relDoc, sourceName) {
 
@@ -17,15 +16,9 @@ function getBaseRelationshipVm(relDoc, sourceName) {
         status: relPart.status
     }
 }
-function getRelationshipViewModel(relDoc, apiPath, options) {
+function getRelationshipViewModel(relDoc, options) {
 
-    var vm = getBaseRelationshipVm(relDoc, options.sourceName);
-    if (!options.hideLinks) {
-        vm = linkSvc.attachLinksToObject(vm,
-            [{ uri: '/' + encodeURIComponent(vm.userName), rel: 'relUser' }],
-            apiPath);
-    }
-    return vm;
+    return getBaseRelationshipVm(relDoc, options.sourceName);
 
 }
 

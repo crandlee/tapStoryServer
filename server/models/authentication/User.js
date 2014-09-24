@@ -105,9 +105,9 @@ schema.methods = {
 
     },
 
-    viewModel: function (type, apiPath, options) {
+    viewModel: function (type, options) {
         options = options || {};
-        return viewModels[type](options.doc || this, apiPath, options);
+        return viewModels[type](options.doc || this, options);
     }
 
 };

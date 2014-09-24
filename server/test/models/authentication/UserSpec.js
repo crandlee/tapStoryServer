@@ -168,11 +168,6 @@ describe('models/authentication/UserSpec.js', function () {
 
         });
 
-        it('returns an object when called with "users"', function () {
-
-            should.exist(testUser.viewModel('users'));
-
-        });
 
         it('returns an object when called with no param', function () {
 

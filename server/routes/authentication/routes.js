@@ -16,28 +16,29 @@ module.exports = function () {
     var userRes = rs.getResource('root')
         .addResource({ uri: 'users' } )
             .addMethod(rs.resourceMethods.GET,
-                        authMdl.authorize([a.Admin]), userCtrl.getUsers)
+                        authMdl.authorize([a.Admin]), userCtrl.getUsers, { self: true })
             .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.Guest]), userCtrl.saveUser({addOnly: true}))
-        .addResource({uri: ':userName', name: 'user', rel: 'user'});
+        .addResource({uri: ':userName', name: 'user', rel: 'user'}, { collectionChild: true, key: 'userName' });
+
 
     //User Operations
     userRes
             .addMethod(rs.resourceMethods.GET,
-                        authMdl.authorize([a.Admin, a.CurrentAny, a.HasRelationship]), userCtrl.getUser)
+                        authMdl.authorize([a.Admin, a.CurrentAny, a.HasRelationship]), userCtrl.getUser, { self: true })
             .addMethod(rs.resourceMethods.PUT,
                 authMdl.authorize([a.Admin, a.CurrentAdult, a.StrictGuardian]), userCtrl.saveUser({addOnly: false}))
             .addMethod(rs.resourceMethods.DEL,
                 authMdl.authorize([a.Admin, a.CurrentAdult, a.NonStrictGuardian]), userCtrl.deactivateUser)
         .addResource({ uri: 'activation' })
-            .addMethod(rs.resourceMethods.DEL,
+            .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.Admin, a.CurrentAdult, a.StrictGuardian], { allowInactive: true }), userCtrl.activateUser);
 
     //Role Operations
     userRes
         .addResource({ uri: 'roles' })
             .addMethod(rs.resourceMethods.GET,
-                authMdl.authorize([a.Admin]), userCtrl.getRoles)
+                authMdl.authorize([a.Admin]), userCtrl.getRoles, { self: true })
             .addMethod(rs.resourceMethods.POST,
                 authMdl.authorize([a.SuperAdmin]), userCtrl.addRole)
             .addMethod(rs.resourceMethods.DEL,

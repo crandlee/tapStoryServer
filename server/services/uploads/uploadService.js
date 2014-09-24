@@ -23,10 +23,10 @@ function getFileGroups(userName, options) {
 
 }
 
-function transformFileGroupsViewModel(userFileGroups, options) {
+function transformFileGroupsViewModel(userFileGroups) {
 
     return promise(_.map(userFileGroups, function(userFileGroup) {
-        return userFileGroup.parent().viewModel('fileGroup', options.apiPath, {doc :userFileGroup } );
+        return userFileGroup.parent().viewModel('fileGroup');
     }));
 
 }
