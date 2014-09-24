@@ -15,9 +15,10 @@ module.exports = function () {
     var userRes = rs.getResource('root')
         .addResource({ uri: 'users' } )
             .addMethod(rs.resourceMethods.GET,
-                { rules: [a.Admin] }, userCtrl.getUsers, { self: true })
+                { rules: [a.Admin] }, userCtrl.getUsers, { self: true})
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.Guest]}, userCtrl.saveUser({addOnly: true}))
+                { rules: [a.Guest]}, userCtrl.saveUser({addOnly: true}),
+                    { bodyParams: [ 'userName', 'firstName', 'lastName', 'password'] })
         .addResource({uri: ':userName', name: 'user', rel: 'user'}, { collectionChild: true, key: 'userName' });
 
 
@@ -26,7 +27,8 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin, a.CurrentAny, a.HasRelationship]}, userCtrl.getUser, { self: true })
             .addMethod(rs.resourceMethods.PUT,
-                { rules: [a.Admin, a.CurrentAdult, a.StrictGuardian]}, userCtrl.saveUser({addOnly: false}))
+                { rules: [a.Admin, a.CurrentAdult, a.StrictGuardian]}, userCtrl.saveUser({addOnly: false}),
+                    { bodyParams: [ { name: 'firstName', required: false }, { name: 'lastName', required: false }, { name: 'password', required: false }] })
             .addMethod(rs.resourceMethods.DEL,
                 { rules: [a.Admin, a.CurrentAdult, a.NonStrictGuardian]}, userCtrl.deactivateUser)
         .addResource({ uri: 'activation' })
@@ -39,8 +41,8 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin] }, userCtrl.getRoles, { self: true })
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.SuperAdmin] }, userCtrl.addRole)
+                { rules: [a.SuperAdmin] }, userCtrl.addRole, { bodyParams: ['role']})
             .addMethod(rs.resourceMethods.DEL,
-                { rules: [a.SuperAdmin] }, userCtrl.removeRole);
+                { rules: [a.SuperAdmin] }, userCtrl.removeRole, { bodyParams: ['role'] });
 
 };

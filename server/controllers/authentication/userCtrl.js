@@ -4,7 +4,6 @@ var _ = cb._;
 var errSvc = cb.errSvc;
 
 var userSvc = cb.rootRequire('svc-user');
-var userRelSvc = cb.rootRequire('svc-rel');
 var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function saveUser(options) {
@@ -35,11 +34,7 @@ function saveUser(options) {
 
 function deactivateUser(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    if (!userName)
-        ctrlHelper.setBadRequest(res, next, 'Deactivating a user requires a source userName');
-
-    userSvc.deactivate(userName, {})
+    userSvc.deactivate(req.params.userName, {})
         .then(_.partial(ctrlHelper.setOk, res, next))
         .fail(_.partial(ctrlHelper.setInternalError, res, next))
         .done();
@@ -48,11 +43,7 @@ function deactivateUser(req, res, next) {
 
 function activateUser(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    if (!userName)
-        ctrlHelper.setBadRequest(res, next, 'Activating a user requires a source userName');
-
-    userSvc.activate(userName, {})
+    userSvc.activate(req.params.userName, {})
         .then(_.partial(ctrlHelper.setOk, res, next))
         .fail(_.partial(ctrlHelper.setInternalError, res, next))
         .done();
@@ -62,51 +53,15 @@ function activateUser(req, res, next) {
 
 function getUser(req, res, next) {
 
-    //May be a relUser being requested, check it first (also allow relUser2 for checking child friend)
-    // (from a relationship route for instance)
-    var relUser = (req.params && req.params.relUser);
-    if  (req.params && req.params.relUser2) relUser = req.params.relUser2;
-
-    var userName = (req.params && (req.params.userName));
-    var shouldHideLinks = !!relUser;
-
-    var getUserWithRelatedUserBehavior = function(sourceUser, relUser, shouldHideLinks, res, next) {
-
-        if (relUser) {
-            return userRelSvc.canViewRelationshipUser(sourceUser, relUser, shouldHideLinks)
-                .then(function(canView) {
-                    if (canView) {
-                        return retrieveUserAndHandleResult(relUser, shouldHideLinks, res, next);
-                    } else {
-                        ctrlHelper.setForbidden(res, next, 'Cannot view a user with which you have no active relationship');
-                    }
-                })
-        } else {
-            return retrieveUserAndHandleResult(sourceUser, shouldHideLinks, res, next);
-        }
-
-    };
-
-    var retrieveUserAndHandleResult = function(userName, shouldHideLinks, res, next) {
-
-        //If this came in as a target user, verify against the target user through
-        if (!userName) {
-            ctrlHelper.setBadRequest(res, next, 'Getting a user requires a userName');
-        } else {
-            userSvc.getSingle(userName)
-                .then(function (user) {
-                    if (!user)
-                        ctrlHelper.setBadRequest(res, next, 'No user found for this criteria');
-                    else
-                        ctrlHelper.setOk(res, next, user.viewModel('user'));
-                })
-                .fail(_.partial(ctrlHelper.setInternalError, res, next))
-                .done();
-        }
-
-    };
-
-    getUserWithRelatedUserBehavior(userName, relUser, shouldHideLinks, res, next);
+    userSvc.getSingle(req.params.userName)
+        .then(function (user) {
+            if (!user)
+                ctrlHelper.setBadRequest(res, next, 'No user found for this criteria');
+            else
+                ctrlHelper.setOk(res, next, user.viewModel('user'));
+        })
+        .fail(_.partial(ctrlHelper.setInternalError, res, next))
+        .done();
 
 }
 
@@ -129,65 +84,45 @@ function getUsers(req, res, next) {
 
 function addRole(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    var role = (req.body && req.body.role);
+    userSvc.addRole(req.params.userName, req.body.role)
+        .then(function (user) {
+            ctrlHelper.setCreated(res, next, { roles: user.roles });
+        })
+        .fail(function (err) {
+            (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
+                (res, next, err.message);
+        })
+        .done();
 
-    if (!userName) ctrlHelper.setBadRequest(res, next, 'Adding a role requires a userName');
-    if (!role) ctrlHelper.setBadRequest(res, next, 'Adding a role requires a role');
-
-    if (userName && role) {
-        userSvc.addRole(userName, role)
-            .then(function (user) {
-                ctrlHelper.setCreated(res, next, { roles: user.roles });
-            })
-            .fail(function (err) {
-                (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
-                    (res, next, err.message);
-            })
-            .done();
-    }
 }
 
 function removeRole(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    var role = (req.body && req.body.role);
-
-    if (!userName) ctrlHelper.setBadRequest(res, next, 'Removing a role requires a userName');
-    if (!role) ctrlHelper.setBadRequest(res, next, 'Removing a role requires a role');
-
-    if (userName && role) {
-        userSvc.removeRole(userName, role)
-            .then(function (user) {
-                ctrlHelper.setOk(res, next, { roles: user.roles });
-            })
-            .fail(function (err) {
-                (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
-                    (res, next, err.message);
-            })
-            .done();
-    }
+    userSvc.removeRole(req.params.userName, req.body.role)
+        .then(function (user) {
+            ctrlHelper.setOk(res, next, { roles: user.roles });
+        })
+        .fail(function (err) {
+            (errSvc.checkErrorCode(err, "E1002") ? ctrlHelper.setBadRequest : ctrlHelper.setInternalError)
+                (res, next, err.message);
+        })
+        .done();
 
 }
 
 function getRoles(req, res, next) {
 
-    var userName = (req.params && req.params.userName);
-    if (!userName) ctrlHelper.setBadRequest(res, next, 'Getting roles requires a userName');
+    return userSvc.getSingle(req.params.userName)
+        .then(function (user) {
+            if (!user) {
+                ctrlHelper.setNotFound(res, next, 'Cannot find requested user');
+            } else {
+                ctrlHelper.setOk(res, next, user.roles);
+            }
+        })
+        .fail(_.partial(ctrlHelper.setInternalError, res, next))
+        .done();
 
-    if (userName) {
-        return userSvc.getSingle(userName)
-            .then(function (user) {
-                if (!user) {
-                    ctrlHelper.setNotFound(res, next, 'Cannot find requested user');
-                } else {
-                    ctrlHelper.setOk(res, next, user.roles);
-                }
-            })
-            .fail(_.partial(ctrlHelper.setInternalError, res, next))
-            .done();
-
-    }
 
 }
 

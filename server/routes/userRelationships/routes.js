@@ -18,10 +18,12 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.POST,
                 { rules: [a.CurrentAdult, a.StrictGuardian]}, relCtrlExt.addFriendship)
             .addMethod(rs.resourceMethods.DEL,
-                { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, relCtrlExt.deactivateFriendship)
+                { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, relCtrlExt.deactivateFriendship,
+                    { bodyParams: [ 'userName' ] })
         .addResource({ uri: 'acknowledgement' })
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.CurrentAdult, a.StrictGuardian]}, relCtrlExt.acknowledgeFriendship);
+                { rules: [a.CurrentAdult, a.StrictGuardian]}, relCtrlExt.acknowledgeFriendship,
+                    { bodyParams: [ 'userName' ] });
 
     //Guardianships/Guardians
     rs.getResource('user')
@@ -29,7 +31,8 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin, a.CurrentAdult]}, relCtrlExt.getGuardianships, { self: true })
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.CurrentAdult]}, relCtrlExt.addGuardianship);
+                { rules: [a.CurrentAdult]}, relCtrlExt.addGuardianship,
+                    { bodyParams: [ 'userName', 'firstName', 'lastName', 'password'] });
 
 
     rs.getResource('user')
@@ -37,9 +40,11 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin, a.CurrentChild, a.NonStrictGuardian]}, relCtrlExt.getGuardianships, { self: true })
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.StrictGuardian]}, relCtrlExt.addAdditionalGuardian)
+                { rules: [a.StrictGuardian]}, relCtrlExt.addAdditionalGuardian,
+                    { bodyParams: [ 'guardianUserName'] })
             .addMethod(rs.resourceMethods.DEL,
-                { rules: [a.StrictOneOfMultipleGuardians]}, relCtrlExt.deactivateGuardianship);
+                { rules: [a.StrictOneOfMultipleGuardians]}, relCtrlExt.deactivateGuardianship,
+                    { bodyParams: [ 'userName' ] });
 
 
 };

@@ -19,9 +19,11 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, uploadsCtrl.getFileGroups, { self: true })
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.upload)
+                { rules: [a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.upload,
+                    { bodyParams: [ 'groupName' ] })
             .addMethod(rs.resourceMethods.PUT,
-                { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.removeFileGroup)
+                { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.removeFileGroup,
+                    { bodyParams: [ 'groupId' ]})
         .addResource({ uri: 'fileSubs' })
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, uploadsCtrl.getShares);
@@ -36,7 +38,8 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.POST,
                 { rules: [a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.upload)
             .addMethod(rs.resourceMethods.DEL,
-                { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.removeFile)
+                { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.removeFile,
+                    { bodyParams: [ 'fileName' ]})
         .addResource({ uri: ':fileName'})
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.CurrentAny, a.NonStrictGuardian, a.Subscribed]}, uploadsCtrl.downloadFiles);

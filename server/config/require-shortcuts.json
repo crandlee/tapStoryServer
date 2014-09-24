@@ -11,6 +11,7 @@
     { "k":"enums", "v": "enums/enums" },
     { "k":"route-root", "v": "routes/routes" },
     { "k":"middleware-bodyParser", "v": "middleware/bodyParser" },
+    { "k":"mdl-bodyValidator", "v": "middleware/bodyValidator.js"},
     { "k":"model-User", "v": "models/authentication/User" },
     { "k":"model-Rel", "v": "models/userRelationships/UserRelationship" },
     { "k":"svc-passport", "v": "services/authentication/passportService" },

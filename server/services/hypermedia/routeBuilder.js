@@ -1,6 +1,8 @@
 "use strict";
 var cb = require('common-bundle')();
 var authMdl = cb.rootRequire('mdl-auth');
+var bodyMdl = cb.rootRequire('mdl-bodyValidator');
+
 var _ = cb._;
 
 var addRouteFn;
@@ -95,6 +97,7 @@ Resource.prototype.addMethod = function (method, authOptions) {
     })) {
         console.log('Adding method ' + method + ' to ' + this.getAbsUri());
         //Add global pre- and post-controller functions
+        fns.splice(0, 0, _.partial(bodyMdl.validateBody, options.bodyParams));
         fns.splice(0, 0, _.partial(authMdl.authorize, authOptions.rules, authOptions.options));
         fns.push(_.partial(addLinks, this, options));
         this.methods[method] = { fns: fns, method: method, options: options, resource: this };
