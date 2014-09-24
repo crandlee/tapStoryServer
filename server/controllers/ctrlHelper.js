@@ -37,7 +37,6 @@ module.exports = {
         sendStatusAndData(res, enums.httpStatusCodes.notFound, data, next);
     },
     setInternalError: function(res, next, data) {
-        console.log(next);
         var msg = (data && data.message || data);
         errSvc.logError(msg);
         sendStatusAndData(res, enums.httpStatusCodes.internalError, msg, next);

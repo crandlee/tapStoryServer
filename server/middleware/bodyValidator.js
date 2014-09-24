@@ -5,6 +5,7 @@ var ctrlHelper = cb.rootRequire('ctrl-helper');
 
 function validateBody(bodyParams, req, res, next) {
 
+    req.body = req.body || {};
     if (!_.isPlainObject(req.body)) return next();
 
     var removeInvalidBodyParams = function(bodyParams, body) {

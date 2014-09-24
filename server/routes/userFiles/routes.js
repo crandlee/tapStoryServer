@@ -21,12 +21,14 @@ module.exports = function () {
             .addMethod(rs.resourceMethods.POST,
                 { rules: [a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.upload,
                     { bodyParams: [ 'groupName' ] })
-            .addMethod(rs.resourceMethods.PUT,
+            .addMethod(rs.resourceMethods.DEL,
                 { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, uploadsCtrl.removeFileGroup,
-                    { bodyParams: [ 'groupId' ]})
+                    { bodyParams: [ 'groupId' ]});
+
+    rs.getResource('user')
         .addResource({ uri: 'fileSubs' })
             .addMethod(rs.resourceMethods.GET,
-                { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, uploadsCtrl.getShares);
+                { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, uploadsCtrl.getShares, { self: true });
 
     rs.getResource('fileGroups')
         .addResource({ uri: ':groupId', name: "fileGroup", rel: "fileGroup" }, { collectionChild: true, key: 'groupId' })
