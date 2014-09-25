@@ -103,7 +103,7 @@ function removeFile(userName, groupId, fileName, options) {
             return userSvc.removeFile(userName, fileName, groupId, options)
                 .then(_.partial(writeSvc.removeFile, groupId, fileName))
                 .then(function() {
-                    return userSvc.getFileGroups(userName, { groupId: groupId })
+                    return userSvc.getFileGroups(userName, { groupId: groupId });
                 })
                 .fail(errSvc.promiseError("Could not remove file",
                     { userName: userName, fileName: fileName }));

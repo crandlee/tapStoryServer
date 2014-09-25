@@ -153,7 +153,9 @@ function getFileGroups(userName, options) {
             }));
             groups = groups ? [groups] : [];
         }
-        return groups;
+        return _.map(groups, function(group) {
+            return user.viewModel('fileGroup', { doc: group });
+        });
     }
 
     return getSingle(userName, options)

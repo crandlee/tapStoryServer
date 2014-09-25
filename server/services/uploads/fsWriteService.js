@@ -22,10 +22,18 @@ function removeFileGroup(groupId) {
 function removeFile(groupId, fileName) {
 
     var destPath = cb.config.uploadPath + groupId + '/' + fileName;
-    return cb.promiseUtils.deNodeify(fs.unlink)(destPath)
-        .fail(function (err) {
-            logSvc.logWarning("An error message was returned trying to remove a file",
-                { error: err, groupId: groupId, fileName: fileName  });
+    return cb.promiseUtils.deNodeify(fs.stat)(cb.config.uploadPath + groupId + '/' + fileName)
+        .then(function(stat) {
+            console.log(stat);
+            if (!stat || stat.isDirectory()) return cb.Promise({ noFile: true });
+            return cb.promiseUtils.deNodeify(fs.unlink)(destPath)
+                .fail(function (err) {
+                    logSvc.logWarning("An error message was returned trying to remove a file",
+                        { error: err, groupId: groupId, fileName: fileName  });
+                });
+        })
+        .fail(function() {
+            return cb.Promise({ noFile: true });
         });
 
 }

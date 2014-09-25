@@ -17,7 +17,8 @@ module.exports = function () {
                 { rules: [a.Admin, a.CurrentAny, a.StrictGuardian]}, relCtrlExt.getFriendships, { self: true,
                     description: 'Get friendships for <%=userName%>'})
             .addMethod(rs.resourceMethods.POST,
-                { rules: [a.CurrentAdult, a.StrictGuardian]}, relCtrlExt.addFriendship, { description: 'Submit a friend request from <%=userName%>'})
+                { rules: [a.CurrentAdult, a.StrictGuardian]}, relCtrlExt.addFriendship,
+                    { bodyParams: ['userName'], description: 'Submit a friend request from <%=userName%>'})
             .addMethod(rs.resourceMethods.DEL,
                 { rules: [a.Admin, a.CurrentAny, a.NonStrictGuardian]}, relCtrlExt.deactivateFriendship,
                     { bodyParams: [ 'userName' ], description: '<%=userName%> deactivates friendship' })

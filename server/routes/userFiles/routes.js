@@ -51,7 +51,7 @@ module.exports = function () {
         .addResource({ uri: ':fileName'})
             .addMethod(rs.resourceMethods.GET,
                 { rules: [a.CurrentAny, a.NonStrictGuardian, a.Subscribed]}, uploadsCtrl.downloadFiles,
-                    {description: 'Download the file <%=fileName%> from the file group <%=groupName%>'});
+                    {description: 'Download a file from the file group <%=groupName%>'});
 
     rs.getResource('fileGroup')
         .addResource({ uri: 'fileHelper'})

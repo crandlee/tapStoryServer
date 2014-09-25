@@ -187,6 +187,7 @@ function getCurrentLevelKeys(req, documentResource) {
 
     var doc = documentResource;
     if (_.isArray(documentResource) && _.size(documentResource) === 1) doc = documentResource[0];
+    //console.log(doc);
     return _.assign(_.clone(req.params), _.assign(_.clone(req.body), _.clone(doc)));
 
 }
