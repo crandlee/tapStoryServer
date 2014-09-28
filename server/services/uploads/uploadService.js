@@ -16,19 +16,19 @@ function getFileGroups(userName, options) {
     //Get file groups from user object then verify with storage service
     //that file group actually exists.
     return userSvc.getFileGroups(userName, options)
-        .then(_.partialRight(transformFileGroupsViewModel, options))
         .then(writeSvc.verifyFileGroups)
         .fail(errSvc.promiseError("Could not get file groups",
             { userName: userName } ));
 
 }
 
-function transformFileGroupsViewModel(userFileGroups) {
-    return promise(_.map(userFileGroups, function(userFileGroup) {
-        return userFileGroup.parent().viewModel('fileGroup', { doc: userFileGroup });
-    }));
-
-}
+//function transformFileGroupsViewModel(userFileGroups) {
+//    return promise(_.map(userFileGroups, function(userFileGroup) {
+//        console.log(userFileGroup.parent());
+//        return userFileGroup.parent().viewModel('fileGroup', { doc: userFileGroup });
+//    }));
+//
+//}
 
 function uploadFiles(groupName, filesFromRequest, options) {
 
