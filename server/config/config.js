@@ -24,7 +24,7 @@ module.exports = {
         port: process.env.PORT || 80,
         baseUri: '/api',
         protocol: 'http',
-        hostname: 'someherokuhost',
+        hostname: 'tapstoryserver.herokuapps.com',
         uploadPath: '' + 'server/uploads/',
         allowedRemoteOrigins: [],
         applicationName: 'tapStoryServer',
