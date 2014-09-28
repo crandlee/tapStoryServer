@@ -26,9 +26,12 @@ function initialize(serverSvc, fileSystemSvc) {
     });
 
 
+    var urlObj = { protocol: cb.config.protocol, hostname: cb.config.hostname,
+        pathname: cb.config.baseUri};
+    if (cb.config.usePortInHypermedia) urlObj.port = cb.config.port;
+
     var rs = cb.rootRequire('route-builder')(serverSvc.addRoute,
-        require('url').format({ protocol: cb.config.protocol, hostname: cb.config.hostname,
-            port: cb.config.port, pathname: cb.config.baseUri}));
+        require('url').format(urlObj));
 
     rs.addResource({ uri: '', name: 'root', rel: 'root'} )
         .addMethod(rs.resourceMethods.GET, { rules: [a.Guest]}, coreCtrl.core,

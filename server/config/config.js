@@ -11,7 +11,8 @@ module.exports = {
         protocol: 'http',
         hostname: 'localhost',
         applicationName: 'tapStoryServer',
-        logName: 'tapStoryServer.log'
+        logName: 'tapStoryServer.log',
+        usePortInHypermedia: true
     },
     production: {
         rootPath: '',
@@ -23,6 +24,7 @@ module.exports = {
         uploadPath: '' + 'server/uploads/',
         allowedRemoteOrigins: [],
         applicationName: 'tapStoryServer',
-        logName: 'tapStoryServer.log'
+        logName: 'tapStoryServer.log',
+        usePortInHypermedia: false
     }
 };
