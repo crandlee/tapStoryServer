@@ -1,10 +1,5 @@
 "use strict";
 
-//NOTE: The setRootPath function will be called by the common-bundle configuration
-//to point the proper root path
-
-var rootPath = 'test';
-
 module.exports = {
     development: {
         rootPath: '',
@@ -24,7 +19,7 @@ module.exports = {
         port: process.env.PORT || 80,
         baseUri: '/api',
         protocol: 'http',
-        hostname: 'tapstoryserver.herokuapps.com',
+        hostname: 'tapstoryserver.herokuapp.com',
         uploadPath: '' + 'server/uploads/',
         allowedRemoteOrigins: [],
         applicationName: 'tapStoryServer',
